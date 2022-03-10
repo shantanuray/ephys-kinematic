@@ -6,6 +6,27 @@ root_dir = uigetdir('.', 'Choose root directory with all of the anipose and ephy
 disp('Choose common location to save trials')
 save_dir = uigetdir('.', 'Choose common location to save trials');
 
+reply = input(['\nDo you wish filter anipose data??\n\n',...
+            '[Enter/y/Y]    => Yes\n',...
+            '[n/N]          => No    '],'s');
+switch lower(reply)
+    case 'y'
+        filter_anipose_flag = true;
+    case 'n'
+        filter_anipose_flag = false;
+    otherwise
+        filter_anipose_flag = true;
+end
+if filter_anipose_flag
+    % Default score threhold
+    scoreThresh = 0.3;
+    reply = input(['\nWhat is filter score threshold??? ',...
+                   sprintf('[Click Enter to use default = (%.1f)]\n', scoreThresh)],...
+                    's');
+    if ~isempty(reply)
+        scoreThresh = str2num(reply);
+    end
+end
 % Get list of all dir with anipose data
 disp('Extracting video locations')
 indicator = 'pose-3d';
@@ -18,6 +39,9 @@ for i = 1:length(anipose_dir_list)
    anipose_ephys_loc = extractAniposeEphysDir(anipose_dir_list{i});
    % Load anipose data
    aniposeData = importAnipose3dData(anipose_ephys_loc.anipose_dir);
+   if filter_anipose_flag
+        [aniposeData] = filterAniposeDataTable(aniposeData, scoreThresh);
+   end
    % Load ephys data
    [EMG_trap,...
     EMG_biceps,...
