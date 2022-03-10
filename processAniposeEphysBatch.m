@@ -8,7 +8,7 @@ save_dir = uigetdir('.', 'Choose common location to save trials');
 
 reply = input(['\nDo you wish filter anipose data??\n\n',...
             '[Enter/y/Y]    => Yes\n',...
-            '[n/N]          => No    '],'s');
+            '[n/N]          => No    \n'],'s');
 switch lower(reply)
     case 'y'
         filter_anipose_flag = true;
@@ -19,14 +19,15 @@ switch lower(reply)
 end
 if filter_anipose_flag
     % Default score threhold
-    scoreThresh = 0.3;
+    scoreThresh = 0.05;
     reply = input(['\nWhat is filter score threshold??? ',...
-                   sprintf('[Click Enter to use default = (%.1f)]\n', scoreThresh)],...
+                   sprintf('[Click Enter to use default = (%.2f)]\n', scoreThresh)],...
                     's');
     if ~isempty(reply)
         scoreThresh = str2num(reply);
     end
 end
+fillmissing_gapsize = 50;
 % Get list of all dir with anipose data
 disp('Extracting video locations')
 indicator = 'pose-3d';
@@ -41,6 +42,10 @@ for i = 1:length(anipose_dir_list)
    aniposeData = importAnipose3dData(anipose_ephys_loc.anipose_dir);
    if filter_anipose_flag
         [aniposeData] = filterAniposeDataTable(aniposeData, scoreThresh);
+        aniposeData = fillmissing(aniposeData,...
+                                  'linear',...
+                                  'EndValues','nearest',...
+                                  'MaxGap', fillmissing_gapsize);
    end
    % Load ephys data
    [EMG_trap,...
