@@ -1,14 +1,19 @@
 % Get root directory with all of the anipose and ephys data
-root_dir = uigetdir('.', 'root directory with all of the anipose and ephys data');
+disp('Choose the root directory with all of the anipose and ephys data')
+root_dir = uigetdir('.', 'Choose root directory with all of the anipose and ephys data');
 
 % Get save directory
-save_dir = uigetdir('.', 'common save directory');
+disp('Choose common location to save trials')
+save_dir = uigetdir('.', 'Choose common location to save trials');
 
 % Get list of all dir with anipose data
+disp('Extracting video locations')
 indicator = 'pose-3d';
 anipose_dir_list = listAniposeDir(root_dir, indicator);
+disp(sprintf('Located %d locations', length(anipose_dir_list)))
 
 for i = 1:length(anipose_dir_list)
+   disp(sprintf('Initiating processing %s', anipose_dir_list{i}))
    % Get anipose and ephys data location
    anipose_ephys_loc = extractAniposeEphysDir(anipose_dir_list{i});
    % Load anipose data
@@ -41,5 +46,6 @@ for i = 1:length(anipose_dir_list)
                                    EMG_triceps,...
                                    EMG_ecu,...
                                    EMG_trap);
+   disp(sprintf('Saving trials for %s', anipose_ephys_loc.label))
    save(fullfile(save_dir, strcat(anipose_ephys_loc.label, '.mat')), 'trial_list');
 end
