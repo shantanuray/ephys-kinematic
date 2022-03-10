@@ -118,7 +118,7 @@ for i = 1:min(length(start_ts), length(end_ts))
 		else
 			trial.lightTrig = 'ON';
 		end
-		if round(end_idx(i)<size(aniposeData, 1)
+		if end_idx(i)<size(aniposeData, 1)
 			trial.aniposeData = aniposeData(start_idx(i):end_idx(i), :); % takes all the anipose data between each start and end index; converts time stamps in ephys data (30khz) to anipseData (200hz)
 		else
 			trial.aniposeData = [];
