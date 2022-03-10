@@ -17,7 +17,7 @@ if nargin < 1
 end
 
 % get all indicator dir (eg. pose-3d)
-indicator_dir_list = dir(fullfile(rootdir, strcat('**\*', indicator)));
+indicator_dir_list = dir(fullfile(rootdir, strcat('**', filesep, '*', indicator)));
 % Should be dir by default, but double check
 idx = find([indicator_dir_list.isdir]);
 
