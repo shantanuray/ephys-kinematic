@@ -18,11 +18,13 @@ function [EMG_trap,...
 
 if nargin < 2
    % load anipose data
+   disp('Choose anipose dir')
    anipose_dir = uigetdir('.', 'get anipose dir');
    aniposeData = importAnipose3dData(anipose_dir);
 end;
 if nargin < 1
    % Get oebin location
+   disp('Select oebin file')
    [filename, pathname] = uigetfile('*.oebin', 'Pick oebin file');
    oebin_file = fullfile(pathname, filename);
 end
