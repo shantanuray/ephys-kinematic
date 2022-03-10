@@ -30,10 +30,10 @@ oebin_dir = dir(fullfile(ephys_loc, strcat('**', filesep, 'structure.oebin')));
 % Convert to string array for ease of indexing below
 oebin_dir_list = string(oebin_dir_list);
 
-dir_sep = strfind(oebin_dir, filesep);	% Position of each file sep in file path
-record_node_start = strfind(oebin_dir, 'Record Node'); % Start position of 'R' of Record Node in file path
+dir_sep = strfind(oebin_dir_list, filesep);	% Position of each file sep in file path
+record_node_start = strfind(oebin_dir_list, 'Record Node'); % Start position of 'R' of Record Node in file path
 record_node_num = [];	% Store the number after Record node
-for i = 1:length(record_node_loc)
+for i = 1:length(record_node_start)
 	% Find sep location that is after Record Node to indicate end of Record Node <number? folder
 	record_node_end = dir_sep{i}(dir_sep{i}>record_node_start{i, 1});
 	% There are many folders after Record node. We want the file sep immediately after Record Node <number>
