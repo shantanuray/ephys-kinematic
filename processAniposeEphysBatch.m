@@ -48,7 +48,7 @@ function processAniposeEphysBatch(varargin)
         end
         aniposedir_root = anipose_dir_list{i}(1:dir_sep);
         % Get anipose and ephys data location
-        anipose_ephys_loc = extractAniposeEphysDir(anipose_dir_list{i});
+        anipose_ephys_loc = extractAniposeEphysDir(aniposedir_root);
         % Load anipose data
         disp(sprintf('Loading anipose data from %s', aniposedir_root))
         aniposeData = importAnipose3dData(aniposedir_root);
