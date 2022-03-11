@@ -15,7 +15,7 @@ function processAniposeEphysBatch(varargin)
 
     % Initialize inputs
     p = readInput(varargin);
-    [rootdir, savedir, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p.Results)
+    [rootdir, savedir, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p.Results);
 
     % Get root directory with all of the anipose and ephys data
     if isnan(rootdir)
@@ -41,7 +41,17 @@ function processAniposeEphysBatch(varargin)
         anipose_ephys_loc = extractAniposeEphysDir(anipose_dir_list{i});
         % Load anipose data
         disp('Loading anipose data')
-        aniposeData = importAnipose3dData(anipose_ephys_loc.anipose_dir);
+        % TODO:anipose_ephys_loc.anipose_dir is returning with the indicator string at the end
+        % Example: headfixedwaterreach/A1-2/AT_A1-2_2021-08-20_13-06-28_hfwr_LightOFF_video/pose-3d
+        % We need one folder up, i.e. headfixedwaterreach/A1-2/AT_A1-2_2021-08-20_13-06-28_hfwr_LightOFF_video
+        dir_sep = strfind(anipose_ephys_loc.anipose_dir, indicator);
+        if isempty(dir_sep)
+            dir_sep = length(anipose_ephys_loc.anipose_dir);
+        else
+            dir_sep = dir_sep - 2;
+        end
+        aniposedir_root = anipose_ephys_loc.anipose_dir(1:dir_sep);
+        aniposeData = importAnipose3dData(aniposedir_root);
         if filterAniposeFlag
             disp('Filtering anipose data')
             [aniposeData] = filterAniposeDataTable(aniposeData, scoreThresh);
