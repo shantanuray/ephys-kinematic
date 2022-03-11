@@ -70,7 +70,7 @@ end
 % Set videoStart as the first value (frame 1)
 totalFrames=min(length(frameTrig_idx), height(aniposeData));
 % use to reference anipose data
-videoFrames_idx = frameTrig_idx(videoStart:videoStart+totalFrames-1);
+videoFrames_idx = frameTrig_idx(videoStart:totalFrames);
 % use this to reference ephys data
 videoFrames_timestamps = contData.Timestamps(videoFrames_idx);
 videoFrames_timeInSeconds = timeInSeconds(videoFrames_idx);
