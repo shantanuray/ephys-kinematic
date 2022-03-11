@@ -34,28 +34,6 @@ contData = load_open_ephys_binary(oebin_file, 'continuous', 1);
 eventData = load_open_ephys_binary(oebin_file, 'events', 1);
 %spikeData = load_open_ephys_binary(oebin_file, 'spikes', 1);
 
-% Calculate time in seconds of ephys data
-timeInSeconds = double(contData.Timestamps)./contData.Header.sample_rate;
-
-%%videoFrames_timestamps,% videoFrame_timestamps is the time on the Ephys data which has video 
-%% Get frame timestamps
-% camFrameTrig is same as anipose data samples
-camFrameTrig = contData.Data(39,:).*contData.Header.channels(39).bit_volts;  % AI7 - Camera frame clock
-[pks, camFrameTrig_idx] = findpeaks(camFrameTrig, 'MinPeakDistance', 50, 'MinPeakHeight', 3);
-camFrameTrig_samplesFromPrev = diff([0 camFrameTrig_idx]);
-% Find when the video recording started
-videoStart = find(camFrameTrig_samplesFromPrev > 200);
-videoStart = find(camFrameTrig_samplesFromPrev);
-
-%totalFrames=length(pks);
-% Set videoStart as the first value (frame 1)
-totalFrames=height(aniposeData);
-% use to reference anipose data
-videoFrames_idx = camFrameTrig_idx(videoStart:videoStart+totalFrames-1);
-% use this to reference ephys data
-videoFrames_timestamps = contData.Timestamps(videoFrames_idx);
-videoFrames_timeInSeconds = timeInSeconds(videoFrames_idx);
-
 %% Sampling info
 samplingRate = contData.Header.sample_rate;
 nSamples=length(contData.Data);
@@ -66,13 +44,36 @@ EMG_biceps = contData.Data(36,:).*contData.Header.channels(36).bit_volts;
 EMG_triceps = contData.Data(35,:).*contData.Header.channels(35).bit_volts;
 EMG_ecu = contData.Data(37,:).*contData.Header.channels(37).bit_volts;
 %ADC6 = contData.Data(38,:);
-frameTrig = contData.Data(39,:).*contData.Header.channels(39).bit_volts;
+frameTrig = contData.Data(39,:).*contData.Header.channels(39).bit_volts;% AI7 - Camera frame clock
 laserTrig = contData.Data(40,:).*contData.Header.channels(40).bit_volts;
 fs=30000;
 
-if height(aniposeData)>length(frameTrig)
-   aniposeData=aniposeData(1:length(frameTrig),:);
+
+
+% Calculate time in seconds of ephys data
+timeInSeconds = double(contData.Timestamps)./contData.Header.sample_rate;
+
+%%videoFrames_timestamps,% videoFrame_timestamps is the time on the Ephys data which has video 
+%% Get frame timestamps
+% frameTrig is same as anipose data samples
+[pks, frameTrig_idx] = findpeaks(frameTrig, 'MinPeakDistance', 50, 'MinPeakHeight', 3);
+frameTrig_samplesFromPrev = diff([0 frameTrig_idx]);
+% Find when the video recording started
+videoStart = find(frameTrig_samplesFromPrev > 200);
+videoStart = find(frameTrig_samplesFromPrev);
+
+if height(aniposeData)>length(frameTrig_idx)
+   aniposeData=aniposeData(1:length(frameTrig_idx),:);
 end
+
+%totalFrames=length(pks);
+% Set videoStart as the first value (frame 1)
+totalFrames=min(length(frameTrig_idx), height(aniposeData));
+% use to reference anipose data
+videoFrames_idx = frameTrig_idx(videoStart:videoStart+totalFrames-1);
+% use this to reference ephys data
+videoFrames_timestamps = contData.Timestamps(videoFrames_idx);
+videoFrames_timeInSeconds = timeInSeconds(videoFrames_idx);
 
 %% Fetch and rename digital input events
 tone_on = eventData.Timestamps(eventData.Data == 2);

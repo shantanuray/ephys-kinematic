@@ -25,7 +25,10 @@ anipose_ephys_loc.label = anipose_label(1:strfind(anipose_label, '_video') - 1);
 % 		headfixedreach/A1-1/AT_auto_manual_LightON_2021-09-24_16-29-56/Record Node 101/experiment2/recording1/structure.oebin
 % Note: Choose the oebin with largest Record Node number
 ephys_loc = fullfile(rootpath, anipose_ephys_loc.label);
-oebin_dir = dir(fullfile(ephys_loc, strcat('**', filesep, 'structure.oebin')));
+oebin_dir = dir(fullfile(ephys_loc, fullfile('Record Node*',...
+											 'experiment*',...
+											 'recording*',...
+											 'structure.oebin')));
 [oebin_dir_list{1:length(oebin_dir),1}] = deal(oebin_dir.folder);
 % Convert to string array for ease of indexing below
 oebin_dir_list = string(oebin_dir_list);
