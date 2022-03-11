@@ -50,7 +50,7 @@ function processAniposeEphysBatch(varargin)
         % Get anipose and ephys data location
         anipose_ephys_loc = extractAniposeEphysDir(anipose_dir_list{i});
         % Load anipose data
-        disp(sprint('Loading anipose data from %s', aniposedir_root))
+        disp(sprintf('Loading anipose data from %s', aniposedir_root))
         aniposeData = importAnipose3dData(aniposedir_root);
         if filterAniposeFlag
             disp('Filtering anipose data')
