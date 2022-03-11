@@ -17,7 +17,13 @@ if nargin < 1
 end
 
 % get all indicator dir (eg. pose-3d)
-indicator_dir_list = dir(fullfile(rootdir, strcat('*_video', filesep, '*', indicator)));
+% Assumng this structure
+%	rootdir/ 		(Example ./headfixedreach/<Animal Name>/)
+%	<label>_video/
+%	pose-3d
+indicator_dir_list = dir(fullfile(rootdir,...
+								  '*_video',...
+								  indicator));
 % Should be dir by default, but double check
 idx = find([indicator_dir_list.isdir]);
 

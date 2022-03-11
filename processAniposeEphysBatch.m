@@ -39,14 +39,17 @@ for i = 1:length(anipose_dir_list)
    % Get anipose and ephys data location
    anipose_ephys_loc = extractAniposeEphysDir(anipose_dir_list{i});
    % Load anipose data
+   disp('Loading anipose data')
    aniposeData = importAnipose3dData(anipose_ephys_loc.anipose_dir);
    if filter_anipose_flag
+        disp('Filtering anipose data')
         [aniposeData] = filterAniposeDataTable(aniposeData, scoreThresh);
         aniposeData = fillmissing(aniposeData,...
                                   'linear',...
                                   'EndValues','nearest',...
                                   'MaxGap', fillmissing_gapsize);
    end
+   disp('Loading ephys data')
    % Load ephys data
    [EMG_trap,...
     EMG_biceps,...
