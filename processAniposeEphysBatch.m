@@ -37,20 +37,20 @@ function processAniposeEphysBatch(varargin)
 
     for i = 1:length(anipose_dir_list)
         disp(sprintf('Initiating processing %s', anipose_dir_list{i}))
-        % Get anipose and ephys data location
-        anipose_ephys_loc = extractAniposeEphysDir(anipose_dir_list{i});
-        % Load anipose data
-        disp('Loading anipose data')
         % TODO:anipose_ephys_loc.anipose_dir is returning with the indicator string at the end
         % Example: headfixedwaterreach/A1-2/AT_A1-2_2021-08-20_13-06-28_hfwr_LightOFF_video/pose-3d
         % We need one folder up, i.e. headfixedwaterreach/A1-2/AT_A1-2_2021-08-20_13-06-28_hfwr_LightOFF_video
-        dir_sep = strfind(anipose_ephys_loc.anipose_dir, indicator);
+        dir_sep = strfind(anipose_dir_list{i}, indicator);
         if isempty(dir_sep)
-            dir_sep = length(anipose_ephys_loc.anipose_dir);
+            dir_sep = length(anipose_dir_list{i});
         else
             dir_sep = dir_sep - 2;
         end
-        aniposedir_root = anipose_ephys_loc.anipose_dir(1:dir_sep);
+        aniposedir_root = anipose_dir_list{i}(1:dir_sep);
+        % Get anipose and ephys data location
+        anipose_ephys_loc = extractAniposeEphysDir(anipose_dir_list{i});
+        % Load anipose data
+        disp(sprint('Loading anipose data from %s', aniposedir_root)
         aniposeData = importAnipose3dData(aniposedir_root);
         if filterAniposeFlag
             disp('Filtering anipose data')
@@ -60,7 +60,7 @@ function processAniposeEphysBatch(varargin)
                                       'EndValues','nearest',...
                                       'MaxGap', maxGap);
         end
-        disp('Loading ephys data')
+        disp(sprintf('Loading ephys data from %s', anipose_ephys_loc.ephys_loc));
         % Load ephys data
         [EMG_trap,...
         EMG_biceps,...
