@@ -1,5 +1,5 @@
 function processAniposeEphysBatch(varargin)
-    % processAniposeEphysBatch('RootDir', 'headfixedreach/A1-2',
+    % processAniposeEphysBatch('RootDir', 'headfixedreach/',
     %                           'SaveDir', 'headfixedreach/',
     %                           'FilterAniposeFlag', false,
     %                           'ScoreThresh', 0.05);

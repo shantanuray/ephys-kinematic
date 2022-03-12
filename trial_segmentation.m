@@ -123,7 +123,8 @@ for i = 1:min(length(start_ts), length(end_ts))
 		trial.start_idx = start_idx;
 		trial.end_idx = end_idx;
 		% comment
-		if isempty(intersect(start_ts(i):end_ts(i), lightOnTrig))
+		trial.lightOnTrig_ts = intersect(start_ts(i):end_ts(i), lightOnTrig);
+		if isempty(trial.lightOnTrig_ts)
 			trial.lightTrig = 'OFF';
 		else
 			trial.lightTrig = 'ON';
