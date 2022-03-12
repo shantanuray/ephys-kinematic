@@ -82,8 +82,13 @@ for i = 1:length(solenoid_on) % starts a for loop which will cycle through all t
 	if isempty(tmp_indx1)
 		tmp_indx1 = nan;
 	end
-	start_ts = [start_ts; videoFrames_timestamps(tmp_indx1(end))];%selects the last one, this is the closest frame timestamp value to the solenoid on value
-	start_idx = [start_idx; tmp_indx1(end)];
+	if isnan(tmp_indx1)
+		start_ts = [start_ts; tmp_indx1];
+		start_idx = [start_idx; tmp_indx1];
+	else
+		start_ts = [start_ts; videoFrames_timestamps(tmp_indx1(end))];%selects the last one, this is the closest frame timestamp value to the solenoid on value
+		start_idx = [start_idx; tmp_indx1(end)];
+	end
 end
 end_ts=[];
 end_idx=[];
@@ -96,8 +101,13 @@ for j=1:length(spoutContact_on_first)
 	if isempty(tmp_indx2)
 		tmp_indx2 = nan;
 	end
-	end_ts = [end_ts; videoFrames_timestamps(tmp_indx2(1))]; %selects the first value, this is the closest frame timestamp to the first spout contact on value 
-end_idx = [end_idx; tmp_indx2(1)]; 
+	if isnan(tmp_indx2)
+		end_ts = [end_ts; tmp_indx2]; %selects the first value, this is the closest frame timestamp to the first spout contact on value 
+		end_idx = [end_idx; tmp_indx2];
+	else
+		end_ts = [end_ts; videoFrames_timestamps(tmp_indx2(1))]; %selects the first value, this is the closest frame timestamp to the first spout contact on value 
+		end_idx = [end_idx; tmp_indx2(1)]; 
+	end
 end
 
 % comment
