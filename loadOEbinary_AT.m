@@ -60,7 +60,6 @@ timeInSeconds = double(contData.Timestamps)./contData.Header.sample_rate;
 frameTrig_samplesFromPrev = diff([0 frameTrig_idx]);
 % Find when the video recording started
 videoStart = find(frameTrig_samplesFromPrev > 200);
-videoStart = find(frameTrig_samplesFromPrev);
 
 if height(aniposeData)>length(frameTrig_idx)
    aniposeData=aniposeData(1:length(frameTrig_idx),:);
