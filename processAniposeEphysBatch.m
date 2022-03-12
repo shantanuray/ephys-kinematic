@@ -1,6 +1,7 @@
-function processAniposeEphysBatch(varargin)
-    % processAniposeEphysBatch('RootDir', 'headfixedreach/',
-    %                           'SaveDir', 'headfixedreach/',
+function processAniposeEphysBatch(rootdir, savedir, varargin)
+    % processAniposeEphysBatch(rootdir, savedir)
+    % processAniposeEphysBatch('headfixedreach/',
+    %                           'headfixedreach/',
     %                           'FilterAniposeFlag', false,
     %                           'ScoreThresh', 0.05);
     % Batch process to:
@@ -8,26 +9,15 @@ function processAniposeEphysBatch(varargin)
     % - Load anipose data and filter if necessary
     % - Load ephys data
     % - Segment trials
-    % Default:
+    % 
+    % Default Param Values:
     %   FilterAniposeFlag = false
     %   ScoreThresh = 0.05
     %   MaxGap = 50
 
     % Initialize inputs
     p = readInput(varargin);
-    [rootdir, savedir, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p.Results);
-
-    % Get root directory with all of the anipose and ephys data
-    if isnan(rootdir)
-        disp('Choose the root directory with all of the anipose and ephys data')
-        rootdir = uigetdir('.', 'Choose root directory with all of the anipose and ephys data');
-    end
-
-    % Get save directory
-    if isnan(savedir)
-        disp('Choose common location to save trials')
-        savedir = uigetdir('.', 'Choose common location to save trials');
-    end
+    [filterAniposeFlag, scoreThresh, maxGap] = parseInput(p.Results);
 
     % Get list of all dir with anipose data
     disp('Extracting video locations')
@@ -97,26 +87,18 @@ function processAniposeEphysBatch(varargin)
         %   - FilterAniposeFlag     Default - false
         %   - ScoreThresh           Default - 0.05 
         %   - MaxGap:               Default - 50
-        %   - RootDir:              Default - '.'
-        %   - SaveDir:              Default - '.'
         p = inputParser;
         defaultFilterAniposeFlag = false;
         defaultScoreThresh = 0.05 ;
         defaultMaxGap = 50;
-        defaultRootDir = nan;
-        defaultSaveDir = nan;
 
-        addParameter(p,'RootDir',defaultRootDir, @ischar);
-        addParameter(p,'SaveDir',defaultSaveDir,@ischar);
         addParameter(p,'FilterAniposeFlag',defaultFilterAniposeFlag, @islogical);
         addParameter(p,'ScoreThresh',defaultScoreThresh, @isnumeric);
         addParameter(p,'MaxGap',defaultMaxGap, @isnumeric);
         parse(p, input{:});
     end
 
-    function [rootdir, savedir, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p)
-        rootdir = p.RootDir;
-        savedir = p.SaveDir;
+    function [filterAniposeFlag, scoreThresh, maxGap] = parseInput(p)
         filterAniposeFlag = p.FilterAniposeFlag;
         scoreThresh = p.ScoreThresh;
         maxGap = p.MaxGap;
