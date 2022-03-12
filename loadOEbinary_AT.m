@@ -46,12 +46,6 @@ EMG_ecu = contData.Data(37,:).*contData.Header.channels(37).bit_volts;
 %ADC6 = contData.Data(38,:);
 frameTrig = contData.Data(39,:).*contData.Header.channels(39).bit_volts;% AI7 - Camera frame clock
 laserTrig = contData.Data(40,:).*contData.Header.channels(40).bit_volts;
-fs=30000;
-
-
-
-% Calculate time in seconds of ephys data
-timeInSeconds = double(contData.Timestamps)./contData.Header.sample_rate;
 
 %%videoFrames_timestamps,% videoFrame_timestamps is the time on the Ephys data which has video 
 %% Get frame timestamps
@@ -60,7 +54,6 @@ timeInSeconds = double(contData.Timestamps)./contData.Header.sample_rate;
 frameTrig_samplesFromPrev = diff([0 frameTrig_idx]);
 % Find when the video recording started
 videoStart = find(frameTrig_samplesFromPrev > 200);
-videoStart = find(frameTrig_samplesFromPrev);
 
 if height(aniposeData)>length(frameTrig_idx)
    aniposeData=aniposeData(1:length(frameTrig_idx),:);
@@ -70,10 +63,12 @@ end
 % Set videoStart as the first value (frame 1)
 totalFrames=min(length(frameTrig_idx), height(aniposeData));
 % use to reference anipose data
-videoFrames_idx = frameTrig_idx(videoStart:totalFrames);
+videoFrames_idx = frameTrig_idx(videoStart:min(length(frameTrig_idx), videoStart+totalFrames-1));
 % use this to reference ephys data
-videoFrames_timestamps = contData.Timestamps(videoFrames_idx);
-videoFrames_timeInSeconds = timeInSeconds(videoFrames_idx);
+videoFrames_timestamps = 0:nSamples-1;
+videoFrames_timestamps = videoFrames_timestamps(videoFrames_idx);
+% Calculate time in seconds of ephys data
+videoFrames_timeInSeconds = double(videoFrames_timestamps)./samplingRate;
 
 %% Fetch and rename digital input events
 tone_on = eventData.Timestamps(eventData.Data == 2);

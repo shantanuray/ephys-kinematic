@@ -12,34 +12,29 @@ function [aniposeData] = importAnipose3dData(varargin)
 % Written in MATLAB r2020b
 % Last updated: 01/28/2022
 
-%% Navigate to folder containing the subfolders 'pose-3d' and 'angles'
+%% Get folder containing the subfolders 'pose-3d' and 'angles'
 if (nargin == 0)
     analysisFolder = uigetdir(pwd, 'Select the folder containing the Anipose output subfolders (pose-3d, angles)');
 else
     analysisFolder = varargin{1};
 end
-originalDir = pwd;
-cd(analysisFolder);
 
 %% Loop through the files in 'pose-3d' and 'angles' import position data tables and angle data tables from csv files
-cd('pose-3d')
-fileList = dir('*.csv');
+fileList = dir(fullfile(analysisFolder, 'pose-3d', '*.csv'));
 % fileList = natsortfiles(fileList);
 posData = [];
 for i=1:length(fileList)
-    tmp = readtable(fileList(i).name);
+    tmp = readtable(fullfile(fileList(i).folder, fileList(i).name));
     tmp.fnum = [];
     posData = [posData;tmp];
 end
 cd ..
-cd('angles')
-fileList = dir('*.csv');
+fileList = dir(fullfile(analysisFolder, 'angles', '*.csv'));
 % fileList = natsortfiles(fileList);
 angleData = [];
 for i=1:length(fileList)
-    tmp = readtable(fileList(i).name);
+    tmp = readtable(fullfile(fileList(i).folder, fileList(i).name));
     tmp.videoNumber = repmat(i,size(tmp,1),1);
     angleData = [angleData;tmp];
 end
 aniposeData = [posData, angleData];
-cd(originalDir);
