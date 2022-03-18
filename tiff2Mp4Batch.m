@@ -3,7 +3,7 @@
 % original_dir
 
 original_dir = pwd;
-root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach'
+root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach';
 cd(root_dir)
 load('video_folder.mat');
 for i = 1:size(video_folder_raw,1)
@@ -27,6 +27,6 @@ for i = 1:size(video_folder_raw,1)
 	ffmpegInputCFileName = strcat(ffmpegInputCFileLabel, '_tiff_filelist.txt');
 	writecell(ffmpegInputFiles', ffmpegInputCFileName);
 	command = strcat('ffmpeg -r 200 -f concat -safe 0 -i', {' '}, ffmpegInputCFileName, '  -s 512x512 -vcodec libx264 -pix_fmt yuv420p', {' '}, strcat(ffmpegInputCFileLabel, '.mp4'));
-	[status, cmdout] = system(command{1});
+	status = system(command{1});
 end
 cd(original_dir)
