@@ -24,6 +24,7 @@ for i = 1:size(video_folder_raw,1)
 	[tiffFileName{1:length(path_contents)}] = deal(path_contents.name);
 	ffmpegInputFiles = strcat({'file '}, tiffFileLoc, {filesep}, tiffFileName);
 	ffmpegInputCFileLabel = strrep(path{1},filesep,'_');
+	ffmpegInputCFileLabel = strrep(ffmpegInputCFileLabel,' ','_');
 	ffmpegInputCFileName = strcat(ffmpegInputCFileLabel, '_tiff_filelist.txt');
 	writecell(ffmpegInputFiles', ffmpegInputCFileName);
 	command = strcat('ffmpeg -r 200 -f concat -safe 0 -i', {' '}, ffmpegInputCFileName, '  -s 512x512 -vcodec libx264 -pix_fmt yuv420p', {' '}, strcat(ffmpegInputCFileLabel, '.mp4'));
