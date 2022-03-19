@@ -18,16 +18,16 @@ for i = 1:size(video_folder_raw,1)
 			tiff_filelist(k).name = path_contents(j).name;
 			tiff_filelist(k).folder = path_contents(j).folder;
 			sep_loc = strfind(tiff_filelist(k).name, '_');
-			tiff_filelist(k)file_number = str2num( tiff_filelist(k)name(sep_loc(end)+1:sep_loc(end)+strfind( tiff_filelist(k)name(sep_loc(end):end), '.tiff')-2));
-			tiff_filelist(k)set_index = str2num( tiff_filelist(k)name(sep_loc(end-1)+1:sep_loc(end)-1));
+			tiff_filelist(k).file_number = str2num(tiff_filelist(k).name(sep_loc(end)+1:sep_loc(end)+strfind(tiff_filelist(k).name(sep_loc(end):end), '.tiff')-2));
+			tiff_filelist(k).set_index = str2num(tiff_filelist(k).name(sep_loc(end-1)+1:sep_loc(end)-1));
 		end
 	end
-	[~,I1] = sort(arrayfun (@(x) x.set_index,  tiff_filelist));
-	 tiff_filelist =  tiff_filelist(I1);
-	[~,I2] = sort(arrayfun (@(x) x.file_number,  tiff_filelist));
-	tiff_filelist =  tiff_filelist(I2);
-	[tiffFileLoc{1:length( tiff_filelist)}] = deal(tiff_filelist.folder);
-	[tiffFileName{1:length( tiff_filelist)}] = deal(tiff_filelist.name);
+	[~,I1] = sort(arrayfun (@(x) x.set_index, tiff_filelist));
+	tiff_filelist = tiff_filelist(I1);
+	[~,I2] = sort(arrayfun (@(x) x.file_number, tiff_filelist));
+	tiff_filelist = tiff_filelist(I2);
+	[tiffFileLoc{1:length(tiff_filelist)}] = deal(tiff_filelist.folder);
+	[tiffFileName{1:length(tiff_filelist)}] = deal(tiff_filelist.name);
 	ffmpegInputFiles = strcat({'file '}, tiffFileLoc, {filesep}, tiffFileName);
 	ffmpegInputCFileLabel = strrep(path,filesep,'_');
 	ffmpegInputCFileLabel = strrep(ffmpegInputCFileLabel,' ','_');
