@@ -120,8 +120,8 @@ for j=1:length(spoutContact_on_first)
 		%looks for all the frame timestamps that happen after the first spout contact uptil the last spout contact before next solenoid on
 		last_sc_indx = find(videoFrames_timestamps(sc_indx)<=spoutContact_on_multi{j}(end))
 		%selects the first value of the time stamp, this is the closest frame timestamp to the resp. spout contact
-		end_ts_last = [end_ts_last; videoFrames_timestamps(last_sc_indx(1))]; 
-		end_idx_last = [end_idx_last; last_sc_indx(1)];
+		end_ts_last = [end_ts_last; videoFrames_timestamps(last_sc_indx(1)+sc_indx(1)-2)]; 
+		end_idx_last = [end_idx_last; last_sc_indx(1)+sc_indx(1)-2];
 	else
 		% For no spout contact, init to nan
 		end_ts_first = [end_ts_first; nan];
