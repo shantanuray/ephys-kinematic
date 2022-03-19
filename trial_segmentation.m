@@ -76,7 +76,7 @@ for i = 1:length(solenoid_on) % starts a for loop which will cycle through all t
 		if ~isempty(first_sc_index)
 			% Find all spout contacts after each reward presentation (solenoid_on) and before next reward presentation
 			all_sc_index = find(spoutContact_on(first_sc_index) < solenoid_on(i+1));
-			spoutContact_on_multi{i} = spoutContact_on(all_sc_index);
+			spoutContact_on_multi{i} = spoutContact_on(all_sc_index + first_sc_index(1) - 1);
 			if (spoutContact_on(first_sc_index(1)) > solenoid_on(i+1))
 	   			spoutContact_on_first = [spoutContact_on_first; nan];
 			else
@@ -111,7 +111,7 @@ for j=1:length(spoutContact_on_first)
 		%looks for all the frame timestamps that happen after the first spout contact on value
 		sc_indx = find(videoFrames_timestamps>=spoutContact_on_first(j));
 	end
-	if ~isnan(sc_indx)
+	if ~(isnan(sc_indx) & isempty(sc_indx))
 		% Get time stamp value and index of end of first spout contact
 		%selects the first value of the time stamp, this is the closest frame timestamp to the first spout contact on value 
 		end_ts_first = [end_ts_first; videoFrames_timestamps(sc_indx(1))]; 
