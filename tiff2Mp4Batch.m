@@ -11,10 +11,10 @@ for i = 1:size(video_folder_raw,1)
 	disp(sprintf('Processing %s', path{1}));
 	path_contents = dir(path{1});
 	path_contents = path_contents(3:end);
-	for i = 1:length(path_contents)
-		sep_loc = strfind(path_contents(i).name, '_');
-		path_contents(i).file_number = str2num(path_contents(i).name(sep_loc(end)+1:sep_loc(end)+strfind(path_contents(i).name(sep_loc(end):end), '.tiff')-2));
-		path_contents(i).set_index = str2num(path_contents(i).name(sep_loc(end-1)+1:sep_loc(end)-1));
+	for j = 1:length(path_contents)
+		sep_loc = strfind(path_contents(j).name, '_');
+		path_contents(j).file_number = str2num(path_contents(j).name(sep_loc(end)+1:sep_loc(end)+strfind(path_contents(j).name(sep_loc(end):end), '.tiff')-2));
+		path_contents(j).set_index = str2num(path_contents(j).name(sep_loc(end-1)+1:sep_loc(end)-1));
 	end
 	[~,I1] = sort(arrayfun (@(x) x.set_index, path_contents));
 	path_contents = path_contents(I1);
