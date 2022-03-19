@@ -69,7 +69,6 @@ for i = 1:length(solenoid_on) % starts a for loop which will cycle through all t
 		%  starts an if statement that writes an NaN in case the last value of solenoid on does not have a spoutconact after i.e mouse did not reach
 		curr_spoutContact_on = nan;
 	else
-		hitormiss(i) = 1;
 		curr_spoutContact_on = spoutContact_on(first_sc_index(1));
 	end
 	if i < length(solenoid_on) %starts an if statement, where for all values except the last index value, the code checks that the spoutContact value corresponds to the current solenoid_on value and not the next 
@@ -77,6 +76,7 @@ for i = 1:length(solenoid_on) % starts a for loop which will cycle through all t
 			if (spoutContact_on(first_sc_index(1)) > solenoid_on(i+1))
 	   			spoutContact_on_first = [spoutContact_on_first; nan];
 			else
+				hitormiss(i) = 1;
 				% Find all spout contacts after each reward presentation (solenoid_on) and before next reward presentation
 				all_sc_index = find(spoutContact_on(first_sc_index) < solenoid_on(i+1));
 				spoutContact_on_multi{i} = spoutContact_on(all_sc_index + first_sc_index(1) - 1);
@@ -85,6 +85,9 @@ for i = 1:length(solenoid_on) % starts a for loop which will cycle through all t
 		 	end
 		 end
 	else
+		if ~isempty(first_sc_index)
+			hitormiss(i) = 1;
+		end
 		spoutContact_on_first = [spoutContact_on_first; curr_spoutContact_on]; % for the last value, do not check the next value because it will be empty 
 	end
 end
@@ -119,7 +122,7 @@ for j=1:length(spoutContact_on_first)
 		end_idx_first = [end_idx_first; sc_indx(1)];
 
 		%looks for all the frame timestamps that happen after the first spout contact uptil the last spout contact before next solenoid on
-		last_sc_indx = find(videoFrames_timestamps(sc_indx)<=spoutContact_on_multi{j}(end))
+		last_sc_indx = find(videoFrames_timestamps(sc_indx)<=spoutContact_on_multi{j}(end));
 		% In case there is only one spout contact, use the first sc
 		if isempty(last_sc_indx)
 			last_sc_indx = sc_indx(1);
@@ -181,6 +184,7 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 		trial.EMG_triceps_fixed = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), start_ts(i)+numTS))';
 		trial.EMG_ecu_fixed = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), start_ts(i)+numTS))';
 		trial.EMG_trap_fixed = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), start_ts(i)+numTS))';
+		trial.hitormiss = hitormiss(i);
 		trial_list = [trial_list; trial];
 	end
 end
