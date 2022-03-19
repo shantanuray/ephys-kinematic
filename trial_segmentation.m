@@ -165,7 +165,7 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 		end
 		% takes all the EMG data between each start and end index
 		trial.EMG_biceps_first_sc = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), end_ts_first(i)))';
-		trial.EMG_triceps_first_sc = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), end_ts_first(i))';
+		trial.EMG_triceps_first_sc = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), end_ts_first(i)))';
 		trial.EMG_ecu_first_sc = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), end_ts_first(i)))';
 		trial.EMG_trap_first_sc = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), end_ts_first(i)))';
 		trial.EMG_biceps_last_sc = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), end_ts_last(i)))';
