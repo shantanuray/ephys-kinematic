@@ -7,16 +7,18 @@ root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/hea
 cd(root_dir);
 load('video_folder.mat');
 for i = 1:size(video_folder_raw,1)
-	path = video_folder_raw{i,2};
-	disp(sprintf('Processing %s', path{1}));
-	path_contents = dir(path{1});
+	path = video_folder_raw{i,2}{1};
+	disp(sprintf('Processing %s', path));
+	path_contents = dir(path);
 	for j = 1:length(path_contents)
-		if ~isempty(strfind(path_contents(i).name, '.tiff'))
-			sep_loc = strfind(path_contents(j).name, '_');
-			path_contents(j).file_number = str2num(path_contents(j).name(sep_loc(end)+1:sep_loc(end)+strfind(path_contents(j).name(sep_loc(end):end), '.tiff')-2));
-			path_contents(j).set_index = str2num(path_contents(j).name(sep_loc(end-1)+1:sep_loc(end)-1));
-		else
-			path_contents(j) = [];
+		if j <= length(path_contents)  % Since we are deleting from path contents within the loop
+			if ~isempty(strfind(path_contents(j).name, '.tiff'))
+				sep_loc = strfind(path_contents(j).name, '_');
+				path_contents(j).file_number = str2num(path_contents(j).name(sep_loc(end)+1:sep_loc(end)+strfind(path_contents(j).name(sep_loc(end):end), '.tiff')-2));
+				path_contents(j).set_index = str2num(path_contents(j).name(sep_loc(end-1)+1:sep_loc(end)-1));
+			else
+				path_contents(j) = [];
+			end
 		end
 	end
 	[~,I1] = sort(arrayfun (@(x) x.set_index, path_contents));
@@ -26,7 +28,7 @@ for i = 1:size(video_folder_raw,1)
 	[tiffFileLoc{1:length(path_contents)}] = deal(path_contents.folder);
 	[tiffFileName{1:length(path_contents)}] = deal(path_contents.name);
 	ffmpegInputFiles = strcat({'file '}, tiffFileLoc, {filesep}, tiffFileName);
-	ffmpegInputCFileLabel = strrep(path{1},filesep,'_');
+	ffmpegInputCFileLabel = strrep(path,filesep,'_');
 	ffmpegInputCFileLabel = strrep(ffmpegInputCFileLabel,' ','_');
 	ffmpegInputCFileName = strcat(ffmpegInputCFileLabel, '_tiff_filelist.txt');
 	writecell(ffmpegInputFiles', ffmpegInputCFileName);
