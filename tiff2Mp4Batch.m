@@ -10,23 +10,24 @@ for i = 1:size(video_folder_raw,1)
 	path = video_folder_raw{i,2}{1};
 	disp(sprintf('Processing %s', path));
 	path_contents = dir(path);
+	tiff_filelist = struct();
+	k = 0;
 	for j = 1:length(path_contents)
-		if j <= length(path_contents)  % Since we are deleting from path contents within the loop
-			if ~isempty(strfind(path_contents(j).name, '.tiff'))
-				sep_loc = strfind(path_contents(j).name, '_');
-				path_contents(j).file_number = str2num(path_contents(j).name(sep_loc(end)+1:sep_loc(end)+strfind(path_contents(j).name(sep_loc(end):end), '.tiff')-2));
-				path_contents(j).set_index = str2num(path_contents(j).name(sep_loc(end-1)+1:sep_loc(end)-1));
-			else
-				path_contents(j) = [];
-			end
+		if ~isempty(strfind(path_contents(j).name, '.tiff'))
+			k = k+1;
+			tiff_filelist(k).name = path_contents(j).name;
+			tiff_filelist(k).folder = path_contents(j).folder;
+			sep_loc = strfind(tiff_filelist(k).name, '_');
+			tiff_filelist(k)file_number = str2num( tiff_filelist(k)name(sep_loc(end)+1:sep_loc(end)+strfind( tiff_filelist(k)name(sep_loc(end):end), '.tiff')-2));
+			tiff_filelist(k)set_index = str2num( tiff_filelist(k)name(sep_loc(end-1)+1:sep_loc(end)-1));
 		end
 	end
-	[~,I1] = sort(arrayfun (@(x) x.set_index, path_contents));
-	path_contents = path_contents(I1);
-	[~,I2] = sort(arrayfun (@(x) x.file_number, path_contents));
-	path_contents = path_contents(I2);
-	[tiffFileLoc{1:length(path_contents)}] = deal(path_contents.folder);
-	[tiffFileName{1:length(path_contents)}] = deal(path_contents.name);
+	[~,I1] = sort(arrayfun (@(x) x.set_index,  tiff_filelist));
+	 tiff_filelist =  tiff_filelist(I1);
+	[~,I2] = sort(arrayfun (@(x) x.file_number,  tiff_filelist));
+	tiff_filelist =  tiff_filelist(I2);
+	[tiffFileLoc{1:length( tiff_filelist)}] = deal(tiff_filelist.folder);
+	[tiffFileName{1:length( tiff_filelist)}] = deal(tiff_filelist.name);
 	ffmpegInputFiles = strcat({'file '}, tiffFileLoc, {filesep}, tiffFileName);
 	ffmpegInputCFileLabel = strrep(path,filesep,'_');
 	ffmpegInputCFileLabel = strrep(ffmpegInputCFileLabel,' ','_');
