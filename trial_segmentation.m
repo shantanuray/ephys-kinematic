@@ -129,8 +129,8 @@ for j=1:length(spoutContact_on_first)
 			last_sc_indx = sc_indx(1);
 		end
 		%selects the first value of the time stamp, this is the closest frame timestamp to the resp. spout contact
-		end_ts_last = [end_ts_last; videoFrames_timestamps(last_sc_indx(1)+sc_indx(1)-1)]; 
-		end_idx_last = [end_idx_last; last_sc_indx(1)+sc_indx(1)-1];
+		end_ts_last = [end_ts_last; videoFrames_timestamps(last_sc_indx(1))]; 
+		end_idx_last = [end_idx_last; last_sc_indx(1)];
 	else
 		% For no spout contact, init to nan
 		end_ts_first = [end_ts_first; nan];
