@@ -89,6 +89,7 @@ for i = 1:length(solenoid_on) % starts a for loop which will cycle through all t
 			hitormiss(i) = 1;
 		end
 		spoutContact_on_first = [spoutContact_on_first; curr_spoutContact_on]; % for the last value, do not check the next value because it will be empty 
+		spoutContact_on_multi{i} = [curr_spoutContact_on];
 	end
 end
 
