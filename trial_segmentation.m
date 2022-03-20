@@ -150,7 +150,7 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 	if ~isnan(start_ts(i))
 		trial.start_ts = start_ts(i);
 		trial.start_idx = start_idx(i);
-		trial.aniposeData_fixed = aniposeData(start_idx(i):min(size(aniposeData, 1), end_idx_first(i)+numTS)4, :);
+		trial.aniposeData_fixed = aniposeData(start_idx(i):min(size(aniposeData, 1), end_idx_first(i)+numTS), :);
 		trial.EMG_biceps_fixed = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), start_ts(i)+numTS))';
 		trial.EMG_triceps_fixed = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), start_ts(i)+numTS))';
 		trial.EMG_ecu_fixed = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), start_ts(i)+numTS))';
