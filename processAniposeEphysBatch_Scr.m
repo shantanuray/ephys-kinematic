@@ -31,6 +31,7 @@ fillmissing_gapsize = 50;
 % Pass parameters to batch function
 processAniposeEphysBatch(root_dir,
                          save_dir,
+                         'FixedReachEstTmeMS', reachEstTimeMS,
                          'FilterAniposeFlag', filter_anipose_flag,
                          'ScoreThresh', scoreThresh,
                          'MaxGap', fillmissing_gapsize);

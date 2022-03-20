@@ -17,7 +17,7 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
 
     % Initialize inputs
     p = readInput(varargin);
-    [filterAniposeFlag, scoreThresh, maxGap] = parseInput(p.Results);
+    [fixedReachEstTmeMS, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p.Results);
 
     % Get list of all dir with anipose data
     disp('Extracting video locations')
@@ -91,14 +91,17 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
         defaultFilterAniposeFlag = false;
         defaultScoreThresh = 0.05 ;
         defaultMaxGap = 50;
+        defaultFixedReachEstTmeMS = 200;
 
         addParameter(p,'FilterAniposeFlag',defaultFilterAniposeFlag, @islogical);
         addParameter(p,'ScoreThresh',defaultScoreThresh, @isnumeric);
         addParameter(p,'MaxGap',defaultMaxGap, @isnumeric);
+        addParameter(p,'FixedReachEstTmeMS',defaultFixedReachEstTmeMS, @isnumeric);
         parse(p, input{:});
     end
 
-    function [filterAniposeFlag, scoreThresh, maxGap] = parseInput(p)
+    function [fixedReachEstTmeMS, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p)
+        fixedReachEstTmeMS = p.FixedReachEstTmeMS;
         filterAniposeFlag = p.FilterAniposeFlag;
         scoreThresh = p.ScoreThresh;
         maxGap = p.MaxGap;
