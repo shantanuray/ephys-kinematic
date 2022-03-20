@@ -146,60 +146,58 @@ lightOnTrig=find(laserTrig>3.3);
 trial_list = [];
 
 for i = 1:min(length(start_ts), length(end_ts_first))
-	trial = struct();
-	trial.hitormiss = hitormiss(i);
+	trial_list(i).hitormiss = hitormiss(i);
 	if ~isnan(start_ts(i))
-		trial.start_ts = start_ts(i);
-		trial.start_idx = start_idx(i);
-		trial.aniposeData_fixed = aniposeData(start_idx(i):min(size(aniposeData, 1), end_idx_first(i)+numTS), :);
-		trial.EMG_biceps_fixed = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), start_ts(i)+numTS))';
-		trial.EMG_triceps_fixed = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), start_ts(i)+numTS))';
-		trial.EMG_ecu_fixed = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), start_ts(i)+numTS))';
-		trial.EMG_trap_fixed = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), start_ts(i)+numTS))';
-		if ~isnan(end_ts_first(i)) & (trial.hitormiss==1)
-			trial.end_ts_first = end_ts_first(i);
-			trial.end_ts_last = end_ts_first(i);
-			trial.end_idx_first = end_idx_first(i);
-			trial.end_idx_last = end_idx_last(i);
+		trial_list(i).start_ts = start_ts(i);
+		trial_list(i).start_idx = start_idx(i);
+		trial_list(i).aniposeData_fixed = aniposeData(start_idx(i):min(size(aniposeData, 1), end_idx_first(i)+numTS), :);
+		trial_list(i).EMG_biceps_fixed = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), start_ts(i)+numTS))';
+		trial_list(i).EMG_triceps_fixed = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), start_ts(i)+numTS))';
+		trial_list(i).EMG_ecu_fixed = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), start_ts(i)+numTS))';
+		trial_list(i).EMG_trap_fixed = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), start_ts(i)+numTS))';
+		if ~isnan(end_ts_first(i)) & (trial_list(i).hitormiss==1)
+			trial_list(i).end_ts_first = end_ts_first(i);
+			trial_list(i).end_ts_last = end_ts_first(i);
+			trial_list(i).end_idx_first = end_idx_first(i);
+			trial_list(i).end_idx_last = end_idx_last(i);
 			% comment
-			trial.lightOnTrig_ts = intersect(start_ts(i):end_ts_first(i), lightOnTrig);
-			if isempty(trial.lightOnTrig_ts)
-				trial.lightTrig = 'OFF';
+			trial_list(i).lightOnTrig_ts = intersect(start_ts(i):end_ts_first(i), lightOnTrig);
+			if isempty(trial_list(i).lightOnTrig_ts)
+				trial_list(i).lightTrig = 'OFF';
 			else
-				trial.lightTrig = 'ON';
+				trial_list(i).lightTrig = 'ON';
 			end
 			% takes all the anipose data between each start and end index
 			% Assumption: numTS is the same for index as well as time samples for fixed interval
 			if end_idx_first(i)<size(aniposeData, 1)
-				trial.aniposeData_first_sc = aniposeData(start_idx(i):end_idx_first(i), :);
-				trial.aniposeData_last_sc = aniposeData(start_idx(i):end_idx_last(i), :);
+				trial_list(i).aniposeData_first_sc = aniposeData(start_idx(i):end_idx_first(i), :);
+				trial_list(i).aniposeData_last_sc = aniposeData(start_idx(i):end_idx_last(i), :);
 				
 			else
-				trial.aniposeData_first_sc = [];
-				trial.aniposeData_last_sc = [];
+				trial_list(i).aniposeData_first_sc = [];
+				trial_list(i).aniposeData_last_sc = [];
 			end
 			% takes all the EMG data between each start and end index
-			trial.EMG_biceps_first_sc = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), end_ts_first(i)))';
-			trial.EMG_triceps_first_sc = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), end_ts_first(i)))';
-			trial.EMG_ecu_first_sc = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), end_ts_first(i)))';
-			trial.EMG_trap_first_sc = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), end_ts_first(i)))';
-			trial.EMG_biceps_last_sc = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), end_ts_last(i)))';
-			trial.EMG_triceps_last_sc = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), end_ts_last(i)))';
-			trial.EMG_ecu_last_sc = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), end_ts_last(i)))';
-			trial.EMG_trap_last_sc = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), end_ts_last(i)))';
+			trial_list(i).EMG_biceps_first_sc = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), end_ts_first(i)))';
+			trial_list(i).EMG_triceps_first_sc = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), end_ts_first(i)))';
+			trial_list(i).EMG_ecu_first_sc = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), end_ts_first(i)))';
+			trial_list(i).EMG_trap_first_sc = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), end_ts_first(i)))';
+			trial_list(i).EMG_biceps_last_sc = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), end_ts_last(i)))';
+			trial_list(i).EMG_triceps_last_sc = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), end_ts_last(i)))';
+			trial_list(i).EMG_ecu_last_sc = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), end_ts_last(i)))';
+			trial_list(i).EMG_trap_last_sc = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), end_ts_last(i)))';
 		else
-			trial.aniposeData_first_sc = [];
-			trial.aniposeData_last_sc = [];
-			trial.EMG_biceps_first_sc = [];
-			trial.EMG_triceps_first_sc = [];
-			trial.EMG_ecu_first_sc = [];
-			trial.EMG_trap_first_sc = [];
-			trial.EMG_biceps_last_sc = [];
-			trial.EMG_triceps_last_sc = [];
-			trial.EMG_ecu_last_sc = [];
-			trial.EMG_trap_last_sc = [];
+			trial_list(i).aniposeData_first_sc = [];
+			trial_list(i).aniposeData_last_sc = [];
+			trial_list(i).EMG_biceps_first_sc = [];
+			trial_list(i).EMG_triceps_first_sc = [];
+			trial_list(i).EMG_ecu_first_sc = [];
+			trial_list(i).EMG_trap_first_sc = [];
+			trial_list(i).EMG_biceps_last_sc = [];
+			trial_list(i).EMG_triceps_last_sc = [];
+			trial_list(i).EMG_ecu_last_sc = [];
+			trial_list(i).EMG_trap_last_sc = [];
 		end
-		trial_list = [trial_list; trial];
 	end
 end
 
