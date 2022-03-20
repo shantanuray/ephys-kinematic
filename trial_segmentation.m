@@ -55,11 +55,6 @@ function trial_list = trial_segmentation(aniposeData,...
 %concatenate videoFrames_timestamps vercat to Aniposedata 
 %This code identifies the index positions corresponding to the the start and end of each, a trial starts with a solenoid_on and ends with the first spout contact,  it runs several checks to avoid multiple spout contacts and to account for trials where reward is presented but a reach does not happen, if this occurs within the recording or on the last trial
 
-
-% numTS is the number of samples to extract for fixed interval extraction type
-if nargin < 10  % Fixed # time samples not provided
-	numTS = int(300*1); % 300 Hz and 1 s
-end
 spoutContact_on_first = [];% creates an empty array for the first spout contact after each reward presentation (solenoid_on) which can be filled with values generated below
 spoutContact_on_multi = cell(length(solenoid_on), 1);% creates an empty array for the all spout contacts after each reward presentation (solenoid_on) and before next reward presentation
 hitormiss = zeros(length(solenoid_on), 1);
