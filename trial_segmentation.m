@@ -8,7 +8,8 @@ function trial_list = trial_segmentation(aniposeData,...
 										   EMG_triceps,...
 										   EMG_ecu,...
 										   EMG_trap,...
-										   numTS)
+										   aniposeNumTS,...
+										   ephysNumTS)
 % trial_list = trial_segmentation(aniposeData,...
 		% 						   solenoid_on,...
 		% 						   spoutContact_on,...
@@ -18,7 +19,8 @@ function trial_list = trial_segmentation(aniposeData,...
 		% 						   EMG_triceps,...
 		% 						   EMG_ecu,...
 		% 						   EMG_trap,...
-		%						   numTS);
+		%						   aniposeNumTS,...
+		%						   ephysNumTS);
 %Output:
 % ----------------
 % 	trial_list: struct array with fields:
@@ -44,7 +46,8 @@ function trial_list = trial_segmentation(aniposeData,...
 % 	EMG_triceps
 % 	EMG_ecu
 % 	EMG_trap
-%   numTS  				  - Extract numTS time samples from start of reach for fixed interval extraction
+%   aniposeNumTS & ephysNumTS: time samples from start of reach for fixed interval extraction
+
 %trial segementation, segments trials from anipose data based on solenoid and spout contact, sorts trials into %lightON and lightOFF
 %Anipose data segmented is a matrix,  each trial is a matrix  of openEphys index number X marker/error/EMG data
 %each trial is the data(open Ephys and Anipose) between, Openephys index solenoidON and SpoutcontactON,
@@ -105,29 +108,33 @@ end_ts_first=[];
 end_idx_first=[];
 end_ts_last=[];
 end_idx_last=[];
+sc_indx={};
 for j=1:length(spoutContact_on_first)
-	sc_indx = nan;
+	sc_indx_trial = nan;
 	if ~isnan(spoutContact_on_first(j))
 		%looks for all the frame timestamps that happen after the first spout contact on value
-		sc_indx = find(videoFrames_timestamps>=spoutContact_on_first(j));
+		sc_indx_trial = find(videoFrames_timestamps>=spoutContact_on_first(j));
 	end
-	if ~(isnan(sc_indx) & isempty(sc_indx)) & hitormiss(j)==1
+	
+	if ~(isnan(sc_indx_trial) & isempty(sc_indx_trial)) & hitormiss(j)==1
+		sc_indx{j} = sc_indx_trial;
 		% Get time stamp value and index of end of first spout contact
 		%selects the first value of the time stamp, this is the closest frame timestamp to the first spout contact on value 
-		end_ts_first = [end_ts_first; videoFrames_timestamps(sc_indx(1))]; 
-		end_idx_first = [end_idx_first; sc_indx(1)];
+		end_ts_first = [end_ts_first; videoFrames_timestamps(sc_indx_trial(1))]; 
+		end_idx_first = [end_idx_first; sc_indx_trial(1)];
 
 		%looks for all the frame timestamps that happen after the first spout contact uptil the last spout contact before next solenoid on
-		last_sc_indx = find(videoFrames_timestamps(sc_indx)<=spoutContact_on_multi{j}(end));
+		last_sc_indx_trial = find(videoFrames_timestamps(sc_indx_trial)<=spoutContact_on_multi{j}(end));
 		% In case there is only one spout contact, use the first sc
-		if isempty(last_sc_indx)
-			last_sc_indx = 1;
+		if isempty(last_sc_indx_trial)
+			last_sc_indx_trial = 1;
 		end
 		%selects the first value of the time stamp, this is the closest frame timestamp to the resp. spout contact
-		end_ts_last = [end_ts_last; videoFrames_timestamps(sc_indx(1)+last_sc_indx(end)-1)]; 
-		end_idx_last = [end_idx_last; sc_indx(1)+last_sc_indx(end)-1];
+		end_ts_last = [end_ts_last; videoFrames_timestamps(sc_indx_trial(1)+last_sc_indx_trial(end)-1)]; 
+		end_idx_last = [end_idx_last; sc_indx_trial(1)+last_sc_indx_trial(end)-1];
 	else
 		% For no spout contact, init to nan
+		sc_indx{j} = nan;
 		end_ts_first = [end_ts_first; nan];
 		end_idx_first = [end_idx_first; nan];
 		end_ts_last = [end_ts_last; nan];
@@ -145,11 +152,12 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 	if ~isnan(start_ts(i))
 		trial_list(i).start_ts = start_ts(i);
 		trial_list(i).start_idx = start_idx(i);
-		trial_list(i).aniposeData_fixed = aniposeData(start_idx(i):min(size(aniposeData, 1), end_idx_first(i)+numTS-1), :);
-		trial_list(i).EMG_biceps_fixed = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), start_ts(i)+numTS-1))';
-		trial_list(i).EMG_triceps_fixed = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), start_ts(i)+numTS-1))';
-		trial_list(i).EMG_ecu_fixed = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), start_ts(i)+numTS-1))';
-		trial_list(i).EMG_trap_fixed = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), start_ts(i)+numTS-1))';
+		trial_list(i).spoutContact_idx = sc_indx(i);
+		trial_list(i).aniposeData_fixed = aniposeData(start_idx(i):min(size(aniposeData, 1), start_ts(i)+aniposeNumTS-1), :);
+		trial_list(i).EMG_biceps_fixed = EMG_biceps(:, start_ts(i):min(size(EMG_biceps, 2), start_ts(i)+ephysNumTS-1))';
+		trial_list(i).EMG_triceps_fixed = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), start_ts(i)+ephysNumTS-1))';
+		trial_list(i).EMG_ecu_fixed = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), start_ts(i)+ephysNumTS-1))';
+		trial_list(i).EMG_trap_fixed = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), start_ts(i)+ephysNumTS-1))';
 		if ~isnan(end_ts_first(i)) & (trial_list(i).hitormiss==1)
 			% comment
 			trial_list(i).lightOnTrig_ts = intersect(start_ts(i):end_ts_first(i), lightOnTrig);
