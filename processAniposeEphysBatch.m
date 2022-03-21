@@ -3,7 +3,8 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
     % processAniposeEphysBatch('headfixedreach/',
     %                           'headfixedreach/',
     %                           'FilterAniposeFlag', false,
-    %                           'ScoreThresh', 0.05);
+    %                           'ScoreThresh', 0.05,
+    %                           'FixedReachIntervalms', 750);
     % Batch process to:
     % - List all anipose data locations
     % - Load anipose data and filter if necessary
@@ -14,10 +15,11 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
     %   FilterAniposeFlag = false
     %   ScoreThresh = 0.05
     %   MaxGap = 50
+    %   FixedReachIntervalms = 750
 
     % Initialize inputs
     p = readInput(varargin);
-    [fixedReachEstTmeMS, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p.Results);
+    [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p.Results);
 
     % Get list of all dir with anipose data
     disp('Extracting video locations')
@@ -68,7 +70,11 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
         spoutContact_off,...
         videoFrames_timestamps,...
         videoFrames_timeInSeconds,...
-        aniposeData] = loadOEbinary_AT(anipose_ephys_loc.ephys_loc, aniposeData);
+        aniposeData,...
+        ephysSamplingRate] = loadOEbinary_AT(anipose_ephys_loc.ephys_loc, aniposeData);
+        aniposeSamplingRate = 200;
+        aniposeNumTS = round(fixedReachIntervalms*aniposeSamplingRate/1000,0);
+        ephysNumTS = round(fixedReachIntervalms*ephysSamplingRate/1000,0);
         % Segment data by trial
         trial_list = trial_segmentation(aniposeData,...
                                        solenoid_on,...
@@ -78,7 +84,11 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
                                        EMG_biceps,...
                                        EMG_triceps,...
                                        EMG_ecu,...
-                                       EMG_trap);
+                                       EMG_trap,...
+                                       aniposeNumTS,...
+                                       ephysNumTS);
+        trial_list = getRelativeDistance(trial_list);
+        trial_list = getVelocityAcceleration(trial_list, aniposeSamplingRate);
         disp(sprintf('Saving trials for %s', anipose_ephys_loc.label))
         save(fullfile(savedir, strcat(anipose_ephys_loc.label, '.mat')), 'trial_list');
     end
@@ -91,17 +101,17 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
         defaultFilterAniposeFlag = false;
         defaultScoreThresh = 0.05 ;
         defaultMaxGap = 50;
-        defaultFixedReachEstTmeMS = 200;
+        defaultFixedReachIntervalms = 750;
 
         addParameter(p,'FilterAniposeFlag',defaultFilterAniposeFlag, @islogical);
         addParameter(p,'ScoreThresh',defaultScoreThresh, @isnumeric);
         addParameter(p,'MaxGap',defaultMaxGap, @isnumeric);
-        addParameter(p,'FixedReachEstTmeMS',defaultFixedReachEstTmeMS, @isnumeric);
+        addParameter(p,'FixedReachIntervalms',defaultFixedReachIntervalms, @isnumeric);
         parse(p, input{:});
     end
 
-    function [fixedReachEstTmeMS, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p)
-        fixedReachEstTmeMS = p.FixedReachEstTmeMS;
+    function [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p)
+        fixedReachIntervalms = p.FixedReachIntervalms;
         filterAniposeFlag = p.FilterAniposeFlag;
         scoreThresh = p.ScoreThresh;
         maxGap = p.MaxGap;

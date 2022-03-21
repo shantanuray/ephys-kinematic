@@ -11,13 +11,13 @@ reply = input(['\nDo you wish filter anipose data??\n\n',...
             '[n/N]          => No    \n'],'s');
 switch lower(reply)
     case 'y'
-        filter_anipose_flag = true;
+        filterAniposeFlag = true;
     case 'n'
-        filter_anipose_flag = false;
+        filterAniposeFlag = false;
     otherwise
-        filter_anipose_flag = true;
+        filterAniposeFlag = true;
 end
-if filter_anipose_flag
+if filterAniposeFlag
     % Default score threhold
     scoreThresh = 0.05;
     reply = input(['\nWhat is filter score threshold??? ',...
@@ -27,11 +27,12 @@ if filter_anipose_flag
         scoreThresh = str2num(reply);
     end
 end
-fillmissing_gapsize = 50;
+fillMissingGapSize = 50;
+fixedReachInterval = 150; % # of samples at 200 Hz
 % Pass parameters to batch function
-processAniposeEphysBatch(root_dir,
-                         save_dir,
-                         'FixedReachEstTmeMS', reachEstTimeMS,
-                         'FilterAniposeFlag', filter_anipose_flag,
-                         'ScoreThresh', scoreThresh,
-                         'MaxGap', fillmissing_gapsize);
+processAniposeEphysBatch(root_dir,...
+                         save_dir,...
+                         'FilterAniposeFlag', filterAniposeFlag,...
+                         'ScoreThresh', scoreThresh,...
+                         'MaxGap', fillMissingGapSize,...
+                         'FixedReachInterval', fixedReachInterval);
