@@ -65,9 +65,9 @@ function dydt = central_derivative(y, fs, n, num_points)
     end
     dt = 1/fs;
     ho = floor(bitsra(num_points, 1));
-    num = length(y)-num_points+1;
+    num = size(y, 1)-num_points+1;
     dydt = zeros(size(y));
-    for j = ho:length(y)-num_points+1
+    for j = ho:num
         for k = 1:num_points
             dydt(j,:) = (dydt(j,:) + weights(k)*y(j+k-ho, :));
         end
