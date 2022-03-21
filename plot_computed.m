@@ -1,8 +1,8 @@
-function plot_velocity(trial_list, dataLabels, bodyPart, fs, ref2max, save_fig, save_loc)
-% Plots all the velocity data for reach trial for given reach data labels
-% Assumption: The velocity data has been precalculated
+function plot_computed(trial_list, dataLabels, bodyPart, fs, ref2max, save_fig, save_loc)
+% Plots velocity/acceleration data for reach trial for given reach data labels
+% Assumption: Data has been precalculated
 %
-% Usage: plot_velocity(trial_list, dataLabels, bodyPart, ...
+% Usage: plot_computed(trial_list, dataLabels, bodyPart, ...
 %                      fs, ...
 %                      ref2max, ...
 %                      savefig, saveloc);
@@ -19,7 +19,7 @@ function plot_velocity(trial_list, dataLabels, bodyPart, fs, ref2max, save_fig, 
 %   - savefig: true to save figure automatically (Default: false)
 %   - saveloc: if savefig is true, where to save the figures
 %
-% Example: plot_velocity(trial_list, {'anipose_fixed_relative_velocity'}, 'right_d2_knuckle_r',...
+% Example: plot_computed(trial_list, {'anipose_fixed_relative_velocity'}, 'right_d2_knuckle_r',...
 %                        200, ...
 %                        true, true, '/Users/chico/Desktop');
 
@@ -49,20 +49,20 @@ plot_colors = {'k', 'g', 'b', 'c', 'm', 'y', 'r'};
 % Loop over every trial
 for trial_idx=1:length(trial_list)
     for dataLabel_idx = 1:length(dataLabels)
-        vel_label = dataLabels{dataLabel_idx};
-        vel_data = trial_list(trial_idx).(vel_label).(bodyPart);
-        num_frames = length(vel_data); 
+        plot_label = dataLabels{dataLabel_idx};
+        plot_data = trial_list(trial_idx).(plot_label).(bodyPart);
+        num_frames = length(plot_data); 
         t = 1:num_frames; 
         if ref2max
-           max_velocity = max(vel_data);
-           max_loc = find(vel_data == max_velocity);
+           max_velocity = max(plot_data);
+           max_loc = find(plot_data == max_velocity);
            t = t - max_loc;
         end
         t = t/fs; %time base
         if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
-            plot(t, vel_data, 'r');
+            plot(t, plot_data, 'r');
         else
-            plot(t, vel_data, 'Color', [0 0.58 0.27]);
+            plot(t, plot_data, 'Color', [0 0.58 0.27]);
         end
     end
 end
@@ -86,17 +86,18 @@ set(gca,'XDir','reverse');
 
 for trial_idx=1:length(trial_list)
     for dataLabel_idx = 1:length(dataLabels)
-        vel_label = dataLabels{dataLabel_idx};
+        plot_label = dataLabels{dataLabel_idx};
         % Assumption:
         %   if velocity label = 'anipose_fixed_relative_velocity'
         %   then distance label = 'anipose_fixed_relative'
-        dist_label = vel_label(1:strfind(vel_label, '_velocity')-1);
-        vel_data = trial_list(trial_idx).(vel_label).(bodyPart);
+        sep = strfind(plot_label, '_');
+        dist_label = plot_label(1:sep(end)-1);
+        plot_data = trial_list(trial_idx).(plot_label).(bodyPart);
         dist_data = trial_list(trial_idx).(dist_label).(bodyPart);
         dist_data = dist_data(2:end,:);
         if ref2max
-            max_velocity = max(vel_data);
-            max_loc = find(vel_data == max_velocity);
+            max_velocity = max(plot_data);
+            max_loc = find(plot_data == max_velocity);
             dist_at_max_vel = dist_data(max_loc);
             dist_data = dist_data - dist_at_max_vel;
         end
@@ -105,9 +106,9 @@ for trial_idx=1:length(trial_list)
             dist_data(end)= [];
         end
         if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
-            plot(dist_data, vel_data, 'r');
+            plot(dist_data, plot_data, 'r');
         else
-            plot(dist_data, vel_data, 'Color', [0 0.58 0.27]);
+            plot(dist_data, plot_data, 'Color', [0 0.58 0.27]);
         end
     end
 end
