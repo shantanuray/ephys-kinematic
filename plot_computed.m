@@ -41,14 +41,6 @@ if save_fig & nargin<8
     save_loc = uigetdir();
 end
 
-
-% Plot data vs t   
-set(figure, 'color', [1 1 1]);
-hold on;
-%grid on;
-xlabel ('time (sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-set (gca, 'FontName', 'Arial', 'FontSize', 12, 'linewidth', 1);
-plot_colors = {'k', 'g', 'b', 'c', 'm', 'y', 'r'};
 for dataLabel_idx = 1:length(dataLabels)
     plot_label = dataLabels{dataLabel_idx};
     if contains(lower(plot_label), 'velocity')
@@ -62,6 +54,13 @@ for dataLabel_idx = 1:length(dataLabels)
     else
         n = 0;
     end
+    % Plot data vs t   
+    set(figure, 'color', [1 1 1]);
+    hold on;
+    %grid on;
+    xlabel ('time (sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+    set (gca, 'FontName', 'Arial', 'FontSize', 12, 'linewidth', 1);
+    plot_colors = {'k', 'g', 'b', 'c', 'm', 'y', 'r'};
     
     % Loop over every trial
     for trial_idx=1:length(trial_list)
@@ -96,16 +95,6 @@ if save_fig
     close gcf;
 end
 
- 
-% Plot data vs distance
-set(figure, 'color', [1 1 1]);
-hold on;
-%grid on;
-xlabel ('Distance (mm)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-% title(title_str, 'FontSize', 18, 'FontWeight', 'bold', 'FontName', 'Arial');
-set (gca, 'FontName', 'Arial', 'FontSize', 12, 'linewidth', 1);
-set(gca,'XDir','reverse');
-
 for dataLabel_idx = 1:length(dataLabels)
     plot_label = dataLabels{dataLabel_idx};
     if contains(lower(plot_label), 'velocity')
@@ -119,6 +108,15 @@ for dataLabel_idx = 1:length(dataLabels)
     else
         n = 0;
     end
+    % Plot data vs distance
+    set(figure, 'color', [1 1 1]);
+    hold on;
+    %grid on;
+    xlabel ('Distance (mm)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+    % title(title_str, 'FontSize', 18, 'FontWeight', 'bold', 'FontName', 'Arial');
+    set (gca, 'FontName', 'Arial', 'FontSize', 12, 'linewidth', 1);
+    set(gca,'XDir','reverse');
+
     % Assumption:
     %   if velocity label = 'anipose_fixed_relative_velocity'
     %   then distance label = 'anipose_fixed_relative'
