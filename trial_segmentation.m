@@ -171,7 +171,7 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 			trial_list(i).end_idx_first = end_idx_first(i);
 			trial_list(i).end_idx_last = end_idx_last(i);
 			% takes all the anipose data between each start and end index
-			% Assumption: numTS is the same for index as well as time samples for fixed interval
+			% Assumption: ephysNumTS is the same for index as well as time samples for fixed interval
 			if end_idx_first(i)<size(aniposeData, 1)
 				trial_list(i).aniposeData_first_sc = aniposeData(start_idx(i):end_idx_first(i), :);
 				trial_list(i).aniposeData_last_sc = aniposeData(start_idx(i):end_idx_last(i), :);
@@ -190,7 +190,7 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 			trial_list(i).EMG_ecu_last_sc = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), end_ts_last(i)))';
 			trial_list(i).EMG_trap_last_sc = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), end_ts_last(i)))';
 		else
-			trial_list(i).lightOnTrig_ts = intersect(start_ts(i):start_ts(i)+numTS-1, lightOnTrig);
+			trial_list(i).lightOnTrig_ts = intersect(start_ts(i):start_ts(i)+ephysNumTS-1, lightOnTrig);
 			if isempty(trial_list(i).lightOnTrig_ts)
 				trial_list(i).lightTrig = 'OFF';
 			else
