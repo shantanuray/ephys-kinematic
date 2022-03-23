@@ -28,7 +28,7 @@ if filterAniposeFlag
     end
 end
 fillMissingGapSize = 50;
-fixedReachInterval = 150; % # of samples at 200 Hz
+fixedReachInterval = 750; % # of samples at 200 Hz
 % Pass parameters to batch function
 processAniposeEphysBatch(root_dir,...
                          save_dir,...
