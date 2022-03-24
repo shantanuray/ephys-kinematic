@@ -89,32 +89,36 @@ for dataLabel_idx = 1:length(dataLabels)
     % Loop over every trial
     for trial_idx=1:length(trial_list)
         dataTable = trial_list(trial_idx).(plot_label);
-        data = table2array(dataTable);
-        plot_data = data(:, bodyPartLocation);
-        if ~isempty(plot_data)
-            if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
-                % Plot x axis corresponds to x coordinate in anipose
-                % Plot y axis corresponds to z coordinate in anipose
-                % Plot z axis corresponds to -y coordinate in anipose
-                plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'g');
-                if annotateON
-                    lightOn_idx = trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx + 1 - n;
-                    if lightOn_idx <= size(plot_data, 1)
-                        % Plot x axis corresponds to x coordinate in anipose
-                        % Plot y axis corresponds to z coordinate in anipose
-                        % Plot z axis corresponds to -y coordinate in anipose
-                        plot3(plot_data(lightOn_idx, 1),plot_data(lightOn_idx, 3),-plot_data(lightOn_idx, 2), 'mo',...
-                            'MarkerEdgeColor','m',...
-                           'MarkerFaceColor','m',...
-                           'MarkerSize',5);
+        if istable(dataTable)
+            data = table2array(dataTable);
+            plot_data = data(:, bodyPartLocation);
+            if ~isempty(plot_data)
+                if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
+                    % Plot x axis corresponds to x coordinate in anipose
+                    % Plot y axis corresponds to z coordinate in anipose
+                    % Plot z axis corresponds to -y coordinate in anipose
+                    plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'g');
+                    if annotateON
+                        lightOn_idx = trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx + 1 - n;
+                        if lightOn_idx <= size(plot_data, 1)
+                            % Plot x axis corresponds to x coordinate in anipose
+                            % Plot y axis corresponds to z coordinate in anipose
+                            % Plot z axis corresponds to -y coordinate in anipose
+                            plot3(plot_data(lightOn_idx, 1),plot_data(lightOn_idx, 3),-plot_data(lightOn_idx, 2), 'mo',...
+                                'MarkerEdgeColor','m',...
+                               'MarkerFaceColor','m',...
+                               'MarkerSize',5);
+                        end
                     end
+                else
+                    % Plot x axis corresponds to x coordinate in anipose
+                    % Plot y axis corresponds to z coordinate in anipose
+                    % Plot z axis corresponds to -y coordinate in anipose
+                    plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'k');
                 end
-            else
-                % Plot x axis corresponds to x coordinate in anipose
-                % Plot y axis corresponds to z coordinate in anipose
-                % Plot z axis corresponds to -y coordinate in anipose
-                plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'k');
             end
+        else
+            disp(sprintf('Issue processing trial # %d in %s. Skipping', trial_idx, title_str))
         end
     end
     hold off
