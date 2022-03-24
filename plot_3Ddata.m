@@ -1,4 +1,4 @@
-function plot_3Ddata(trial_list, dataLabels, bodyPart, refLabel, annotateON, save_fig, save_loc)
+function plot_3Ddata(trial_list, dataLabels, bodyPart, title_str, refLabel, annotateON, show_fig, save_fig, save_loc)
 % Plots 3D data for reach trial for given reach data labels
 % Assumption: Data has been precalculated
 %
@@ -23,32 +23,38 @@ function plot_3Ddata(trial_list, dataLabels, bodyPart, refLabel, annotateON, sav
 %                        200, true, ...
 %                        true, '/Users/chico/Desktop');
 
+if nargin<4
+    title_str='';
+end
 
-if nargin < 4
+if nargin < 5
     refLabel = 'waterSpout';
 end
 
-if nargin<5
+if nargin<6
     annotateON = true;
 end
 
-if nargin<6
+if nargin<7
+    show_fig = true;
+end
+
+if nargin<8
     save_fig = false;
 end
 
-if save_fig & nargin<7
+if save_fig & nargin<9
     save_loc = uigetdir();
 end
 
 for dataLabel_idx = 1:length(dataLabels)
-    % Plot data vs t   
-    set(figure, 'color', [1 1 1]);
-    hold on;
-    % view([58 22]);
-    view([-37 -18]);
+    % Plot XYZ over time
+    plot_str = strcat(title_str, ' ', bodyPart, ' 3D');
+    f = figure('color', [1 1 1], 'visible', 'off');
     xlabel ('x (mm)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
     ylabel ('y (mm)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
     zlabel ('z (mm)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+    % view([-37 -18]);
     %set (gca, 'linewidth', 2);
     plot_label = dataLabels{dataLabel_idx};
     if contains(lower(plot_label), 'velocity')
@@ -70,10 +76,15 @@ for dataLabel_idx = 1:length(dataLabels)
         refLocation = find(~cellfun(@isempty,refLocation));
         refLocation = refLocation(1:3);  % x,y,z only
         dataref = data(1, refLocation);
-        plot3(dataref(1, 1),dataref(1,2),-dataref(1,3), 'ks',...
+        % Plot x axis corresponds to x coordinate in anipose
+        % Plot y axis corresponds to z coordinate in anipose
+        % Plot z axis corresponds to -y coordinate in anipose
+        % Plot firs spout position
+        plot3(dataref(1, 1),dataref(1,3),-dataref(1,2), 'ks',...
                         'MarkerEdgeColor','k',...
                        'MarkerFaceColor','k',...
                        'MarkerSize',5);
+        hold on;
     end
     % Loop over every trial
     for trial_idx=1:length(trial_list)
@@ -82,23 +93,34 @@ for dataLabel_idx = 1:length(dataLabels)
         plot_data = data(:, bodyPartLocation);
         if ~isempty(plot_data)
             if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
-                plot3(plot_data(:, 1),plot_data(:,2),-plot_data(:,3), 'r');
+                % Plot x axis corresponds to x coordinate in anipose
+                % Plot y axis corresponds to z coordinate in anipose
+                % Plot z axis corresponds to -y coordinate in anipose
+                plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'g');
                 if annotateON
                     lightOn_idx = trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx + 1 - n;
-                    plot3(plot_data(lightOn_idx, 1),plot_data(lightOn_idx, 2),-plot_data(lightOn_idx, 3), 'ro',...
-                        'MarkerEdgeColor','k',...
+                    % Plot x axis corresponds to x coordinate in anipose
+                    % Plot y axis corresponds to z coordinate in anipose
+                    % Plot z axis corresponds to -y coordinate in anipose
+                    plot3(plot_data(lightOn_idx, 1),plot_data(lightOn_idx, 3),-plot_data(lightOn_idx, 2), 'mo',...
+                        'MarkerEdgeColor','m',...
                        'MarkerFaceColor','m',...
                        'MarkerSize',5);
                 end
             else
-                plot3(plot_data(:, 1),plot_data(:,2),-plot_data(:,3), 'Color', [0 0.58 0.27]);
+                % Plot x axis corresponds to x coordinate in anipose
+                % Plot y axis corresponds to z coordinate in anipose
+                % Plot z axis corresponds to -y coordinate in anipose
+                plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'k');
             end
         end
     end
+    hold off
+    if show_fig
+        set(f, 'visible', 'on')
+    end
+    if save_fig
+        saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.png')));
+        close gcf;
+    end
 end
-hold off
-if save_fig
-    saveas(gcf,fullfile(save_loc, strcat(replace(title_str, ' ', '_'), '.png')));
-    close gcf;
-end
-

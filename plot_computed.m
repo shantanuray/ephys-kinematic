@@ -1,11 +1,11 @@
-function plot_computed(trial_list, dataLabels, bodyPart, fs, ref2max, annotateON, save_fig, save_loc)
+function plot_computed(trial_list, dataLabels, bodyPart, fs, title_str, ref2max, annotateON, show_fig, save_fig, save_loc)
 % Plots velocity/acceleration data for reach trial for given reach data labels
 % Assumption: Data has been precalculated
 %
 % Usage: plot_computed(trial_list, dataLabels, bodyPart, ...
 %                      fs, ...
-%                      ref2max,annotateON,...
-%                      savefig, saveloc);
+%                      titlestr, ref2max,annotateON,...
+%                      showfig, savefig, saveloc);
 %
 % Parameters:
 %   - trial_list: list of segmented trials with reach data (see trial_segmentation.m)
@@ -15,52 +15,64 @@ function plot_computed(trial_list, dataLabels, bodyPart, fs, ref2max, annotateON
 %   - bodyPart: string with data label name or index position
 %                 eg. 'left_wrist_x' or 'right_d2_knuckle_r'
 %   - fs        : Sampling frequency
+%   - titlestr  : Append to file name
 %   - ref2max: If true, normalize distance (v v/s d plot) wrt to distance at max velocity (Default: true)
 %   - annotateON: If true, mark when light ON (default: true)
+%   - showfig: true to show figure automatically (Default: true)
 %   - savefig: true to save figure automatically (Default: false)
 %   - saveloc: if savefig is true, where to save the figures
 %
 % Example: plot_computed(trial_list, {'anipose_fixed_relative_velocity'}, 'right_d2_knuckle_r',...
-%                        200, true, true, ...
+%                        200,...
+%                        'AT_A19-1_2021-09-01_12-15-40_hfwr_manual_16mW_video',...
+%                        true, false, ...
 %                        true, '/Users/chico/Desktop');
 
 
-if nargin < 5
+if nargin<5
+    title_str = '';
+end
+
+if nargin < 6
     ref2max = true;
 end
 
-if nargin<6
+if nargin<7
     annotateON = true;
 end
 
-if nargin<7
+if nargin<8
+    show_fig = true;
+end
+
+if nargin<9
     save_fig = false;
 end
 
-if save_fig & nargin<8
+if save_fig & nargin<10
     save_loc = uigetdir();
 end
 
 for dataLabel_idx = 1:length(dataLabels)
     plot_label = dataLabels{dataLabel_idx};
+    % Plot data vs t   
+    f = figure('color', [1 1 1], 'visible', 'off');
     if contains(lower(plot_label), 'velocity')
         n = 1;
         ylabel ('Velocity (mm/sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-        title_str = sprintf('Velocity-Time Plot for %s', bodyPart);
+        plot_str = sprintf('%s Velocity-Time Plot %s %s', title_str, plot_label, bodyPart);
     elseif contains(lower(plot_label), 'acceleration')
         n = 2;
         ylabel ('Acceleration (mm/sec^2)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-        title_str = sprintf('Acceleration-Time Plot for %s', bodyPart);
+        plot_str = sprintf('%s Acceleration-Time Plot %s %s', title_str, plot_label, bodyPart);
     else
         n = 0;
+        plot_str = sprintf('%s Time %s %s', title_str, plot_label, bodyPart);
     end
-    % Plot data vs t   
-    set(figure, 'color', [1 1 1]);
     hold on;
     %grid on;
-    xlabel ('time (sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+    xlabel('time (sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
     set (gca, 'FontName', 'Arial', 'FontSize', 12, 'linewidth', 1);
-    plot_colors = {'k', 'g', 'b', 'c', 'm', 'y', 'r'};
     
     % Loop over every trial
     for trial_idx=1:length(trial_list)
@@ -75,41 +87,46 @@ for dataLabel_idx = 1:length(dataLabels)
             end
             t = t/fs; %time base
             if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
-                plot(t, plot_data, 'r');
+                plot(t, plot_data, 'g');
                 if annotateON
                     lightOn_idx = trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx + 1 - n;
-                    plot(t(lightOn_idx), plot_data(lightOn_idx),'ro',...
-                        'MarkerEdgeColor','k',...
+                    plot(t(lightOn_idx), plot_data(lightOn_idx),'mo',...
+                        'MarkerEdgeColor','m',...
                        'MarkerFaceColor','m',...
                        'MarkerSize',5);
                 end
             else
-                plot(t, plot_data, 'Color', [0 0.58 0.27]);
+                plot(t, plot_data, 'k');
             end
         end
     end
+    hold off
+    if show_fig
+        set(f, 'visible', 'on')
+    end
+    if save_fig
+        saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.png')));
+        close gcf;
+    end
 end
-hold off
-if save_fig
-    saveas(gcf,fullfile(save_loc, strcat(replace(title_str, ' ', '_'), '.png')));
-    close gcf;
-end
+
 
 for dataLabel_idx = 1:length(dataLabels)
     plot_label = dataLabels{dataLabel_idx};
+    % Plot data vs distance
+    f = figure('color', [1 1 1], 'visible', 'off');
     if contains(lower(plot_label), 'velocity')
         n = 1;
         ylabel ('Velocity (mm/sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-        title_str = sprintf('Velocity-Time Plot for %s', bodyPart);
+        plot_str = sprintf('%s Velocity-Distance Plot %s %s', title_str, plot_label, bodyPart);
     elseif contains(lower(plot_label), 'acceleration')
         n = 2;
         ylabel ('Acceleration (mm/sec^2)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-        title_str = sprintf('Acceleration-Time Plot for %s', bodyPart);
+        plot_str = sprintf('%s Acceleration-Distance Plot %s %s', title_str, plot_label, bodyPart);
     else
         n = 0;
+        plot_str = sprintf('%s Distance %s %s', title_str, plot_label, bodyPart);
     end
-    % Plot data vs distance
-    set(figure, 'color', [1 1 1]);
     hold on;
     %grid on;
     xlabel ('Distance (mm)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
@@ -138,22 +155,25 @@ for dataLabel_idx = 1:length(dataLabels)
                 dist_data(end)= [];
             end
             if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
-                plot(dist_data, plot_data, 'r');
+                plot(dist_data, plot_data, 'g');
                 if annotateON
                     lightOn_idx = trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx + 1 - n;
-                    plot(dist_data(lightOn_idx), plot_data(lightOn_idx), 'ro',...
-                        'MarkerEdgeColor','k',...
+                    plot(dist_data(lightOn_idx), plot_data(lightOn_idx), 'mo',...
+                        'MarkerEdgeColor','m',...
                        'MarkerFaceColor','m',...
                        'MarkerSize',5);
                 end
             else
-                plot(dist_data, plot_data, 'Color', [0 0.58 0.27]);
+                plot(dist_data, plot_data, 'k');
             end
         end
     end
-end
-hold off
-if save_fig
-    saveas(gcf,fullfile(save_loc, strcat(replace(title_str, ':', '_'), '_pre.png')));
-    close gcf;
+    hold off
+    if show_fig
+        set(f, 'visible', 'on')
+    end
+    if save_fig
+        saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.png')));
+        close gcf;
+    end
 end
