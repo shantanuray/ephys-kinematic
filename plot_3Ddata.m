@@ -99,13 +99,15 @@ for dataLabel_idx = 1:length(dataLabels)
                 plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'g');
                 if annotateON
                     lightOn_idx = trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx + 1 - n;
-                    % Plot x axis corresponds to x coordinate in anipose
-                    % Plot y axis corresponds to z coordinate in anipose
-                    % Plot z axis corresponds to -y coordinate in anipose
-                    plot3(plot_data(lightOn_idx, 1),plot_data(lightOn_idx, 3),-plot_data(lightOn_idx, 2), 'mo',...
-                        'MarkerEdgeColor','m',...
-                       'MarkerFaceColor','m',...
-                       'MarkerSize',5);
+                    if lightOn_idx <= size(plot_data, 1)
+                        % Plot x axis corresponds to x coordinate in anipose
+                        % Plot y axis corresponds to z coordinate in anipose
+                        % Plot z axis corresponds to -y coordinate in anipose
+                        plot3(plot_data(lightOn_idx, 1),plot_data(lightOn_idx, 3),-plot_data(lightOn_idx, 2), 'mo',...
+                            'MarkerEdgeColor','m',...
+                           'MarkerFaceColor','m',...
+                           'MarkerSize',5);
+                    end
                 end
             else
                 % Plot x axis corresponds to x coordinate in anipose
