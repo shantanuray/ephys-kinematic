@@ -1,4 +1,4 @@
-function {mean_data_ON, mean_data_OFF} = plot_computed_mean(trial_list, dataLabels, bodyPart, fs, title_str, alignBy, annotateON, show_fig, save_fig, save_loc)
+function [mean_data_ON, mean_data_OFF] = plot_computed_mean(trial_list, dataLabels, bodyPart, fs, title_str, alignBy, annotateON, show_fig, save_fig, save_loc)
 % Plots velocity/acceleration data for reach trial for given reach data labels
 % Assumption: Data has been precalculated
 %
