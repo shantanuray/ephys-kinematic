@@ -106,6 +106,8 @@ for dataLabel_idx = 1:length(dataLabels)
     plot(t, mean_data_ON, 'g');
     hold on
     mean_data_OFF = sum(mean_data_OFF, 2)/size(mean_data_OFF, 2);
+    t = 1:length(mean_data_OFF);
+    t = t/fs;
     plot(t, mean_data_OFF, 'k');
     if show_fig
         set(f, 'visible', 'on')
