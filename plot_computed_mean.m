@@ -1,4 +1,4 @@
-function [mean_data_ON, mean_data_OFF] = plot_computed_mean(trial_list, dataLabels, bodyPart, fs, title_str, alignBy, annotateON, show_fig, save_fig, save_loc)
+function [data_ON_mean, data_OFF_mean] = plot_computed_mean(trial_list, dataLabels, bodyPart, fs, title_str, alignBy, annotateON, show_fig, save_fig, save_loc)
 % Plots velocity/acceleration data for reach trial for given reach data labels
 % Assumption: Data has been precalculated
 %
@@ -59,7 +59,7 @@ end
 for dataLabel_idx = 1:length(dataLabels)
     plot_label = dataLabels{dataLabel_idx};
     % Plot data vs t   
-    f = figure('color', [1 1 1], 'visible', 'off');
+    f = figure('color', [1 1 1]);
     if contains(lower(plot_label), 'velocity')
         n = 1;
         ylabel ('Average Velocity (mm/sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
@@ -77,10 +77,10 @@ for dataLabel_idx = 1:length(dataLabels)
     set (gca, 'FontName', 'Arial', 'FontSize', 12, 'linewidth', 1);
     
     % Loop over every trial
-    mean_data_ON = [];
+    data_ON = [];
     spoutContact_ON = [];
     count_ON = 0;
-    mean_data_OFF = [];
+    data_OFF = [];
     spoutContact_OFF = [];
     count_OFF = 0;
 
@@ -89,31 +89,48 @@ for dataLabel_idx = 1:length(dataLabels)
         if ~isempty(plot_data)
             if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
                 count_ON = count_ON + 1;
-                mean_data_ON = [mean_data_ON, abs(plot_data)];
+                data_ON = [data_ON, abs(plot_data)];
                 spoutContact_ON = [spoutContact_ON;...
                                     trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx];
             else
                 count_OFF = count_OFF + 1;
-                mean_data_OFF = [mean_data_OFF, abs(plot_data)];
+                data_OFF = [data_OFF, abs(plot_data)];
                 spoutContact_OFF = [spoutContact_OFF;...
                                     trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx]; 
             end
         end
     end
-    mean_data_ON = sum(mean_data_ON, 2)/size(mean_data_ON, 2);
-    t = 1:length(mean_data_ON);
-    t = t/fs;
-    plot(t, mean_data_ON, 'g');
-    hold on
-    mean_data_OFF = sum(mean_data_OFF, 2)/size(mean_data_OFF, 2);
-    t = 1:length(mean_data_OFF);
-    t = t/fs;
-    plot(t, mean_data_OFF, 'k');
-    if show_fig
-        set(f, 'visible', 'on')
-    end
+    data_ON_std = std(data_ON, 1, 2);
+    data_ON_mean = mean(data_ON, 2);
+    data_ON_mean_plus = data_ON_mean + data_ON_std;
+    data_ON_mean_minus = data_ON_mean - data_ON_std;
+    t_ON = 1:length(data_ON_mean);
+    t_ON = t_ON/fs;
+    t2_ON = [t_ON, fliplr(t_ON)];
+    inBetween_ON = [data_ON_mean_plus', fliplr(data_ON_mean_minus')];
+    data_OFF_std = std(data_OFF, 1, 2);
+    data_OFF_mean = mean(data_OFF, 2);
+    data_OFF_mean_plus = data_OFF_mean + data_OFF_std;
+    data_OFF_mean_minus = data_OFF_mean - data_OFF_std;
+    t_OFF = 1:length(data_OFF_mean);
+    t_OFF = t_OFF/fs;
+    t2_OFF = [t_OFF, fliplr(t_OFF)];
+    inBetween_OFF = [data_OFF_mean_plus', fliplr(data_OFF_mean_minus')];
+    patch(t2_OFF, inBetween_OFF, [221, 221, 221]/255, 'FaceAlpha',.5);
+    hold on;
+    patch(t2_ON, inBetween_ON, [209, 255, 197]/255, 'FaceAlpha',.3);
+    plot(t_ON, data_ON_mean, 'g'); % Mean plot
+    plot(t_ON, data_ON_mean_plus, 'Color', [200, 245, 190]/255); % Mean plot + std
+    plot(t_ON, data_ON_mean_minus, 'Color', [200, 245, 190]/255); % Mean plot - std
+    plot(t_OFF, data_OFF_mean, 'k'); % Mean plot
+    plot(t_OFF, data_OFF_mean_plus, 'Color', [215, 215, 215]/255); % Mean plot + std
+    plot(t_OFF, data_OFF_mean_minus, 'Color', [215, 215, 215]/255); % Mean plot - std
+    hold off
+    % if show_fig
+    %     set(f, 'visible', 'on')
+    % end
     if save_fig
         saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.png')));
-        close gcf;
+        % close gcf;
     end
 end
