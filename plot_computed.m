@@ -1,11 +1,11 @@
-function plot_computed(trial_list, dataLabels, bodyPart, title_str, fsKinematic, fsEphsys, refMax, annotateON, show_fig, save_fig, save_loc)
+function plot_computed(trial_list, dataLabels, bodyPart, title_str, fsKinematic, fsEphsys, alignBy, annotateON, show_fig, save_fig, save_loc)
 % Plots velocity/acceleration data for reach trial for given reach data labels
 % Assumption: Data has been precalculated
 %
 % Usage: plot_computed(trial_list, dataLabels, bodyPart, ...
 %                      titlestr,...
 %                      fsKinematic, fsEphsys,...
-%                      refMax, annotateON,...
+%                      alignBy, annotateON,...
 %                      showfig, savefig, saveloc);
 %
 % Parameters:
@@ -18,7 +18,7 @@ function plot_computed(trial_list, dataLabels, bodyPart, title_str, fsKinematic,
 %   - fsKinematic : Sampling frequency for kinematic data (Default: 200 Hz)
 %   - fsEphsys : Sampling frequency for ephys data (Default: 30000 Hz)
 %   - titlestr  : Append to file name (Default: '')
-%   - refMax: If true, normalize distance (v v/s d plot) wrt to distance at max velocity (Default: true)
+%   - alignBy: If true, normalize distance (v v/s d plot) wrt to distance at max velocity (Default: true)
 %   - annotateON: If true, mark when light ON (Default: true)
 %   - showfig: true to show figure automatically (Default: true)
 %   - savefig: true to save figure automatically (Default: false)
@@ -44,7 +44,7 @@ if nargin<6
 end
 
 if nargin < 7
-    refMax = true;
+    alignBy = 'refMax';
 end
 
 if nargin<8
@@ -70,15 +70,30 @@ for dataLabel_idx = 1:length(dataLabels)
     if contains(lower(plot_label), 'velocity')
         n = 1;
         ylabel ('Velocity (mm/sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-        plot_str = sprintf('%s Velocity-Time Plot %s %s', title_str, bodyPart);
+        if strcmpi(alignBy, 'refMax')
+            plot_str = sprintf('%s Velocity-Time Plot %s', title_str, bodyPart);
+        elseif strcmpi(alignBy, '% reach')
+            plot_str = sprintf('%s Velocity-Pct Reach Plot %s', title_str, bodyPart);
+        end
     elseif contains(lower(plot_label), 'acceleration')
         n = 2;
         ylabel ('Acceleration (mm/sec^2)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-        plot_str = sprintf('%s Acceleration-Time Plot %s %s', title_str, bodyPart);
+        if strcmpi(alignBy, 'refMax')
+            plot_str = sprintf('%s Acceleration-Time Plot %s %s', title_str, bodyPart);
+        elseif strcmpi(alignBy, '% reach')
+            plot_str = sprintf('%s Acceleration-Pct Reach Plot %s %s', title_str, bodyPart);
+        end
     else
         n = 0;
-        plot_str = sprintf('%s %s Time %s', title_str, plot_label, bodyPart);
+        if strcmpi(alignBy, 'refMax')
+            plot_str = sprintf('%s %s vs Time %s %s', title_str, plot_label, bodyPart);
+        elseif strcmpi(alignBy, '% reach')
+            plot_str = sprintf('%s %s Pct Reach %s %s', title_str, plot_label, bodyPart);
+        else
+            plot_str = sprintf('%s %s %s', title_str, plot_label, bodyPart);
+        end
     end
+    %grid on;
     hold on;
     %grid on;
     xlabel('time (sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
@@ -95,13 +110,20 @@ for dataLabel_idx = 1:length(dataLabels)
         end
         if ~isempty(plot_data)
             num_frames = length(plot_data); 
-            t = 1:num_frames; 
-            if refMax
-               max_velocity = max(plot_data);
-               max_loc = find(plot_data == max_velocity);
-               t = t - max_loc;
+            t = 1:num_frames;
+            if strcmpi(alignBy, 'refMax')
+                max_velocity = max(plot_data);
+                max_loc = find(plot_data == max_velocity);
+                t = t - max_loc;
+                t = t/fsKinematic; %time base
+            elseif strcmpi(alignBy, '% reach')
+                data_interp = interp1(1:length(plot_data),plot_data,1:100);
+                plot_data = data_interp';
+                t = 1:100; % Percentage reach
+            else
+                t = t/fsKinematic; %time base
             end
-            t = t/fsKinematic; %time base
+            
             if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
                 plot3(t, plot_data, ones(1, length(plot_data))*trial_idx, 'g');
                 % text(t(1), plot_data(1), strcat('\leftarrow ', string(trial_idx)), 'Color','red','FontSize',10)
@@ -173,7 +195,7 @@ for dataLabel_idx = 1:length(dataLabels)
         if ~isempty(plot_data)
             dist_data = trial_list(trial_idx).(dist_label).(bodyPart);
             dist_data = dist_data(2:end,:);
-            if refMax
+            if strcmpi(alignBy, 'refMax')
                 max_velocity = max(plot_data);
                 max_loc = find(plot_data == max_velocity);
                 dist_at_max_vel = dist_data(max_loc);
