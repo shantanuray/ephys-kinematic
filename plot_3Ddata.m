@@ -108,6 +108,8 @@ for dataLabel_idx = 1:length(dataLabels)
                                 'MarkerEdgeColor','m',...
                                'MarkerFaceColor','m',...
                                'MarkerSize',5);
+                            textpos = ceil(length(plot_data)/2);
+                            text(plot_data(textpos,1), plot_data(textpos,3), -plot_data(textpos,2), strcat('\leftarrow ', string(trial_idx)), 'Color', 'red', 'FontSize', 8);
                         end
                     end
                 else
@@ -127,6 +129,5 @@ for dataLabel_idx = 1:length(dataLabels)
     end
     if save_fig
         saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.png')));
-        close gcf;
     end
 end
