@@ -86,7 +86,13 @@ for dataLabel_idx = 1:length(dataLabels)
     
     % Loop over every trial
     for trial_idx=1:length(trial_list)
-        plot_data = trial_list(trial_idx).(plot_label).(bodyPart);
+        % Check if data is present
+        plot_data = [];
+        if ~isempty(find(strcmpi(plot_label, fieldnames(trial_list(trial_idx)))))
+            if ~isempty(find(strcmpi(bodyPart,trial_list(trial_idx).(plot_label).Properties.VariableNames)))
+                plot_data = trial_list(trial_idx).(plot_label).(bodyPart);
+            end
+        end
         if ~isempty(plot_data)
             num_frames = length(plot_data); 
             t = 1:num_frames; 

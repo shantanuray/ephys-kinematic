@@ -110,7 +110,13 @@ for dataLabel_idx = 1:length(dataLabels)
     count_OFF = 0;
 
     for trial_idx=1:length(trial_list)
-        plot_data = trial_list(trial_idx).(plot_label).(bodyPart);
+        % Check if data is present
+        plot_data = [];
+        if ~isempty(find(strcmpi(plot_label, fieldnames(trial_list(trial_idx)))))
+            if ~isempty(find(strcmpi(bodyPart,trial_list(trial_idx).(plot_label).Properties.VariableNames)))
+                plot_data = trial_list(trial_idx).(plot_label).(bodyPart);
+            end
+        end
         if ~isempty(plot_data)
             if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
                 count_ON = count_ON + 1;
