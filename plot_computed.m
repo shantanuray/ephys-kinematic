@@ -18,8 +18,9 @@ function plot_computed(trial_list, dataLabels, bodyPart, title_str, fsKinematic,
 %   - fsKinematic : Sampling frequency for kinematic data (Default: 200 Hz)
 %   - fsEphsys : Sampling frequency for ephys data (Default: 30000 Hz)
 %   - titlestr  : Append to file name (Default: '')
-%   - alignBy: If true, normalize distance (v v/s d plot) wrt to distance at max velocity (Default: true)
-%   - annotateON: If true, mark when light ON (Default: true)
+%   - alignBy: Align plots of all trials by a reference:
+%              - refMax (default): Maximum velocity/acceleration
+%              - % reach: align entire reach into 100 samples and plot as % reach (use with first_sc)%   - annotateON: If true, mark when light ON (Default: true)
 %   - showfig: true to show figure automatically (Default: true)
 %   - savefig: true to save figure automatically (Default: false)
 %   - saveloc: if savefig is true, where to save the figures
@@ -27,7 +28,7 @@ function plot_computed(trial_list, dataLabels, bodyPart, title_str, fsKinematic,
 % Example: plot_computed(trial_list, {'aniposeData_fixed_relative_velocity'}, 'right_d2_knuckle_r',...
 %                        'AT_A19-1_2021-09-01_12-15-40_hfwr_manual_16mW_video',...
 %                        200, 30000,...
-%                        true, true, ...
+%                        'refMax', true, ...
 %                        false, true, '/Users/chico/Desktop');
 
 % Note: Plot as 3-D to encapsulate the trial number as 3rd coordinate for ease of review
