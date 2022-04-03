@@ -37,7 +37,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 	end
 
 	% Start creating columns for the table
-	label = repmat(outputLabel, length(trialIndex), 1);
+	label = repmat({outputLabel}, length(trialIndex), 1);
 	trialIndex = reshape(trialIndex, length(trialIndex), 1);
 	hitormiss = {};
 	[hitormiss{1:length(trial_list)}] = deal(trial_list.hitormiss);
