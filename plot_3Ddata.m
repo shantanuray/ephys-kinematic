@@ -1,11 +1,13 @@
-function plot_3Ddata(trial_list, dataLabels, bodyPart, title_str, refLabel, annotateON, show_fig, save_fig, save_loc)
+function plot_3Ddata(trial_list, dataLabels, bodyPart, fsKinematic, fsEphys, title_str, refLabel, annotateON, show_fig, save_fig, save_loc)
 % Plots 3D data for reach trial for given reach data labels
 % Assumption: Data has been precalculated
 %
 % Usage: plot_3Ddata(trial_list, dataLabels, bodyPart, ...
-%                      fs, ...
+%                      fsKinematic, fsEphys, ...
+%                      titleStr,...
+%                      refLabel,...
 %                      annotateON,...
-%                      savefig, saveloc);
+%                      showFig, savefig, saveloc);
 %
 % Parameters:
 %   - trial_list: list of segmented trials with reach data (see trial_segmentation.m)
@@ -19,31 +21,34 @@ function plot_3Ddata(trial_list, dataLabels, bodyPart, title_str, refLabel, anno
 %   - savefig: true to save figure automatically (Default: false)
 %   - saveloc: if savefig is true, where to save the figures
 %
-% Example: plot_3Ddata(trial_list, {'anipose_first_sc'}, 'right_d2_knuckle',...
-%                        200, true, ...
-%                        true, '/Users/chico/Desktop');
+% Example: plot_3Ddata(trial_list, {'anipose_fixed_sc'}, 'right_d2_knuckle',200, 30000,...
+%                        'AT_A19-2',...
+%                        'waterSpout',...
+%                        true, ...
+%                        false, true, '/Users/chico/Desktop');
+%          plot_3Ddata(trial_list, {'aniposeData_first_sc'}, 'right_d2_knuckle', 200, 300, 'AT_A19-2', 'waterSpout', true, true);
 
-if nargin<4
+if nargin<6
     title_str='';
 end
 
-if nargin < 5
+if nargin < 7
     refLabel = 'waterSpout';
 end
 
-if nargin<6
+if nargin<8
     annotateON = true;
 end
 
-if nargin<7
+if nargin<9
     show_fig = true;
 end
 
-if nargin<8
+if nargin<10
     save_fig = false;
 end
 
-if save_fig & nargin<9
+if save_fig & nargin<11
     save_loc = uigetdir();
 end
 
@@ -51,9 +56,9 @@ for dataLabel_idx = 1:length(dataLabels)
     % Plot XYZ over time
     plot_str = strcat(title_str, ' ', bodyPart, ' 3D');
     f = figure('color', [1 1 1], 'visible', 'off');
-    xlabel ('x (mm)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-    ylabel ('y (mm)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-    zlabel ('z (mm)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+    xlabel ('x','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+    ylabel ('y','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+    zlabel ('z','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
     % view([-37 -18]);
     %set (gca, 'linewidth', 2);
     plot_label = dataLabels{dataLabel_idx};
@@ -94,29 +99,32 @@ for dataLabel_idx = 1:length(dataLabels)
             plot_data = data(:, bodyPartLocation);
             if ~isempty(plot_data)
                 if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
-                    % Plot x axis corresponds to x coordinate in anipose
-                    % Plot y axis corresponds to z coordinate in anipose
-                    % Plot z axis corresponds to -y coordinate in anipose
                     plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'g');
+                    % text(t(1), plot_data(1), strcat('\leftarrow ', string(trial_idx)), 'Color','red','FontSize',10)
                     if annotateON
-                        lightOn_idx = trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx + 1 - n;
-                        if lightOn_idx <= size(plot_data, 1)
-                            % Plot x axis corresponds to x coordinate in anipose
-                            % Plot y axis corresponds to z coordinate in anipose
-                            % Plot z axis corresponds to -y coordinate in anipose
-                            plot3(plot_data(lightOn_idx, 1),plot_data(lightOn_idx, 3),-plot_data(lightOn_idx, 2), 'mo',...
-                                'MarkerEdgeColor','m',...
-                               'MarkerFaceColor','m',...
-                               'MarkerSize',5);
-                            textpos = ceil(length(plot_data)/2);
-                            text(plot_data(textpos,1), plot_data(textpos,3), -plot_data(textpos,2), strcat('\leftarrow ', string(trial_idx)), 'Color', 'red', 'FontSize', 8);
+                        lightOn_idx = ceil((trial_list(trial_idx).lightOnTrig_ts(1) -...
+                                       trial_list(trial_idx).start_ts)*fsKinematic/fsEphys) + 1 - n;
+                        disp(sprintf('#%d: light on %d', trial_idx, lightOn_idx))
+                        if lightOn_idx <= length(plot_data)
+                            plot3(plot_data(lightOn_idx, 1),plot_data(lightOn_idx, 3),-plot_data(lightOn_idx, 2), 'yo',...
+                                  'MarkerEdgeColor','y',...
+                                  'MarkerFaceColor','y',...
+                                  'MarkerSize',5);
                         end
                     end
                 else
-                    % Plot x axis corresponds to x coordinate in anipose
-                    % Plot y axis corresponds to z coordinate in anipose
-                    % Plot z axis corresponds to -y coordinate in anipose
                     plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'k');
+                end
+                if annotateON
+                    spoutOn_idx = trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx + 1 - n;
+                    if spoutOn_idx <= length(plot_data)
+                        plot3(plot_data(spoutOn_idx, 1), plot_data(spoutOn_idx, 3), -plot_data(spoutOn_idx, 2), 'mo',...
+                            'MarkerEdgeColor','m',...
+                           'MarkerFaceColor','m',...
+                           'MarkerSize',5);
+                    end
+                    % textpos = ceil(length(plot_data)/2);
+                    % text(plot_data(textpos,1), plot_data(textpos,3), -plot_data(textpos,2), strcat('\leftarrow ', string(trial_idx)), 'Color', 'red', 'FontSize', 8);
                 end
             end
         else
@@ -129,5 +137,6 @@ for dataLabel_idx = 1:length(dataLabels)
     end
     if save_fig
         saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.png')));
+        saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.fig')), 'fig');
     end
 end
