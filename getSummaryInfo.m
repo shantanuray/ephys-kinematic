@@ -60,20 +60,29 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 	zColLabel = strcat(bodyPart, '_z');
 	for trial_idx = trialIndex'
 		% Get speed and distance for every trial
-		xRelTrial = trial_list(trial_idx).(distDataLabel).(xColLabel);
-		totalTimeTrial = size(xRelTrial, 1)/fs;
-		xyzSpeedTrialPt = trial_list(trial_idx).(velDataLabel).(speedColLabel);
-		xSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(xColLabel));
-		ySpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(yColLabel));
-		zSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(zColLabel));
-		totalDistTrial = sum(xyzSpeedTrialPt*dt, 1);
-		xDistTrial = sum(xSpeedTrialPt*dt, 1);
-		yDistTrial = sum(ySpeedTrialPt*dt, 1);
-		zDistTrial = sum(zSpeedTrialPt*dt, 1);
-		averageSpeedTrial = totalDistTrial/totalTimeTrial;
-		xSpeedTrial = xDistTrial/totalTimeTrial;
-		ySpeedTrial = yDistTrial/totalTimeTrial;
-		zSpeedTrial = zDistTrial/totalTimeTrial;
+		xRelTrial = [];
+		xDistTrial = nan; yDistTrial = nan; zDistTrial = nan; totalDistTrial = nan;
+		xSpeedTrial = nan; ySpeedTrial = nan; zSpeedTrial = nan; averageSpeedTrial = nan;
+		if ~isempty(find(strcmpi(distDataLabel, fieldnames(trial_list(trial_idx)))))
+		    if ~isempty(find(strcmpi(xColLabel,trial_list(trial_idx).(distDataLabel).Properties.VariableNames)))
+		        xRelTrial = trial_list(trial_idx).(distDataLabel).(xColLabel);
+		    end
+		end
+		if ~isempty(xRelTrial)
+			totalTimeTrial = size(xRelTrial, 1)/fs;
+			xyzSpeedTrialPt = trial_list(trial_idx).(velDataLabel).(speedColLabel);
+			xSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(xColLabel));
+			ySpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(yColLabel));
+			zSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(zColLabel));
+			totalDistTrial = sum(xyzSpeedTrialPt*dt, 1);
+			xDistTrial = sum(xSpeedTrialPt*dt, 1);
+			yDistTrial = sum(ySpeedTrialPt*dt, 1);
+			zDistTrial = sum(zSpeedTrialPt*dt, 1);
+			averageSpeedTrial = totalDistTrial/totalTimeTrial;
+			xSpeedTrial = xDistTrial/totalTimeTrial;
+			ySpeedTrial = yDistTrial/totalTimeTrial;
+			zSpeedTrial = zDistTrial/totalTimeTrial;
+		end
 		xDist = [xDist; xDistTrial]; yDist = [yDist; yDistTrial]; zDist = [zDist; zDistTrial]; totalDist = [totalDist; totalDistTrial];
 		xSpeed = [xSpeed; xSpeedTrial]; ySpeed = [ySpeed; ySpeedTrial]; zSpeed = [zSpeed; zSpeedTrial]; averageSpeed = [averageSpeed; averageSpeedTrial];
 	end
