@@ -1,10 +1,10 @@
-function plot_computed(trial_list, dataLabels, bodyPart, title_str, fsKinematic, fsEphsys, alignBy, annotateON, show_fig, save_fig, save_loc)
+function plot_computed(trial_list, dataLabels, bodyPart, title_str, fsKinematic, fsEphys, alignBy, annotateON, show_fig, save_fig, save_loc)
 % Plots velocity/acceleration data for reach trial for given reach data labels
 % Assumption: Data has been precalculated
 %
 % Usage: plot_computed(trial_list, dataLabels, bodyPart, ...
 %                      titlestr,...
-%                      fsKinematic, fsEphsys,...
+%                      fsKinematic, fsEphys,...
 %                      alignBy, annotateON,...
 %                      showfig, savefig, saveloc);
 %
@@ -16,7 +16,7 @@ function plot_computed(trial_list, dataLabels, bodyPart, title_str, fsKinematic,
 %   - bodyPart: string with data label name or index position
 %                 eg. 'left_wrist_x' or 'right_d2_knuckle_r'
 %   - fsKinematic : Sampling frequency for kinematic data (Default: 200 Hz)
-%   - fsEphsys : Sampling frequency for ephys data (Default: 30000 Hz)
+%   - fsEphys : Sampling frequency for ephys data (Default: 30000 Hz)
 %   - titlestr  : Append to file name (Default: '')
 %   - alignBy: Align plots of all trials by a reference:
 %              - refMax (default): Maximum velocity/acceleration
@@ -41,7 +41,7 @@ if nargin<5
     fsKinematic = 200;
 end
 if nargin<6
-    fsEphsys = 30000;
+    fsEphys = 30000;
 end
 
 if nargin < 7
@@ -130,7 +130,7 @@ for dataLabel_idx = 1:length(dataLabels)
                 % text(t(1), plot_data(1), strcat('\leftarrow ', string(trial_idx)), 'Color','red','FontSize',10)
                 if annotateON
                     lightOn_idx = ceil((trial_list(trial_idx).lightOnTrig_ts(1) -...
-                                   trial_list(trial_idx).start_ts)*fsKinematic/fsEphsys) + 1 - n;
+                                   trial_list(trial_idx).start_ts)*fsKinematic/fsEphys) + 1 - n;
                     disp(sprintf('#%d: light on %d', trial_idx, lightOn_idx))
                     if lightOn_idx <= length(plot_data)
                         plot3(t(lightOn_idx), plot_data(lightOn_idx), trial_idx, 'yo',...
@@ -158,7 +158,8 @@ for dataLabel_idx = 1:length(dataLabels)
         set(f, 'visible', 'on')
     end
     if save_fig
-        saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.fig')));
+        saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.fig')), 'fig');
+        saveas(gcf,fullfile(save_loc, strcat(replace(plot_str, ' ', '_'), '.png')));
     end
 end
 
@@ -210,7 +211,7 @@ end
 %                 plot3(dist_data, plot_data, ones(1, length(plot_data))*trial_idx, 'g');
 %                 if annotateON
 %                     lightOn_idx = ceil((trial_list(trial_idx).lightOnTrig_ts(1) -...
-%                                    trial_list(trial_idx).start_ts)*fsKinematic/fsEphsys) + 1 - n;
+%                                    trial_list(trial_idx).start_ts)*fsKinematic/fsEphys) + 1 - n;
 %                     if lightOn_idx <= length(plot_data)
 %                         plot3(dist_data(lightOn_idx), plot_data(lightOn_idx), trial_idx, 'yo',...
 %                             'MarkerEdgeColor','y',...

@@ -1,10 +1,10 @@
-function [spoutContact_ON, spoutContact_OFF, lightON] = plot_computed_mean(trial_list, dataLabels, bodyPart, title_str, fsKinematic, fsEphsys, alignBy, annotateON, show_fig, save_fig, save_loc)
+function [spoutContact_ON, spoutContact_OFF, lightON] = plot_computed_mean(trial_list, dataLabels, bodyPart, title_str, fsKinematic, fsEphys, alignBy, annotateON, show_fig, save_fig, save_loc)
 % Plots velocity/acceleration data for reach trial for given reach data labels
 % Assumption: Data has been precalculated
 %
 % Usage: plot_computed_mean(trial_list, dataLabels, bodyPart, ...
 %                      titlestr,...
-%                      fsKinematic, fsEphsys, ...
+%                      fsKinematic, fsEphys, ...
 %                      ref2max,annotateON,...
 %                      showfig, savefig, saveloc);
 %
@@ -40,7 +40,7 @@ if nargin<5
     fsKinematic = 200;
 end
 if nargin<6
-    fsEphsys = 30000;
+    fsEphys = 30000;
 end
 if nargin < 7
     alignBy = 'refMax';
@@ -126,7 +126,7 @@ for dataLabel_idx = 1:length(dataLabels)
                 end
                 data_ON = [data_ON, abs(plot_data)];
                 lightON = [lightON, ceil((trial_list(trial_idx).lightOnTrig_ts(1) -...
-                                   trial_list(trial_idx).start_ts)*fsKinematic/fsEphsys) + 1 - n];
+                                   trial_list(trial_idx).start_ts)*fsKinematic/fsEphys) + 1 - n];
                 spoutContact_ON = [spoutContact_ON;...
                                     trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx];
             else
