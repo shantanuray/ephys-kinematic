@@ -26,7 +26,7 @@ function [spoutContact_ON, spoutContact_OFF, lightON] = plot_computed_mean(trial
 %   - savefig: true to save figure automatically (Default: false)
 %   - saveloc: if savefig is true, where to save the figures
 %
-% Example: plot_computed_mean(trial_list, {'anipose_fixed_relative_velocity'}, 'right_d2_knuckle_r',...
+% Example: plot_computed_mean(trial_list, {'anipose_fixed_relative_velocity'}, 'right_d2_knuckle_xyzSpeed',...
 %                        'AT_A19-1_2021-09-01_12-15-40_hfwr_manual_16mW_video',...
 %                        200,30000,...
 %                        true, true, ...
@@ -68,7 +68,7 @@ for dataLabel_idx = 1:length(dataLabels)
     f = figure('color', [1 1 1]);
     if contains(lower(plot_label), 'velocity')
         n = 1;
-        ylabel ('Average Velocity (mm/sec)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+        ylabel ('Average Velocity','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
         if strcmpi(alignBy, 'refMax')
             plot_str = sprintf('%s Average Velocity-Time Plot %s', title_str, bodyPart);
         elseif strcmpi(alignBy, '% reach')
@@ -76,7 +76,7 @@ for dataLabel_idx = 1:length(dataLabels)
         end
     elseif contains(lower(plot_label), 'acceleration')
         n = 2;
-        ylabel ('Average Acceleration (mm/sec^2)','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+        ylabel ('Average Acceleration','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
         if strcmpi(alignBy, 'refMax')
             plot_str = sprintf('%s Average Acceleration-Time Plot %s %s', title_str, bodyPart);
         elseif strcmpi(alignBy, '% reach')
