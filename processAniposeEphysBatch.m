@@ -22,9 +22,9 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
     [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap, aniposeDirList] = parseInput(p.Results);
 
     % Get list of all dir with anipose data
+    indicator = 'pose-3d';
     if isempty(aniposeDirList)
         disp('Extracting video locations')
-        indicator = 'pose-3d';
         aniposeDirList = listAniposeDir(rootdir, indicator);
     end
     disp(sprintf('Located %d locations', length(aniposeDirList)))
