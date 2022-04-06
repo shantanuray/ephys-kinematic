@@ -19,26 +19,28 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
 
     % Initialize inputs
     p = readInput(varargin);
-    [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p.Results);
+    [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap, aniposeDirList] = parseInput(p.Results);
 
     % Get list of all dir with anipose data
-    disp('Extracting video locations')
-    indicator = 'pose-3d';
-    anipose_dir_list = listAniposeDir(rootdir, indicator);
-    disp(sprintf('Located %d locations', length(anipose_dir_list)))
+    if isempty(aniposeDirList)
+        disp('Extracting video locations')
+        indicator = 'pose-3d';
+        aniposeDirList = listAniposeDir(rootdir, indicator);
+    end
+    disp(sprintf('Located %d locations', length(aniposeDirList)))
 
-    for i = 1:length(anipose_dir_list)
-        disp(sprintf('Initiating processing %s', anipose_dir_list{i}))
+    for i = 1:length(aniposeDirList)
+        disp(sprintf('Initiating processing %s', aniposeDirList{i}))
         % TODO:anipose_ephys_loc.anipose_dir is returning with the indicator string at the end
         % Example: headfixedwaterreach/A1-2/AT_A1-2_2021-08-20_13-06-28_hfwr_LightOFF_video/pose-3d
         % We need one folder up, i.e. headfixedwaterreach/A1-2/AT_A1-2_2021-08-20_13-06-28_hfwr_LightOFF_video
-        dir_sep = strfind(anipose_dir_list{i}, indicator);
+        dir_sep = strfind(aniposeDirList{i}, indicator);
         if isempty(dir_sep)
-            dir_sep = length(anipose_dir_list{i});
+            dir_sep = length(aniposeDirList{i});
         else
             dir_sep = dir_sep - 2;
         end
-        aniposedir_root = anipose_dir_list{i}(1:dir_sep);
+        aniposedir_root = aniposeDirList{i}(1:dir_sep);
         % Get anipose and ephys data location
         anipose_ephys_loc = extractAniposeEphysDir(aniposedir_root);
         % Load anipose data
@@ -102,18 +104,21 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
         defaultScoreThresh = 0.05 ;
         defaultMaxGap = 50;
         defaultFixedReachIntervalms = 750;
+        defaultAniposeDirList = {};
 
         addParameter(p,'FilterAniposeFlag',defaultFilterAniposeFlag, @islogical);
         addParameter(p,'ScoreThresh',defaultScoreThresh, @isnumeric);
         addParameter(p,'MaxGap',defaultMaxGap, @isnumeric);
         addParameter(p,'FixedReachIntervalms',defaultFixedReachIntervalms, @isnumeric);
+        addParameter(p,'AniposeDirList',defaultAniposeDirList, @iscell);
         parse(p, input{:});
     end
 
-    function [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap] = parseInput(p)
+    function [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap, aniposeDirList] = parseInput(p)
         fixedReachIntervalms = p.FixedReachIntervalms;
         filterAniposeFlag = p.FilterAniposeFlag;
         scoreThresh = p.ScoreThresh;
         maxGap = p.MaxGap;
+        aniposeDirList = p.AniposeDirList;
     end
 end
