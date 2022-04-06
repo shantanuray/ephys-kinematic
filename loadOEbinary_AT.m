@@ -55,7 +55,9 @@ laserTrig = contData.Data(40,:).*contData.Header.channels(40).bit_volts;
 frameTrig_samplesFromPrev = diff([0 frameTrig_idx]);
 % Find when the video recording started
 videoStart = find(frameTrig_samplesFromPrev > 200);
-
+if isempty(videoStart)
+   videoStart = 1;
+end
 if height(aniposeData)>length(frameTrig_idx)
    aniposeData=aniposeData(1:length(frameTrig_idx),:);
 end
