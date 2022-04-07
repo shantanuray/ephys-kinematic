@@ -35,10 +35,14 @@ contData = load_open_ephys_binary(oebin_file, 'continuous', 1);
 eventData = load_open_ephys_binary(oebin_file, 'events', 1);
 %spikeData = load_open_ephys_binary(oebin_file, 'spikes', 1);
 
+
 %% Sampling info
 samplingRate = contData.Header.sample_rate;
 nSamples=length(contData.Data);
+timeInSeconds = double(contData.Timestamps)./samplingRate;
+contData.Data = contData.Data(:,1:length(timeInSeconds));  % Bug in OpenEphys when stopping record that adds 4096 zeros at the end -- need to update GUI to v0.5.5.3
 %% Fetch and rename analog variables, then re-scale units to volts
+
 %ADC1 = contData.Data(33,:);
 EMG_trap = contData.Data(34,:).*contData.Header.channels(34).bit_volts;
 EMG_biceps = contData.Data(36,:).*contData.Header.channels(36).bit_volts;
@@ -54,24 +58,28 @@ laserTrig = contData.Data(40,:).*contData.Header.channels(40).bit_volts;
 [pks, frameTrig_idx] = findpeaks(frameTrig, 'MinPeakDistance', 50, 'MinPeakHeight', 3);
 frameTrig_samplesFromPrev = diff([0 frameTrig_idx]);
 % Find when the video recording started
-videoStart = find(frameTrig_samplesFromPrev > 200);
-if isempty(videoStart)
-   videoStart = 1;
-end
-if height(aniposeData)>length(frameTrig_idx)
-   aniposeData=aniposeData(1:length(frameTrig_idx),:);
-end
+% videoStart = find(frameTrig_samplesFromPrev > 200);
+% if isempty(videoStart)
+%    videoStart = 1;
+% end
+videoStart = 1;
+% if height(aniposeData)>length(frameTrig_idx)
+%    aniposeData=aniposeData(1:length(frameTrig_idx),:);
+% end
 
 %totalFrames=length(pks);
 % Set videoStart as the first value (frame 1)
-totalFrames=min(length(frameTrig_idx), height(aniposeData));
+totalFrames=height(aniposeData);
 % use to reference anipose data
 videoFrames_idx = frameTrig_idx(videoStart:min(length(frameTrig_idx), videoStart+totalFrames-1));
 % use this to reference ephys data
-videoFrames_timestamps = 0:nSamples-1;
+videoFrames_timestamps = contData.Timestamps(videoFrames_idx);
+% videoFrames_timestamps = 0:nSamples-1;
 videoFrames_timestamps = videoFrames_timestamps(videoFrames_idx);
 % Calculate time in seconds of ephys data
-videoFrames_timeInSeconds = double(videoFrames_timestamps)./samplingRate;
+% videoFrames_timeInSeconds = double(videoFrames_timestamps)./samplingRate;
+videoFrames_timeInSeconds = timeInSeconds(videoFrames_idx);
+
 
 %% Fetch and rename digital input events
 tone_on = eventData.Timestamps(eventData.Data == 2);
