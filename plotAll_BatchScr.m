@@ -4,7 +4,7 @@ dataLabels = {'aniposeData_fixed_relative_velocity'};
 refLabel = 'waterSpout';
 ref2max = true;
 fsKinematic = 200;
-fsEphsys = 30000;
+fsEphys = 30000;
 annotateON = true;
 show_fig = false;
 save_fig = true;
@@ -20,7 +20,7 @@ for mat_indx = 1:length(mat_list)
     trial_list = [];
     load(mat_file, 'trial_list');
     plot_3Ddata(trial_list, {'aniposeData_first_sc'}, 'right_d2_knuckle', title_str, refLabel, annotateON, show_fig, save_fig, save_loc);
-    plot_computed(trial_list, {'aniposeData_fixed_relative_velocity'}, 'right_d2_knuckle_r', title_str, fsKinematic, fsEphsys, 'ref2max', annotateON, show_fig, save_fig, save_loc);
-    [spoutContact_ON, spoutContact_OFF, lightON] = plot_computed_mean(trial_list, {'aniposeData_first_sc_relative_velocity'}, 'right_d2_knuckle_r', title_str, fsKinematic, fsEphsys, '% reach', annotateON, show_fig, save_fig, save_loc);
+    plot_computed(trial_list, {'aniposeData_fixed_relative_velocity'}, 'right_d2_knuckle_xyzSpeed', title_str, fsKinematic, fsEphys, 'ref2max', annotateON, show_fig, save_fig, save_loc);
+    [spoutContact_ON, spoutContact_OFF, lightON] = plot_computed_mean(trial_list, {'aniposeData_first_sc_relative_velocity'}, 'right_d2_knuckle_xyzSpeed', title_str, fsKinematic, fsEphys, '% reach', annotateON, show_fig, save_fig, save_loc);
     save(mat_file, '-append', 'spoutContact_ON', 'spoutContact_OFF', 'lightON');
 end
