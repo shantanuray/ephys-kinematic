@@ -19,7 +19,7 @@ for mat_indx = 1:length(mat_list)
     mat_file = fullfile(mat_list(mat_indx).folder, mat_list(mat_indx).name)
     trial_list = [];
     load(mat_file, 'trial_list');
-    plot_3Ddata(trial_list, {'aniposeData_first_sc'}, 'right_d2_knuckle', title_str, refLabel, annotateON, show_fig, save_fig, save_loc);
+    plot_3Ddata(trial_list, {'aniposeData_first_sc'}, 'right_d2_knuckle', fsKinematic, fsEphys, title_str, refLabel, annotateON, show_fig, save_fig, save_loc);
     plot_computed(trial_list, {'aniposeData_fixed_relative_velocity'}, 'right_d2_knuckle_xyzSpeed', title_str, fsKinematic, fsEphys, 'ref2max', annotateON, show_fig, save_fig, save_loc);
     [spoutContact_ON, spoutContact_OFF, lightON] = plot_computed_mean(trial_list, {'aniposeData_first_sc_relative_velocity'}, 'right_d2_knuckle_xyzSpeed', title_str, fsKinematic, fsEphys, '% reach', annotateON, show_fig, save_fig, save_loc);
     save(mat_file, '-append', 'spoutContact_ON', 'spoutContact_OFF', 'lightON');
