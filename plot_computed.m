@@ -131,6 +131,9 @@ for dataLabel_idx = 1:length(dataLabels)
                 if annotateON
                     lightOn_idx = ceil((trial_list(trial_idx).lightOnTrig_ts(1) -...
                                    trial_list(trial_idx).start_ts)*fsKinematic/fsEphys) + 1 - n;
+                    if lightOn_idx == 0
+                        lightOn_idx = 1;
+                    end
                     disp(sprintf('#%d: light on %d', trial_idx, lightOn_idx))
                     if lightOn_idx <= length(plot_data)
                         plot3(t(lightOn_idx), plot_data(lightOn_idx), trial_idx, 'yo',...
