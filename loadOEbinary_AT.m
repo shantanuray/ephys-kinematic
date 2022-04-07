@@ -75,7 +75,7 @@ videoFrames_idx = frameTrig_idx(videoStart:min(length(frameTrig_idx), videoStart
 % use this to reference ephys data
 videoFrames_timestamps = contData.Timestamps(videoFrames_idx);
 % videoFrames_timestamps = 0:nSamples-1;
-videoFrames_timestamps = videoFrames_timestamps(videoFrames_idx);
+% videoFrames_timestamps = videoFrames_timestamps(videoFrames_idx);
 % Calculate time in seconds of ephys data
 % videoFrames_timeInSeconds = double(videoFrames_timestamps)./samplingRate;
 videoFrames_timeInSeconds = timeInSeconds(videoFrames_idx);
