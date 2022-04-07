@@ -93,7 +93,17 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
             trial_list = getRelativeDistance(trial_list);
             trial_list = getVelocityAcceleration(trial_list, aniposeSamplingRate);
             disp(sprintf('Saving trials for %s', anipose_ephys_loc.label))
-            save(fullfile(savedir, strcat(anipose_ephys_loc.label, '.mat')), 'trial_list');
+            if filterAniposeFlag
+                saveFilename = strcat(anipose_ephys_loc.label, '_filtered.mat');
+            else
+                saveFilename = strcat(anipose_ephys_loc.label, '.mat');
+            end
+            save(fullfile(savedir, saveFilename), 'trial_list',...
+                'tone_on', 'tone_off',...
+                'solenoid_on', 'solenoid_off',...
+                'perchContact_on', 'perchContact_off',...
+                'spoutContact_on', 'spoutContact_off',...
+                'ephysSamplingRate');
         catch
             disp(sprintf('Issue processing %s', aniposeDirList{i}))
         end
