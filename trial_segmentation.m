@@ -196,7 +196,7 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 			trial_list(i).EMG_ecu_last_sc = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), end_ts_last(i)))';
 			trial_list(i).EMG_trap_last_sc = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), end_ts_last(i)))';
 		else
-			trial_list(i).lightOnTrig_ts = trial_list(i).lightOnTrig_ts_fixed
+			trial_list(i).lightOnTrig_ts = trial_list(i).lightOnTrig_ts_fixed;
 			trial_list(i).lightTrig = trial_list(i).lightTrig_fixed;
 			trial_list(i).aniposeData_first_sc = [];
 			trial_list(i).aniposeData_last_sc = [];
