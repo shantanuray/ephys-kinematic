@@ -158,6 +158,12 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 		trial_list(i).EMG_triceps_fixed = EMG_triceps(:, start_ts(i):min(size(EMG_triceps, 2), start_ts(i)+ephysNumTS-1))';
 		trial_list(i).EMG_ecu_fixed = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), start_ts(i)+ephysNumTS-1))';
 		trial_list(i).EMG_trap_fixed = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), start_ts(i)+ephysNumTS-1))';
+		trial_list(i).lightOnTrig_ts_fixed = intersect(start_ts(i):start_ts(i)+ephysNumTS-1, lightOnTrig);
+		if isempty(trial_list(i).lightOnTrig_ts_fixed)
+			trial_list(i).lightTrig_fixed = 'OFF';
+		else
+			trial_list(i).lightTrig_fixed = 'ON';
+		end
 		if ~isnan(end_ts_first(i)) & (trial_list(i).hitormiss==1)
 			% comment
 			trial_list(i).lightOnTrig_ts = intersect(start_ts(i):end_ts_first(i), lightOnTrig);
@@ -190,12 +196,8 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 			trial_list(i).EMG_ecu_last_sc = EMG_ecu(:, start_ts(i):min(size(EMG_ecu, 2), end_ts_last(i)))';
 			trial_list(i).EMG_trap_last_sc = EMG_trap(:, start_ts(i):min(size(EMG_trap, 2), end_ts_last(i)))';
 		else
-			trial_list(i).lightOnTrig_ts = intersect(start_ts(i):start_ts(i)+ephysNumTS-1, lightOnTrig);
-			if isempty(trial_list(i).lightOnTrig_ts)
-				trial_list(i).lightTrig = 'OFF';
-			else
-				trial_list(i).lightTrig = 'ON';
-			end
+			trial_list(i).lightOnTrig_ts = trial_list(i).lightOnTrig_ts_fixed
+			trial_list(i).lightTrig = trial_list(i).lightTrig_fixed;
 			trial_list(i).aniposeData_first_sc = [];
 			trial_list(i).aniposeData_last_sc = [];
 			trial_list(i).EMG_biceps_first_sc = [];
