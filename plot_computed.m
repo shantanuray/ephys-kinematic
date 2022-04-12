@@ -129,17 +129,20 @@ for dataLabel_idx = 1:length(dataLabels)
                 plot3(t, plot_data, ones(1, length(plot_data))*trial_idx, 'g');
                 % text(t(1), plot_data(1), strcat('\leftarrow ', string(trial_idx)), 'Color','red','FontSize',10)
                 if annotateON
-                    lightOn_idx = ceil((trial_list(trial_idx).lightOnTrig_ts(1) -...
-                                   trial_list(trial_idx).start_ts)*fsKinematic/fsEphys) + 1 - n;
-                    if lightOn_idx == 0
-                        lightOn_idx = 1;
+                    lightOn_start_ts_trial = trial_list(trial_idx).lightOnTrig_ts(1) -...
+                                             trial_list(trial_idx).start_ts +...
+                                             1 - n;
+                    anipose_lightOn_idx = ceil(lightOn_start_ts_trial*fsKinematic/fsEphys);
+                    trial_dur = ceil((trial_list(trial_idx).end_ts_first-trial_list(trial_idx).start_ts+1-n)*1000/fsEphys);;
+                    if anipose_lightOn_idx == 0
+                        anipose_lightOn_idx = 1;
                     end
-                    disp(sprintf('#%d: light on %d', trial_idx, lightOn_idx))
-                    if lightOn_idx <= length(plot_data)
-                        plot3(t(lightOn_idx), plot_data(lightOn_idx), trial_idx, 'yo',...
-                            'MarkerEdgeColor','y',...
-                           'MarkerFaceColor','y',...
-                           'MarkerSize',5);
+                    disp(sprintf('Trial #%d: light on after %d samples / %dms from start of trial; Total dur = %dms', trial_idx, anipose_lightOn_idx, ceil(anipose_lightOn_idx*1000/fsKinematic), trial_dur))
+                    if anipose_lightOn_idx <= length(plot_data)
+                        plot3(t(anipose_lightOn_idx), plot_data(anipose_lightOn_idx), trial_idx, 'yo',...
+                              'MarkerEdgeColor','y',...
+                              'MarkerFaceColor','y',...
+                              'MarkerSize',5);
                     end
                 end
             else
