@@ -174,10 +174,10 @@ for i = 1:min(length(start_ts), length(end_ts_first))
 		ephys_start_idx = find(contDataTimestamps == start_ts(i));
 		ephys_end_idx_fixed = ephys_start_idx+ephysNumTS-1;
 		% Use this index into contDataTimestamps to reference data from EMG channels
-		trial_list(i).EMG_biceps_fixed = EMG_biceps(:, ephys_start_idx(i):min(size(EMG_biceps, 2), ephys_end_idx_fixed))';
-		trial_list(i).EMG_triceps_fixed = EMG_triceps(:, ephys_start_idx(i):min(size(EMG_triceps, 2), ephys_end_idx_fixed))';
-		trial_list(i).EMG_ecu_fixed = EMG_ecu(:, ephys_start_idx(i):min(size(EMG_ecu, 2), ephys_end_idx_fixed))';
-		trial_list(i).EMG_trap_fixed = EMG_trap(:, ephys_start_idx(i):min(size(EMG_trap, 2), ephys_end_idx_fixed))';
+		trial_list(i).EMG_biceps_fixed = EMG_biceps(:, ephys_start_idx:min(size(EMG_biceps, 2), ephys_end_idx_fixed))';
+		trial_list(i).EMG_triceps_fixed = EMG_triceps(:, ephys_start_idx:min(size(EMG_triceps, 2), ephys_end_idx_fixed))';
+		trial_list(i).EMG_ecu_fixed = EMG_ecu(:, ephys_start_idx:min(size(EMG_ecu, 2), ephys_end_idx_fixed))';
+		trial_list(i).EMG_trap_fixed = EMG_trap(:, ephys_start_idx:min(size(EMG_trap, 2), ephys_end_idx_fixed))';
 		% lightOnTrig_ts is a subset of contDataTimestamps
 		% and start_ts is from videoFrames_timestamps, which is a subset of contDataTimestamps
 		% Hence lightOnTrig_ts value is comparable to start_ts (do not use index)
