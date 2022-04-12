@@ -15,7 +15,9 @@ function [EMG_trap,...
           videoFrames_timestamps,...
           videoFrames_timeInSeconds,...
           aniposeData,...
-          samplingRate] = loadOEbinary_AT(oebin_file, aniposeData);
+          samplingRate,...
+          contDataTimestamps,...
+          eventDataTimestamps] = loadOEbinary_AT(oebin_file, aniposeData);
 
 if nargin < 2
    % load anipose data
@@ -39,6 +41,8 @@ eventData = load_open_ephys_binary(oebin_file, 'events', 1);
 %% Sampling info
 samplingRate = contData.Header.sample_rate;
 nSamples=length(contData.Data);
+contDataTimestamps = contData.Timestamps;
+eventDataTimestamps = eventData.Timestamps;
 timeInSeconds = double(contData.Timestamps)./samplingRate;
 contData.Data = contData.Data(:,1:length(timeInSeconds));  % Bug in OpenEphys when stopping record that adds 4096 zeros at the end -- need to update GUI to v0.5.5.3
 %% Fetch and rename analog variables, then re-scale units to volts
