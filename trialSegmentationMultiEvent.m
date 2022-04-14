@@ -71,7 +71,7 @@ function trial_list = trialSegmentationMultiEvent(aniposeData,...
 
 	% Get First and all spout contact immediately after each start event (solenoid_on/ tone_on) and before next start event
 	[spoutContact_first_solenoid, spoutContact_multi_solenoid, hitormiss_solenoid, perchOnStart_solenoid] = getSpoutContact(solenoid_on, spoutContact_on);
-	[spoutContact_first_tone, spoutContact_multi_tone, hitormiss_tone, perchOnStart_solenoid] = getSpoutContact(tone_on, spoutContact_on);
+	[spoutContact_first_tone, spoutContact_multi_tone, hitormiss_tone, perchOnStart_tone] = getSpoutContact(tone_on, spoutContact_on);
 
 	% Get contData.Timestamp reference for start and end of trial; As well as index into contData.Timestamp and anipose
 	%	- start_ts: contData.Timestamp value of start of trial
