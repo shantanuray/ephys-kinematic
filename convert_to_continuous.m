@@ -1,4 +1,4 @@
-function cont_array = convert_to_continuous(on_array, off_array, eventTimeStamps, nSamples)
+function cont_array = convert_to_continuous(on_array, off_array, contDataTimeStamps, nSamples)
     % cont_array = convert_to_continuous(on_array, off_array, nSamples);
     % Converts a pulse on - off set of arrays to a square wave that is on from
     % when the measurement is on till the next off
@@ -7,7 +7,7 @@ function cont_array = convert_to_continuous(on_array, off_array, eventTimeStamps
     % Inputs:
     % * on_array: event timestamps when measurement is on
     % * off_array: event timestamps when measurement is off
-    % * eventTimeStamps: reference event timestamps 
+    % * contDataTimeStamps: reference event timestamps 
     % * nSamples: # of total samples in ephys data
     %
     % Example: solenoid_cont = convert_to_continuous(solenoid_on, solenoid_off, eventData.Timestamps, 9931520);
@@ -27,8 +27,11 @@ function cont_array = convert_to_continuous(on_array, off_array, eventTimeStamps
     on_array = sort(on_array);
     off_array = sort(off_array);
     for i = 1:min(length(on_array), length(off_array))
-        on_idx = find(on_array(i)==eventTimeStamps);
-        off_idx = find(off_array(i)==eventTimeStamps);
-        cont_array(on_idx:off_idx) = 1;
+        on_idx = find(on_array(i)==contDataTimeStamps);
+        next_off = find(off_array>on_array(i));
+        if ~isempty(next_off)
+            off_idx = find(off_array(next_off(1))==contDataTimeStamps);
+            cont_array(on_idx:off_idx) = 1;
+        end
     end
 end
