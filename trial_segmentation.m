@@ -60,99 +60,18 @@ function trial_list = trial_segmentation(aniposeData,...
 %concatenate videoFrames_timestamps vercat to Aniposedata 
 %This code identifies the index positions corresponding to the the start and end of each, a trial starts with a solenoid_on and ends with the first spout contact,  it runs several checks to avoid multiple spout contacts and to account for trials where reward is presented but a reach does not happen, if this occurs within the recording or on the last trial
 
-% solenoid and spoutContact are wrt eventData.Timestamps
-spoutContact_on_first = [];% creates an empty array for the first spout contact after each reward presentation (solenoid_on) which can be filled with values generated below
-spoutContact_on_multi = cell(length(solenoid_on), 1);% creates an empty array for the all spout contacts after each reward presentation (solenoid_on) and before next reward presentation
-hitormiss = zeros(length(solenoid_on), 1);
-for i = 1:length(solenoid_on) % starts a for loop which will cycle through all the values in solenoid_on
-	first_sc_index = find(spoutContact_on > solenoid_on(i)); %defines a variable tmp_index that for all values of solenoid on finds the value in spoutContact_on that is higher
-	if isempty(first_sc_index)
-		%  starts an if statement that writes an NaN in case the last value of solenoid on does not have a spoutconact after i.e mouse did not reach
-		curr_spoutContact_on = nan;
-	else
-		curr_spoutContact_on = spoutContact_on(first_sc_index(1));
-	end
-	if i < length(solenoid_on) %starts an if statement, where for all values except the last index value, the code checks that the spoutContact value corresponds to the current solenoid_on value and not the next 
-		if ~isempty(first_sc_index)
-			if (spoutContact_on(first_sc_index(1)) > solenoid_on(i+1))
-	   			spoutContact_on_first = [spoutContact_on_first; nan];
-			else
-				hitormiss(i) = 1;
-				% Find all spout contacts after each reward presentation (solenoid_on) and before next reward presentation
-				all_sc_index = find(spoutContact_on(first_sc_index) < solenoid_on(i+1));
-				spoutContact_on_multi{i} = spoutContact_on(all_sc_index + first_sc_index(1) - 1);
-				% Note first spout contact
-		 		spoutContact_on_first = [spoutContact_on_first; curr_spoutContact_on]; 
-		 	end
-		 end
-	else
-		if ~isempty(first_sc_index)
-			hitormiss(i) = 1;
-		end
-		spoutContact_on_first = [spoutContact_on_first; curr_spoutContact_on]; % for the last value, do not check the next value because it will be empty 
-		spoutContact_on_multi{i} = [curr_spoutContact_on];
-	end
-end
+% Get First and all spout contact immediately after each start event (solenoid_on) and before next start event
+[spoutContact_first, spoutContact_multi, hitormiss] = getSpoutContact(solenoid_on, spoutContact_on);
 
-% spoutContact_on_first is wrt eventData.Timestamps
-% videoFrames_timestamps is wrt contData.Timestamps
-% contData.Timestamps is superset of eventData.Timestamps
-% There may or may not be an exact match of videoFrames_timestamps with spoutContact_on_first
-% Hence, This code identifies the frame timestamps that correspond to the start and end of each trial,
-% note video frame timestamps do not exactly correspond to openEphys timestamps because of videos are
-% sampled at 200fps every 50ms of openEphys data
-
-% start ts is in terms of videoFrames_timestamps
-% start_idx is the index into videoFrames_timestamps
-start_ts = [];
-start_idx = [];
-for i = 1:length(solenoid_on) % starts a for loop which will cycle through all the values in solenoid_on
-	tmp_indx1 = find(videoFrames_timestamps<=solenoid_on(i));%looks for all the frame timestamps that happen before the solenoid on value
-	if isempty(tmp_indx1)
-		start_ts = [start_ts; nan];
-		start_idx = [start_idx; nan];
-	else
-		start_ts = [start_ts; videoFrames_timestamps(tmp_indx1(end))];%selects the last one, this is the closest frame timestamp value to the solenoid on value
-		start_idx = [start_idx; tmp_indx1(end)];
-	end
-end
-end_ts_first=[];
-end_idx_first=[];
-end_ts_last=[];
-end_idx_last=[];
-sc_indx={};
-for j=1:length(spoutContact_on_first)
-	sc_indx_trial = nan;
-	if ~isnan(spoutContact_on_first(j))
-		%looks for all the frame timestamps that happen after the first spout contact on value
-		sc_indx_trial = find(videoFrames_timestamps>=spoutContact_on_first(j));
-	end
-	
-	if ~(isnan(sc_indx_trial) & isempty(sc_indx_trial)) & hitormiss(j)==1
-		sc_indx{j} = sc_indx_trial;
-		% Get time stamp value and index of end of first spout contact
-		%selects the first value of the time stamp, this is the closest frame timestamp to the first spout contact on value 
-		end_ts_first = [end_ts_first; videoFrames_timestamps(sc_indx_trial(1))]; 
-		end_idx_first = [end_idx_first; sc_indx_trial(1)];
-
-		%looks for all the frame timestamps that happen after the first spout contact uptil the last spout contact before next solenoid on
-		last_sc_indx_trial = find(videoFrames_timestamps(sc_indx_trial)<=spoutContact_on_multi{j}(end));
-		% In case there is only one spout contact, use the first sc
-		if isempty(last_sc_indx_trial)
-			last_sc_indx_trial = 1;
-		end
-		%selects the first value of the time stamp, this is the closest frame timestamp to the resp. spout contact
-		end_ts_last = [end_ts_last; videoFrames_timestamps(sc_indx_trial(1)+last_sc_indx_trial(end)-1)]; 
-		end_idx_last = [end_idx_last; sc_indx_trial(1)+last_sc_indx_trial(end)-1];
-	else
-		% For no spout contact, init to nan
-		sc_indx{j} = nan;
-		end_ts_first = [end_ts_first; nan];
-		end_idx_first = [end_idx_first; nan];
-		end_ts_last = [end_ts_last; nan];
-		end_idx_last = [end_idx_last; nan];
-	end
-end
+% Get contData.Timestamp reference for start and end of trial; As well as index into contData.Timestamp and anipose
+%	- start_ts: contData.Timestamp value of start of trial
+%	- start_idx: Index into contData.Timestamp; Also, index into aniposeData (row number)
+%	- end_ts_first/ end_ts_last: contData.Timestamp value of first and last spout contact of trial (end of trial)
+%	- end_ts_idx/ end_ts_idx: Index into contData.Timestamp and aniposeData for first and last spout contact of trial
+[start_ts, start_idx,...
+ end_ts_first, end_idx_first,...
+ end_ts_last, end_idx_last] = getTrialEventInfo(solenoid_on, videoFrames_timestamps, hitormiss,...
+  												spoutContact_first, spoutContact_multi);
 
 % laserTrig is wrt contData.Timestamps
 lightOnTrig_ts=contDataTimestamps(find(laserTrig>3.3));
