@@ -1,5 +1,5 @@
 function cont_array = convert_to_continuous(on_array, off_array, contDataTimeStamps, nSamples)
-    % cont_array = convert_to_continuous(on_array, off_array, nSamples);
+    % cont_array = convert_to_continuous(on_array, off_array, contDataTimeStamps, nSamples);
     % Converts a pulse on - off set of arrays to a square wave that is on from
     % when the measurement is on till the next off
     % Outputs:
