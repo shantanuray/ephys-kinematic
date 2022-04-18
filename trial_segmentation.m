@@ -62,7 +62,7 @@ function trial_list = trial_segmentation(aniposeData,...
 %This code identifies the index positions corresponding to the the start and end of each, a trial starts with a solenoid_on and ends with the first spout contact,  it runs several checks to avoid multiple spout contacts and to account for trials where reward is presented but a reach does not happen, if this occurs within the recording or on the last trial
 
 % Get First and all spout contact immediately after each start event (solenoid_on) and before next start event
-perchContact_cont = convert_to_continuous(perchContact_on, perchContact_off, contDataTimestamps, length(contDataTimestamps));
+perchContact_cont = convert_to_continuous(perchContact_on, perchContact_off, contDataTimestamps);
 [spoutContact_first, spoutContact_multi, hitormiss, perchOnStart] = getSpoutContact(startTrialTrigger, spoutContact_on, perchContact_cont);
 
 % Get contData.Timestamp reference for start and end of trial; As well as index into contData.Timestamp and anipose

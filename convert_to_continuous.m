@@ -18,7 +18,7 @@ function cont_array = convert_to_continuous(on_array, off_array, contDataTimeSta
     % eventData is a subset of contData
     % contData and eventData.Timestamps may not start from 1
 
-    nSamples = length(contDataTimestamps);
+    nSamples = length(contDataTimeStamps);
     % init to zeros (no data)
     cont_array = zeros(1,nSamples);
     % set value to 1 when on array comes on till just before it turns off
