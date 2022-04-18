@@ -77,8 +77,8 @@ function trial = getTrialInfo(aniposeData,...
 			trial.(strcat('EMG_ecu_last_sc', startEvent)) = EMG_ecu(:, ephys_start_idx:min(size(EMG_ecu, 2), ephys_end_idx_last_sc))';
 			trial.(strcat('EMG_trap_last_sc', startEvent)) = EMG_trap(:, ephys_start_idx:min(size(EMG_trap, 2), ephys_end_idx_last_sc))';
 		else
-			trial.(strcat('lightOnTrig_ts', startEvent)) = trial.lightOnTrig_ts_fixed;
-			trial.(strcat('lightTrig', startEvent)) = trial.lightTrig_fixed;
+			% trial.(strcat('lightOnTrig_ts', startEvent)) = trial.lightOnTrig_ts_fixed;
+			% trial.(strcat('lightTrig', startEvent)) = trial.lightTrig_fixed;
 			trial.(strcat('aniposeData_first_sc', startEvent)) = [];
 			trial.(strcat('aniposeData_last_sc', startEvent)) = [];
 			trial.(strcat('EMG_biceps_first_sc', startEvent)) = [];
