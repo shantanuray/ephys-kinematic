@@ -82,7 +82,7 @@ perchContact_cont = convert_to_continuous(perchContact_on, perchContact_off, con
 % laserTrig is wrt contData.Timestamps
 lightOnTrig_ts=contDataTimestamps(find(laserTrig>3.3));
 
-trial_list = [];
+trial_list = struct();
 
 for i = 1:length(startTrialTrigger)
 	trial_list(i) = getTrialInfo(aniposeData,...
