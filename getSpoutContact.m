@@ -36,6 +36,9 @@ function [spoutContact_on_first, spoutContact_on_multi, hitormiss, perchOnStart]
 					% Note first spout contact
 			 		spoutContact_on_first = [spoutContact_on_first; curr_spoutContact_on]; 
 			 	end
+			 else
+			 	spoutContact_on_multi{i} = [curr_spoutContact_on];
+		 		spoutContact_on_first = [spoutContact_on_first; curr_spoutContact_on]; 
 			 end
 		else
 			if ~isempty(first_sc_index)
