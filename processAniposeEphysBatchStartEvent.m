@@ -88,8 +88,10 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
             ephysNumTS = round(fixedReachIntervalms*ephysSamplingRate/1000,0);
             % Segment data by trial
             for evnt_idx = 1:length(startEvents)
+                startEvent = startEvents{evnt_idx};
+                startTrialTrigger = eval(startEvent);
                 trial_list = trial_segmentation(aniposeData,...
-                                               eval(startEvents{evnt_idx}),...
+                                               startTrialTrigger,...
                                                spoutContact_on,...
                                                perchContact_on, perchContact_off,...
                                                videoFrames_timestamps,...
@@ -109,14 +111,23 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
                                  'aniposeData_first_sc_relative',...
                                  'aniposeData_last_sc_relative'};
                 trial_list = getVelocityAcceleration(trial_list, aniposeSamplingRate, processLabels);
-                eval(strcat('trialList_', startEvents{evnt_idx}, ' = trial_list;'));
-                disp(sprintf('Saving %s trials for %s', startEvents{evnt_idx}, anipose_ephys_loc.label));
-                if filterAniposeFlag
-                    saveFilename = strcat(anipose_ephys_loc.label, '_',  startEvents{evnt_idx}, '_filtered.mat');
-                else
-                    saveFilename = strcat(anipose_ephys_loc.label, '_',  startEvents{evnt_idx}, '.mat');
+                switch lower(startEvent)
+                case 'solenoid_on'
+                    trialList_solenoid_on = trial_list;
+                    trialList_varName = 'trialList_solenoid_on';
+                case 'tone_on'
+                    trialList_tone_on = trial_list;
+                    trialList_varName = 'trialList_tone_on';
+                otherwise
+                    trialList_varName = 'trial_list';
                 end
-                save(fullfile(savedir, saveFilename), strcat('trialList_', startEvents{evnt_idx}),...
+                disp(sprintf('Saving %s trials for %s', startEvent, anipose_ephys_loc.label));
+                if filterAniposeFlag
+                    saveFilename = strcat(anipose_ephys_loc.label, '_',  startEvent, '_filtered.mat');
+                else
+                    saveFilename = strcat(anipose_ephys_loc.label, '_',  startEvent, '.mat');
+                end
+                save(fullfile(savedir, saveFilename), trialList_varName,...
                     'tone_on', 'tone_off',...
                     'solenoid_on', 'solenoid_off',...
                     'perchContact_on', 'perchContact_off',...
