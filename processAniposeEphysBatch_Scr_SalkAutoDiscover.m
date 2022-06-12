@@ -11,9 +11,11 @@
 
 root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3';
 
-% Get save directory
-save_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3';
-
+% Save directory
+save_dir = fullfile(root_dir, datestr(now, 'yyyy-mm-dd'));
+if exist(save_dir, 'dir') ~= 7
+    mkdir(save_dir);
+end
 
 %% Filter parameters
 scoreThresh = 0.05;
