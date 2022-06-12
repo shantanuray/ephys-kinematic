@@ -65,7 +65,7 @@ switch lower(reply)
     case '1'
         startEvents = {'solenoid_on'};
     case '2'
-        startEvents = {tone_on'};
+        startEvents = {'tone_on'};
     case 3
         startEvents = {'solenoid_on','tone_on'};
     otherwise
