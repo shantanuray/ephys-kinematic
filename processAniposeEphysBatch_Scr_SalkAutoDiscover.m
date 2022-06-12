@@ -9,26 +9,25 @@
 % root_dir/ (eg. /mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3
 % Full path example: /mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3/A11-3_2022-02-25_11-59-18_video/pose-3d
 
-disp('Choose the root directory with all of the anipose and ephys data')
-root_dir = uigetdir('.', 'Choose root directory with all of the anipose and ephys data');
+root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3';
 
 % Get save directory
-disp('Choose common location to save trials')
-save_dir = uigetdir('.', 'Choose common location to save trials');
+save_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3';
+
 
 %% Filter parameters
 scoreThresh = 0.05;
 fillMissingGapSize = 50;
 reply = input(['\nDo you wish filter anipose data??\n\n',...
-            '[Enter/y/Y]    => Yes\n',...
-            '[n/N]          => No    \n'],'s');
+            '[Enter/n/N]    => No\n',...
+            '[y/Y]          => Yes    \n'],'s');
 switch lower(reply)
     case 'y'
         filterAniposeFlag = true;
     case 'n'
         filterAniposeFlag = false;
     otherwise
-        filterAniposeFlag = true;
+        filterAniposeFlag = false;
 end
 if filterAniposeFlag
     % Default score threhold

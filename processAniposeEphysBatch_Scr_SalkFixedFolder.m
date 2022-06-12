@@ -6,7 +6,7 @@
 addpath ~/projects/ephys-kinematic
 addpath ~/projects/npy-matlab/npy-matlab
 
-root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/';
+root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3';
 % Saving to a new folder initialized to TODAY. Change as necessary
 save_dir = fullfile(root_dir, datestr(now, 'yyyy-mm-dd'));
 if exist(save_dir, 'dir') ~= 7
