@@ -18,12 +18,10 @@ end
 
 % get all indicator dir (eg. pose-3d)
 % Assumng this structure
-%	rootdir/ 		(Example ./headfixedreach/)
-%	<Animal Name>/
+%	rootdir/ 		(Animal Name ./A11-3/)
 %	<label>_video/
 %	pose-3d
 indicator_dir_list = dir(fullfile(rootdir,...
-								  '*',...
 								  '*_video',...
 								  indicator));
 % Should be dir by default, but double check
