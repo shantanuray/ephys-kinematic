@@ -90,6 +90,7 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
             for evnt_idx = 1:length(startEvents)
                 startEvent = startEvents{evnt_idx};
                 startTrialTrigger = eval(startEvent);
+                disp(sprintf('Find events for trigger %s', startEvent));
                 if isempty(startTrialTrigger)
                     disp(sprintf('Unable to find data for %s. Skipping ...', startEvent));
                 else
