@@ -64,11 +64,12 @@ switch lower(reply)
         startEvents = {'solenoid_on'};
     case '2'
         startEvents = {'tone_on'};
-    case 3
+    case '3'
         startEvents = {'solenoid_on','tone_on'};
     otherwise
         startEvents = {'solenoid_on'};
 end
+disp(sprintf('Selected trial start triggers - %s', startEvents))
 % Pass parameters to batch function
 % This will extract anipose, ephys data for all data folders within root_dir and save the result in save_dir
 processAniposeEphysBatchStartEvent(root_dir, save_dir,...
