@@ -69,7 +69,7 @@ switch lower(reply)
     otherwise
         startEvents = {'solenoid_on'};
 end
-disp(sprintf('Selected trial start triggers - %s', startEvents))
+disp(sprintf('Selected trial start triggers - %s', celldisp(startEvents, 'startEvents')))
 % Pass parameters to batch function
 % This will extract anipose, ephys data for all data folders within root_dir and save the result in save_dir
 processAniposeEphysBatchStartEvent(root_dir, save_dir,...
