@@ -152,7 +152,7 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
         defaultFixedReachIntervalms = 750;
         defaultAniposeDirList = {};
         defaultStartEvents = {'solenoid_on', 'tone_on'};
-        filterEMG = true;
+        filterEMG = false;
 
         addParameter(p,'FilterAniposeFlag',defaultFilterAniposeFlag, @islogical);
         addParameter(p,'ScoreThresh',defaultScoreThresh, @isnumeric);

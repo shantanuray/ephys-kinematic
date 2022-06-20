@@ -22,7 +22,7 @@ fillMissingGapSize = 50;
 fixedReachInterval = 750;
 
 %% Filter EMG
-filterEMG = true;
+filterEMG = false;
 
 % startEvents = Event(s) used for marking start of trial
 % Options:
