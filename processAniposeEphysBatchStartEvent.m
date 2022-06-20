@@ -21,7 +21,7 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
 
     % Initialize inputs
     p = readInput(varargin);
-    [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap, aniposeDirList, startEvents] = parseInput(p.Results);
+    [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap, aniposeDirList, startEvents, filterEMG] = parseInput(p.Results);
 
     % Get list of all dir with anipose data
     indicator = 'pose-3d';
@@ -105,7 +105,8 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
                                                EMG_trap,...
                                                aniposeNumTS,...
                                                ephysNumTS,...
-                                               contDataTimestamps);
+                                               contDataTimestamps,
+                                               filterEMG);
                 processLabels = {'aniposeData_fixed',...
                                  'aniposeData_first_sc',...
                                  'aniposeData_last_sc'};
@@ -143,16 +144,14 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
     end
     %% Read input
     function p = readInput(input)
-        %   - FilterAniposeFlag     Default - false
-        %   - ScoreThresh           Default - 0.05 
-        %   - MaxGap:               Default - 50
         p = inputParser;
         defaultFilterAniposeFlag = false;
         defaultScoreThresh = 0.05 ;
         defaultMaxGap = 50;
         defaultFixedReachIntervalms = 750;
         defaultAniposeDirList = {};
-        defaultStartEvents = {'solenoid_on'};
+        defaultStartEvents = {'solenoid_on', 'tone_on'};
+        filterEMG = true;
 
         addParameter(p,'FilterAniposeFlag',defaultFilterAniposeFlag, @islogical);
         addParameter(p,'ScoreThresh',defaultScoreThresh, @isnumeric);
@@ -160,15 +159,17 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
         addParameter(p,'FixedReachIntervalms',defaultFixedReachIntervalms, @isnumeric);
         addParameter(p,'AniposeDirList',defaultAniposeDirList, @iscell);
         addParameter(p,'StartEvents',defaultStartEvents, @iscell);
+        addParameter(p,'filterEMG',filterEMG, @islogical);
         parse(p, input{:});
     end
 
-    function [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap, aniposeDirList, startEvents] = parseInput(p)
+    function [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap, aniposeDirList, startEvents, filterEMG] = parseInput(p)
         fixedReachIntervalms = p.FixedReachIntervalms;
         filterAniposeFlag = p.FilterAniposeFlag;
         scoreThresh = p.ScoreThresh;
         maxGap = p.MaxGap;
         aniposeDirList = p.AniposeDirList;
         startEvents = p.StartEvents;
+        filterEMG = p.filterEMG;
     end
 end

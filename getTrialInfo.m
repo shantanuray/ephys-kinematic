@@ -10,10 +10,17 @@ function trial = getTrialInfo(aniposeData,...
   							  perchOnStart,...
 							  start_ts, start_idx,...
 							  end_ts_first, end_idx_first,...
-							  end_ts_last, end_idx_last)
+							  end_ts_last, end_idx_last,
+							  filterEMG)
 
 	trial.('hitormiss') = hitormiss;
 	trial.('perchOnStart') = perchOnStart;
+	if filterEMG
+		EMG_biceps_filtered = emgFilter(EMG_biceps);
+		EMG_triceps_filtered = emgFilter(EMG_triceps);
+		EMG_ecu_filtered = emgFilter(EMG_ecu);
+		EMG_trap_filtered = emgFilter(EMG_trap);
+	end
 	if ~isnan(start_ts)
 		trial.('start_ts') = start_ts;
 		trial.('start_idx') = start_idx;
@@ -30,6 +37,12 @@ function trial = getTrialInfo(aniposeData,...
 		trial.('EMG_triceps_fixed') = EMG_triceps(:, ephys_start_idx:min(size(EMG_triceps, 2), ephys_end_idx_fixed))';
 		trial.('EMG_ecu_fixed') = EMG_ecu(:, ephys_start_idx:min(size(EMG_ecu, 2), ephys_end_idx_fixed))';
 		trial.('EMG_trap_fixed') = EMG_trap(:, ephys_start_idx:min(size(EMG_trap, 2), ephys_end_idx_fixed))';
+		if filterEMG
+			trial.('EMG_biceps_fixed_filtered') = EMG_biceps_filtered(:, ephys_start_idx:min(size(EMG_biceps_filtered, 2), ephys_end_idx_fixed))';
+			trial.('EMG_triceps_fixed_filtered') = EMG_triceps_filtered(:, ephys_start_idx:min(size(EMG_triceps_filtered, 2), ephys_end_idx_fixed))';
+			trial.('EMG_ecu_fixed_filtered') = EMG_ecu_filtered(:, ephys_start_idx:min(size(EMG_ecu_filtered, 2), ephys_end_idx_fixed))';
+			trial.('EMG_trap_fixed_filtered') = EMG_trap_filtered(:, ephys_start_idx:min(size(EMG_trap_filtered, 2), ephys_end_idx_fixed))';
+		end
 		% lightOnTrig_ts is a subset of contDataTimestamps
 		% and start_ts is from videoFrames_timestamps, which is a subset of contDataTimestamps
 		% Hence lightOnTrig_ts value is comparable to start_ts (do not use index)
@@ -72,6 +85,16 @@ function trial = getTrialInfo(aniposeData,...
 			trial.('EMG_triceps_last_sc') = EMG_triceps(:, ephys_start_idx:min(size(EMG_triceps, 2), ephys_end_idx_last_sc))';
 			trial.('EMG_ecu_last_sc') = EMG_ecu(:, ephys_start_idx:min(size(EMG_ecu, 2), ephys_end_idx_last_sc))';
 			trial.('EMG_trap_last_sc') = EMG_trap(:, ephys_start_idx:min(size(EMG_trap, 2), ephys_end_idx_last_sc))';
+			if filterEMG
+				trial.('EMG_biceps_first_sc_filtered') = EMG_biceps_filtered(:, ephys_start_idx:min(size(EMG_biceps_filtered, 2), ephys_end_idx_first_sc))';
+				trial.('EMG_triceps_first_sc_filtered') = EMG_triceps_filtered(:, ephys_start_idx:min(size(EMG_triceps_filtered, 2), ephys_end_idx_first_sc))';
+				trial.('EMG_ecu_first_sc_filtered') = EMG_ecu_filtered(:, ephys_start_idx:min(size(EMG_ecu_filtered, 2), ephys_end_idx_first_sc))';
+				trial.('EMG_trap_first_sc_filtered') = EMG_trap_filtered(:, ephys_start_idx:min(size(EMG_trap_filtered, 2), ephys_end_idx_first_sc))';
+				trial.('EMG_biceps_last_sc_filtered') = EMG_biceps_filtered(:, ephys_start_idx:min(size(EMG_biceps_filtered, 2), ephys_end_idx_last_sc))';
+				trial.('EMG_triceps_last_sc_filtered') = EMG_triceps_filtered(:, ephys_start_idx:min(size(EMG_triceps_filtered, 2), ephys_end_idx_last_sc))';
+				trial.('EMG_ecu_last_sc_filtered') = EMG_ecu_filtered(:, ephys_start_idx:min(size(EMG_ecu_filtered, 2), ephys_end_idx_last_sc))';
+				trial.('EMG_trap_last_sc_filtered') = EMG_trap_filtered(:, ephys_start_idx:min(size(EMG_trap_filtered, 2), ephys_end_idx_last_sc))';
+			end
 		else
 			% trial.('lightOnTrig_ts') = trial.lightOnTrig_ts_fixed;
 			% trial.('lightTrig') = trial.lightTrig_fixed;
@@ -85,6 +108,16 @@ function trial = getTrialInfo(aniposeData,...
 			trial.('EMG_triceps_last_sc') = [];
 			trial.('EMG_ecu_last_sc') = [];
 			trial.('EMG_trap_last_sc') = [];
+			if filterEMG
+				trial.('EMG_biceps_first_sc_filtered') = [];
+				trial.('EMG_triceps_first_sc_filtered') = [];
+				trial.('EMG_ecu_first_sc_filtered') = [];
+				trial.('EMG_trap_first_sc_filtered') = [];
+				trial.('EMG_biceps_last_sc_filtered') = [];
+				trial.('EMG_triceps_last_sc_filtered') = [];
+				trial.('EMG_ecu_last_sc_filtered') = [];
+				trial.('EMG_trap_last_sc_filtered') = [];
+			end
 		end
 	end
 end
