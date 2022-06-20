@@ -113,5 +113,5 @@ function w = central_diff_weights(num_points, ndiv)
         X = [X, x.^k];
     end
     W = prod([1:ndiv], 'all')*inv(X);
-    w = W[ndiv+1, :];
+    w = W(ndiv+1, :);
 end
