@@ -56,9 +56,9 @@ end
 %%   {'tone_on'}
 %%   {'solenoid_on', 'tone_on'}
 reply = input(['\nWhich event are you using for marking start of trial?\n\n',...
-            '[Enter/1]    => solenoid_on\n',...
+            '[Enter/1]    => Both solenoid_on and tone_on\n',...
             '2            => tone_on    \n',...
-            '3            => Both solenoid_on and tone_on\n'],'s');
+            '3            => solenoid_on\n'],'s');
 switch lower(reply)
     case '1'
         startEvents = {'solenoid_on'};
@@ -67,7 +67,7 @@ switch lower(reply)
     case '3'
         startEvents = {'solenoid_on','tone_on'};
     otherwise
-        startEvents = {'solenoid_on'};
+        startEvents = {'solenoid_on','tone_on'};
 end
 % Pass parameters to batch function
 % This will extract anipose, ephys data for all data folders within root_dir and save the result in save_dir
