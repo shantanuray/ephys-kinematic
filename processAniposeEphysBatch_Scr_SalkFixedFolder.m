@@ -21,6 +21,9 @@ fillMissingGapSize = 50;
 %% Time duration for extracting fixed trial data in ms
 fixedReachInterval = 750;
 
+%% Filter EMG
+filterEMG = true;
+
 % startEvents = Event(s) used for marking start of trial
 % Options:
 %   {'solenoid_on'}
@@ -29,10 +32,14 @@ fixedReachInterval = 750;
 startEvents = {'solenoid_on','tone_on'};
 
 % Run batc on select folders only
-aniposeDirList = {'/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3/A11-3_2022-02-25_11-59-18_video',...
-                  '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-2/A11-2_2022-03-21_16-56-10_video'};
+aniposeDirList = {'/nadata/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3/A11-3_2022-02-23_13-52-38_video'};
+
+% {'/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3/A11-3_2022-02-25_11-59-18_video',...
+                  % '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-2/A11-2_2022-03-21_16-56-10_video'};
+
 % Pass parameters to batch function
 processAniposeEphysBatchStartEvent(root_dir, save_dir,...
                                    'AniposeDirList', aniposeDirList, 'StartEvents', startEvents,...
                                    'FilterAniposeFlag', filterAniposeFlag,...
-                                   'ScoreThresh', scoreThresh, 'MaxGap', fillMissingGapSize, 'FixedReachInterval', fixedReachInterval);
+                                   'ScoreThresh', scoreThresh, 'MaxGap', fillMissingGapSize, 'FixedReachInterval', fixedReachInterval,...
+                                   'filterEMG', filterEMG);
