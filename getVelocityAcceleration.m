@@ -15,7 +15,7 @@ function trial_list = getVelocityAcceleration(trial_list, fs, processLabels, num
 %				  Must be odd and > order of derivative + 1. Default = [3,5,7]
 % Examples
 % trial_list = getVelocityAcceleration(trial_list, 300);
-% trial_list = getVelocityAcceleration(trial_list, 300, {'aniposeData_fixed'}, 5);
+% trial_list = getVelocityAcceleration(trial_list, 300, {'aniposeData_fixed'}, [7, 7, 7]);
 
 % Data Labels to compute velocity and acceleration
 if nargin<4
@@ -38,7 +38,7 @@ for trial_idx = 1:length(trial_list)
 		% Vel & Accl contain the 1st & 2nd central derivative of the above
 		velocity = central_derivative(data, fs, 1, num_points(1)); % Velocity: order = 1
 		acceleration = central_derivative(data, fs, 2, num_points(2)); % Acceleration: order = 2
-		jerk = central_derivative(data, fs, 3, num_points(3)); % Acceleration: order = 2
+		jerk = central_derivative(data, fs, 3, num_points(3)); % Jerk: order = 3
 		%% The above derivative of r (dr/dt) implies rate of change of relative displacement to reference
 		%% and not the change from current to next position
 		%% For the speed between two points, i.e. relative distance/ time between two positions,
