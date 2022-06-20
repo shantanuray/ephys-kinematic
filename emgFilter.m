@@ -10,7 +10,7 @@ function emg_filtered = emgFilter(emg_signal, fs, varargin)
 		emg_filtered = abs(emg_filtered);
 	end
 	% Low pass filter
-	emg_filtered = bandpass(emg_filtered, low_pass_freq, fs);
+	emg_filtered = lowpass(emg_filtered, low_pass_freq, fs);
 
 
 	%% Read input
