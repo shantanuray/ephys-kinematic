@@ -1,4 +1,4 @@
-function emg_filtered = emgFilter(emg_signal, fs, bandpass_freq, rectify_flag, low_pass_freq)
+function emg_filtered = emgFilter(emg_signal, fs, varargin)
 	% Initialize inputs
     p = readInput(varargin);
     [bandpass_freq, rectify_flag, low_pass_freq] = parseInput(p.Results);

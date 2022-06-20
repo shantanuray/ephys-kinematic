@@ -11,15 +11,20 @@ function trial = getTrialInfo(aniposeData,...
 							  start_ts, start_idx,...
 							  end_ts_first, end_idx_first,...
 							  end_ts_last, end_idx_last,...
+							  ephysSamplingRate,...
 							  filterEMG)
 
 	trial.('hitormiss') = hitormiss;
 	trial.('perchOnStart') = perchOnStart;
 	if filterEMG
-		EMG_biceps_filtered = emgFilter(EMG_biceps);
-		EMG_triceps_filtered = emgFilter(EMG_triceps);
-		EMG_ecu_filtered = emgFilter(EMG_ecu);
-		EMG_trap_filtered = emgFilter(EMG_trap);
+		% Default
+		%   - bandpass     [300, 1000] Hz
+		%   - rectify
+		%   - low_pass     50 Hz
+		EMG_biceps_filtered = emgFilter(EMG_biceps, ephysSamplingRate);
+		EMG_triceps_filtered = emgFilter(EMG_triceps, ephysSamplingRate);
+		EMG_ecu_filtered = emgFilter(EMG_ecu, ephysSamplingRate);
+		EMG_trap_filtered = emgFilter(EMG_trap, ephysSamplingRate);
 	end
 	if ~isnan(start_ts)
 		trial.('start_ts') = start_ts;
