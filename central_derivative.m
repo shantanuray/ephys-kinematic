@@ -103,7 +103,7 @@ function w = central_diff_weights(num_points, ndiv)
     if num_points < ndiv + 1
         error("Number of points must be at least the derivative order + 1.");
     end
-    if mod(num_points, 2) == 0:
+    if mod(num_points, 2) == 0
         error("The number of points must be odd.");
     end
     ho = double(bitsra(int8(num_points), 1));
