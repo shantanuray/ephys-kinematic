@@ -77,7 +77,12 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 		if ~isempty(xRelTrial)
 			totalTimeTrial = size(xRelTrial, 1)/fs;
 			xyzSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(speedColLabel));
-			[xyzSpeedTrialPeaks, xyzSpeedTrialLocs]  = findpeaks(xyzSpeedTrialPt);
+			if length(xyzSpeedTrialPt) >= 3
+				[xyzSpeedTrialPeaks, xyzSpeedTrialLocs]  = findpeaks(xyzSpeedTrialPt);
+			else
+				xyzSpeedTrialPeaks = [];
+				xyzSpeedTrialLocs = [];
+			end
 			xyzSpeedTrialPeakCount = length(xyzSpeedTrialPeaks);
 			xRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(xColLabel));
 			yRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(yColLabel));
@@ -112,7 +117,11 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 			jerkTrial = sqrt((xRelTrialPt(2:end) - xRelTrialPt(1:end-1)).^2)+...
 						sqrt((yRelTrialPt(2:end) - yRelTrialPt(1:end-1)).^2)+...
 						sqrt((zRelTrialPt(2:end) - zRelTrialPt(1:end-1)).^2);
-			[jerkTrialPeaks, jerkTrialLocs]  = findpeaks(jerkTrial);
+			if length(jerkTrial) >= 3
+				[jerkTrialPeaks, jerkTrialLocs]  = findpeaks(jerkTrial);
+			else
+				jerkTrialPeaks = [];
+				jerkTrialLocs = [];
 			jerkTrialPeakCount = length(jerkTrialPeaks);
 		end
 		xDist = [xDist; xDistTrial]; yDist = [yDist; yDistTrial]; zDist = [zDist; zDistTrial];
