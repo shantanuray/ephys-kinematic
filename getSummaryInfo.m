@@ -122,6 +122,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 			else
 				jerkTrialPeaks = [];
 				jerkTrialLocs = [];
+			end
 			jerkTrialPeakCount = length(jerkTrialPeaks);
 		end
 		xDist = [xDist; xDistTrial]; yDist = [yDist; yDistTrial]; zDist = [zDist; zDistTrial];
