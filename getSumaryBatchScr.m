@@ -14,7 +14,7 @@ save_loc = root_dir;
 % '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/AT_A19-2_2021-09-10_14-18-39_hfwr_auto_lighton_noisy_091021_218pm.mat', 
 % '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/AT_auto_manual_LightON_2021-09-24_16-29-56.mat', 
 % '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/AT_manualAuto_LightON_2021-09-27_14-10-00.mat'};
-startEvents = {'',' solenoid_on', 'tone_on'};
+startEvents = {'solenoid_on', 'tone_on'};
 for sevt = 1:length(startEvents)
     mat_list = dir(fullfile(root_dir, strcat('A*', repmat('_',length(startEvents{sevt})>0), startEvents{sevt}, '.mat')));
     summaryTable = table();
