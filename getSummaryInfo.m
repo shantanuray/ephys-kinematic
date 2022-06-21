@@ -49,6 +49,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 	totalDist = []; firstSCDist = [];
 	xSpeed = []; ySpeed = []; zSpeed = []; averageSpeed = [];
 	maxSpeed = []; distRelMaxSpeed = [];
+	xyzSpeedPeakCount = []; jerkPeakCount = [];
 
 
 	% Extract distance and speed from velocity table
@@ -57,6 +58,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 	distDataLabel = strcat(dataLabel, '_relative');
 	% Init data labels to get speed and distance
 	velDataLabel = strcat(dataLabel, '_relative_velocity');
+	jerkDataLabel = strcat(dataLabel, '_relative_jerk');
 	speedColLabel = strcat(bodyPart, '_xyzSpeed');
 	xColLabel = strcat(bodyPart, '_x');
 	yColLabel = strcat(bodyPart, '_y');
@@ -75,6 +77,8 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 		if ~isempty(xRelTrial)
 			totalTimeTrial = size(xRelTrial, 1)/fs;
 			xyzSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(speedColLabel));
+			[xyzSpeedTrialPeaks, xyzSpeedTrialLocs]  = findpeaks(jerkTrial);
+			xyzSpeedTrialPeakCount = length(xyzSpeedTrialPeaks);
 			xRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(xColLabel));
 			yRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(yColLabel));
 			zRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(zColLabel));
@@ -102,12 +106,22 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 			xSpeedTrial = xDistTrial/totalTimeTrial;
 			ySpeedTrial = yDistTrial/totalTimeTrial;
 			zSpeedTrial = zDistTrial/totalTimeTrial;
+			xJerkTrialPt = abs(trial_list(trial_idx).(jerkDataLabel).(xColLabel));
+			yJerkTrialPt = abs(trial_list(trial_idx).(jerkDataLabel).(yColLabel));
+			zJerkTrialPt = abs(trial_list(trial_idx).(jerkDataLabel).(zColLabel));
+			jerkTrial = sqrt((xRelTrialPt(2:end) - xRelTrialPt(1:end-1)).^2)+...
+						sqrt((yRelTrialPt(2:end) - yRelTrialPt(1:end-1)).^2)+...
+						sqrt((zRelTrialPt(2:end) - zRelTrialPt(1:end-1)).^2);
+			[jerkTrialPeaks, jerkTrialLocs]  = findpeaks(jerkTrial);
+			jerkTrialPeakCount = length(jerkTrialPeaks);
 		end
 		xDist = [xDist; xDistTrial]; yDist = [yDist; yDistTrial]; zDist = [zDist; zDistTrial];
 		totalDist = [totalDist; totalDistTrial]; firstSCDist = [firstSCDist; rRelFirstSCTrial];
 		xSpeed = [xSpeed; xSpeedTrial]; ySpeed = [ySpeed; ySpeedTrial]; zSpeed = [zSpeed; zSpeedTrial];
 		averageSpeed = [averageSpeed; averageSpeedTrial];
 		maxSpeed = [maxSpeed; maxSpeedTrial]; distRelMaxSpeed = [distRelMaxSpeed; rRelTrialMaxSpeed];
+		xyzSpeedPeakCount = [xyzSpeedPeakCount; xyzSpeedTrialPeakCount];
+		jerkPeakCount = [jerkPeakCount; jerkTrialPeakCount];
 	end
 	summaryTable = table(label,...
 						 trialIndex,...
@@ -123,5 +137,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 						 zSpeed,...
 						 averageSpeed,...
 						 maxSpeed,...
-						 distRelMaxSpeed);
+						 distRelMaxSpeed,...
+						 xyzSpeedPeakCount,...
+						 jerkPeakCount);
 end
