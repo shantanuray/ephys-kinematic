@@ -77,7 +77,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 		if ~isempty(xRelTrial)
 			totalTimeTrial = size(xRelTrial, 1)/fs;
 			xyzSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(speedColLabel));
-			[xyzSpeedTrialPeaks, xyzSpeedTrialLocs]  = findpeaks(jerkTrial);
+			[xyzSpeedTrialPeaks, xyzSpeedTrialLocs]  = findpeaks(xyzSpeedTrialPt);
 			xyzSpeedTrialPeakCount = length(xyzSpeedTrialPeaks);
 			xRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(xColLabel));
 			yRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(yColLabel));
