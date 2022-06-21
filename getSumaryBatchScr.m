@@ -1,4 +1,4 @@
-root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/2022-04-20';
+root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/2022-06-20';
 refLabel = 'waterSpout';
 ref2max = true;
 fsKinematic = 200;
