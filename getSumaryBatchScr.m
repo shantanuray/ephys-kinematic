@@ -24,8 +24,10 @@ for sevt = 1:length(startEvents)
         [fpath, title_str, ext] = fileparts(mat_file);
         disp(sprintf('Loading %s', mat_file));
         trial_list = [];
-        load(mat_file, strcat('trial_list', repmat('_',length(startEvents{sevt})>0), startEvents{sevt}));
-        eval(['trial_list = ', strcat('trial_list', repmat('_',length(startEvents{sevt})>0), startEvents{sevt}), ';']);
+        var_name = strcat('trial_list', repmat('_',length(startEvents{sevt})>0), startEvents{sevt});
+        disp(sprintf('Getting trials from %s',var_name))
+        load(mat_file, var_name);
+        eval(['trial_list = ', var_name, ';']);
         disp(sprintf('Getting summary info for %d trials', length(trial_list)));
         try
             summaryTrial = getSummaryInfo(trial_list, fsKinematic, title_str, 'right_d2_knuckle', 'aniposeData_first_sc');
