@@ -45,8 +45,11 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 	lightTrig = {};
 	[lightTrig{1:length(trial_list)}] = deal(trial_list.lightTrig);
 	lightTrig = lightTrig(trialIndex)';
-	xDist = []; yDist = []; zDist = []; totalDist = [];
+	xDist = []; yDist = []; zDist = []; 
+	totalDist = []; firstSCDist = [];
 	xSpeed = []; ySpeed = []; zSpeed = []; averageSpeed = [];
+	maxSpeed = []; distRelMaxSpeed = [];
+
 
 	% Extract distance and speed from velocity table
 	dt = 1/fs;
@@ -58,6 +61,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 	xColLabel = strcat(bodyPart, '_x');
 	yColLabel = strcat(bodyPart, '_y');
 	zColLabel = strcat(bodyPart, '_z');
+	rColLabel = strcat(bodyPart, '_r');
 	for trial_idx = trialIndex'
 		% Get speed and distance for every trial
 		xRelTrial = [];
@@ -70,21 +74,40 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 		end
 		if ~isempty(xRelTrial)
 			totalTimeTrial = size(xRelTrial, 1)/fs;
-			xyzSpeedTrialPt = trial_list(trial_idx).(velDataLabel).(speedColLabel);
-			xSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(xColLabel));
-			ySpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(yColLabel));
-			zSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(zColLabel));
-			totalDistTrial = sum(xyzSpeedTrialPt*dt, 1);
-			xDistTrial = sum(xSpeedTrialPt*dt, 1);
-			yDistTrial = sum(ySpeedTrialPt*dt, 1);
-			zDistTrial = sum(zSpeedTrialPt*dt, 1);
+			xyzSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(speedColLabel));
+			xRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(xColLabel));
+			yRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(yColLabel));
+			zRelTrialPt = abs(trial_list(trial_idx).(distDataLabel).(zColLabel));
+			if length(xRelTrial) > 1
+				xDistTrial = sum(sqrt((xRelTrialPt(2:end) - xRelTrialPt(1:end-1)).^2));
+				yDistTrial = sum(sqrt((yRelTrialPt(2:end) - yRelTrialPt(1:end-1)).^2));
+				zDistTrial = sum(sqrt((zRelTrialPt(2:end) - zRelTrialPt(1:end-1)).^2));
+				totalDistTrial = sum(sqrt((xRelTrialPt(2:end) - xRelTrialPt(1:end-1)).^2)+...
+									   sqrt((yRelTrialPt(2:end) - yRelTrialPt(1:end-1)).^2)+...
+									   sqrt((zRelTrialPt(2:end) - zRelTrialPt(1:end-1)).^2));
+			else
+				xDistTrial = 0;
+				yDistTrial = 0;
+				zDistTrial = 0;
+				totalDistTrial = 0;
+			end
 			averageSpeedTrial = totalDistTrial/totalTimeTrial;
+			firstSCRelDistLabel = 'aniposeData_first_sc_relative';
+			% xyzRel is location wrt to ref (eg. spout)
+			% Hence, r is dist to spout
+			rRelFirstSCTrial = trial_list(trial_idx).(firstSCRelDistLabel).(rColLabel)(1);
+			maxSpeedTrial = max(xyzSpeedTrialPt);
+			max_loc = find(xyzSpeedTrialPt == maxSpeedTrial);
+			rRelTrialMaxSpeed = trial_list(trial_idx).(distDataLabel).(rColLabel)(max_loc);
 			xSpeedTrial = xDistTrial/totalTimeTrial;
 			ySpeedTrial = yDistTrial/totalTimeTrial;
 			zSpeedTrial = zDistTrial/totalTimeTrial;
 		end
-		xDist = [xDist; xDistTrial]; yDist = [yDist; yDistTrial]; zDist = [zDist; zDistTrial]; totalDist = [totalDist; totalDistTrial];
-		xSpeed = [xSpeed; xSpeedTrial]; ySpeed = [ySpeed; ySpeedTrial]; zSpeed = [zSpeed; zSpeedTrial]; averageSpeed = [averageSpeed; averageSpeedTrial];
+		xDist = [xDist; xDistTrial]; yDist = [yDist; yDistTrial]; zDist = [zDist; zDistTrial];
+		totalDist = [totalDist; totalDistTrial]; firstSCDist = [firstSCDist; rRelFirstSCTrial];
+		xSpeed = [xSpeed; xSpeedTrial]; ySpeed = [ySpeed; ySpeedTrial]; zSpeed = [zSpeed; zSpeedTrial];
+		averageSpeed = [averageSpeed; averageSpeedTrial];
+		maxSpeed = [maxSpeed; maxSpeedTrial]; distRelMaxSpeed = [distRelMaxSpeed; rRelTrialMaxSpeed];
 	end
 	summaryTable = table(label,...
 						 trialIndex,...
@@ -94,8 +117,11 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 						 yDist,...
 						 zDist,...
 						 totalDist,...
+						 firstSCDist,...
 						 xSpeed,...
 						 ySpeed,...
 						 zSpeed,...
-						 averageSpeed);
+						 averageSpeed,...
+						 maxSpeed,...
+						 distRelMaxSpeed);
 end
