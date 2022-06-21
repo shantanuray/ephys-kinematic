@@ -27,7 +27,9 @@ function [L,R,k] = curvature(X)
   %   L(end) = L(end-1) + norm(X(end,:)-X(end-1,:));
   % end
   i = N;
-  L(i) = L(i-1)+norm(X(i,:)-X(i-1,:));
+  if length(L)>1
+    L(i) = L(i-1)+norm(X(i,:)-X(i-1,:));
+  end
   if dims == 2
     k = k(:,1:2);
   end
