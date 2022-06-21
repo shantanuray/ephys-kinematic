@@ -16,7 +16,7 @@ save_loc = root_dir;
 % '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/AT_manualAuto_LightON_2021-09-27_14-10-00.mat'};
 startEvents = {'',' solenoid_on', 'tone_on'};
 for sevt = 1:length(startEvents)
-    mat_list = dir(fullfile(root_dir, strcat('A*', repmat('_',length(sevt)>0), sevt, '.mat'));
+    mat_list = dir(fullfile(root_dir, strcat('A*', repmat('_',length(sevt)>0), sevt, '.mat')));
     summaryTable = table();
     for mat_indx = 1:length(mat_list)
         % mat_file = mat_list{mat_indx};
