@@ -16,7 +16,7 @@ save_loc = root_dir;
 % '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/AT_manualAuto_LightON_2021-09-27_14-10-00.mat'};
 startEvents = {'',' solenoid_on', 'tone_on'};
 for sevt = 1:length(startEvents)
-    mat_list = dir(fullfile(root_dir, strcat('A*', repmat('_',length(sevt)>0), sevt, '.mat')));
+    mat_list = dir(fullfile(root_dir, strcat('A*', repmat('_',length(startEvents{sevt})>0), startEvents{sevt}, '.mat')));
     summaryTable = table();
     for mat_indx = 1:length(mat_list)
         % mat_file = mat_list{mat_indx};
@@ -24,8 +24,8 @@ for sevt = 1:length(startEvents)
         [fpath, title_str, ext] = fileparts(mat_file);
         disp(sprintf('Loading %s', mat_file));
         trial_list = [];
-        load(mat_file, strcat('trial_list', repmat('_',length(sevt)>0), sevt));
-        eval(['trial_list = ', strcat('trial_list', repmat('_',length(sevt)>0), sevt), ';']);
+        load(mat_file, strcat('trial_list', repmat('_',length(startEvents{sevt})>0), startEvents{sevt}));
+        eval(['trial_list = ', strcat('trial_list', repmat('_',length(startEvents{sevt})>0), startEvents{sevt}), ';']);
         disp(sprintf('Getting summary info for %d trials', length(trial_list)));
         try
             summaryTrial = getSummaryInfo(trial_list, fsKinematic, title_str, 'right_d2_knuckle', 'aniposeData_first_sc');
