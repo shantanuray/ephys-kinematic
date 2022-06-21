@@ -20,12 +20,12 @@ function [L,R,k] = curvature(X)
     [R(i),~,k(i,:)] = circumcenter(X(i,:)',X(i-1,:)',X(i+1,:)');
     L(i) = L(i-1)+norm(X(i,:)-X(i-1,:));
   end
-  if norm(X(1,:)-X(end,:)) < 1e-10 % Closed curve. 
-    [R(1),~,k(1,:)] = circumcenter(X(end-1,:)',X(1,:)',X(2,:)');
-    R(end) = R(1);
-    k(end,:) = k(1,:);
-    L(end) = L(end-1) + norm(X(end,:)-X(end-1,:));
-  end
+  % if norm(X(1,:)-X(end,:)) < 1e-10 % Closed curve. 
+  %   [R(1),~,k(1,:)] = circumcenter(X(end-1,:)',X(1,:)',X(2,:)');
+  %   R(end) = R(1);
+  %   k(end,:) = k(1,:);
+  %   L(end) = L(end-1) + norm(X(end,:)-X(end-1,:));
+  % end
   i = N;
   L(i) = L(i-1)+norm(X(i,:)-X(i-1,:));
   if dims == 2
