@@ -29,12 +29,8 @@ for sevt = 1:length(startEvents)
         load(mat_file, var_name);
         eval(['trial_list = ', var_name, ';']);
         disp(sprintf('Getting summary info for %d trials', length(trial_list)));
-        try
-            summaryTrial = getSummaryInfo(trial_list, fsKinematic, title_str, 'right_d2_knuckle', 'aniposeData_first_sc');
-            summaryTable = [summaryTable; summaryTrial];
-        catch
-            disp(sprintf('Issue with %s', title_str));
-        end
+        summaryTrial = getSummaryInfo(trial_list, fsKinematic, title_str, 'right_d2_knuckle', 'aniposeData_first_sc');
+        summaryTable = [summaryTable; summaryTrial];
     end
     save(fullfile(save_loc, summary_file), 'summaryTable');
 end
