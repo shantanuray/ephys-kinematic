@@ -24,7 +24,7 @@ for sevt = 1:length(startEvents)
         [fpath, title_str, ext] = fileparts(mat_file);
         disp(sprintf('Loading %s', mat_file));
         trial_list = [];
-        var_name = strcat('trial_list', repmat('_',length(startEvents{sevt})>0), startEvents{sevt});
+        var_name = strcat('trialList', repmat('_',length(startEvents{sevt})>0), startEvents{sevt});
         disp(sprintf('Getting trials from %s',var_name))
         load(mat_file, var_name);
         eval(['trial_list = ', var_name, ';']);
