@@ -144,7 +144,7 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
                 end
             end
         else
-            disp(sprintf('Could not find ephys data. Missing %s', anipose_ephys_loc.ephys_loc)
+            disp(sprintf('Could not find ephys data. Missing %s', anipose_ephys_loc.ephys_loc));
         end
     end
     %% Read input
