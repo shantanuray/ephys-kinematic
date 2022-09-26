@@ -1,0 +1,9 @@
+function speed = getSpeed(trial)
+	% speed = getSpeed(trial);
+	% speed = Euclidean distance between consecutive points of a trial/ time between points
+	pathLength = getPathLength(trial);
+	fs = getSamplingFrequency(trial, 'video_fps');
+	dt = 1/fs;
+	speed = getPathLength(trial)/dt;
+	padZerosCnt = length(pathLength)-length(speed);
+	speed = padZeros(speed, padZerosCnt);

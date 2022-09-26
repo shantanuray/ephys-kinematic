@@ -1,0 +1,9 @@
+function [num_pks, freq_pks] = countPeaks(trial, markerName, dorsoVentralAxis, maxPeakHeight, varargin)
+	% [num_pks, freq_pks] = countPeaks(trial, markerName, dorsoVentralAxis, maxPeakHeight);
+	% num_pks = # of peaks in trial
+	% freq_pks = num_pks/t
+	% t = duration of pulling action (not necessarily the entire trial)
+	[loc, pks, startPullLoc, endPullLoc] = getPeaks(trial, markerName, dorsoVentralAxis, maxPeakHeight, varargin{:});
+	t = (endPullLoc-startPullLoc)/trial.video_fps;
+	num_pks = length(loc);
+	freq_pks = num_pks/t;
