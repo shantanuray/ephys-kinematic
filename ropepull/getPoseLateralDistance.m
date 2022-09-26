@@ -33,4 +33,4 @@ function poseLateralDistance = getPoseLateralDistance(trial, baseMarkerNames, pe
     poseMidBaseXYZLateral = poseMidBaseXYZ;
 	poseMidBaseXYZLateral(:, dorsoVentralAxisIndx) = peakMarkerXYZ(:, dorsoVentralAxisIndx);
 	% Calculate Euclidean distance
-	poseLateralDistance = sqrt(sum((peakMarkerXYZ - poseMidBaseXYZLateral).^2, 2));
+	poseLateralDistance = norm(peakMarkerXYZ - poseMidBaseXYZLateral, 2, 2);
