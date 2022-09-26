@@ -17,7 +17,7 @@ function poseHeight = getPoseHeight(trial, baseMarkerNames, peakMarkerName, dors
 		dorsoVentralAxis = 'x';
 	end
 	dorsoVentralAxisIndx = searchStrInCell({'x','y','z'}, dorsoVentralAxis);
-	assert(length(dorsoVentralAxisIndx)>0, sprintf('%s missing', dorsoVentralAxis))
+	assert(~isempty(dorsoVentralAxisIndx), sprintf('getPoseHeight:%s: %s missing', trial.trialName, dorsoVentralAxis))
 	if nargin < 3
 		peakMarkerName = 'nose';
 	end

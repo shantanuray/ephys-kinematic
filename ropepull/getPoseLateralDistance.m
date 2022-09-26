@@ -17,7 +17,7 @@ function poseLateralDistance = getPoseLateralDistance(trial, baseMarkerNames, pe
 		dorsoVentralAxis = 'x';
 	end
     dorsoVentralAxisIndx = searchStrInCell({'x','y','z'}, dorsoVentralAxis);
-	assert(length(dorsoVentralAxisIndx)>0, sprintf('%s missing', dorsoVentralAxis));
+	assert(~isempty(dorsoVentralAxisIndx), sprintf('getPoseLateralDistance:%s: %s missing', trial.trialName, dorsoVentralAxis));
 	if nargin < 3
 		peakMarkerName = 'nose';
 	end

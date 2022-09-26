@@ -1,6 +1,6 @@
 function [pkSegment, pkLoc, firstMarker] = getFirstMarker(trial, markerNames, dorsoVentralAxis, maxPeakHeight, varargin)
 	% findFirstMarker = getFirstMarker(trial, {'hand_left', 'hand_right'});
-	assert(length(markerNames)==2, sprintf('getFirstMarker markerNames = %d Expected 2', length(markerNames)))
+	assert(length(markerNames)==2, sprintf('getFirstMarker:%s: markerNames = %d Expected 2', trial.trialName, length(markerNames)))
 	pkSegments = {};
 	pkLocs = [];
 	for m = 1:length(markerNames)

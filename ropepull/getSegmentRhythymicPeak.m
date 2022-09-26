@@ -4,7 +4,7 @@ function [segmentPre, segmentPost] = getSegmentRhythymicPeak(trial, markerName, 
 	%
 	% Ayesha: Write description
 	[loc,pks,startPullLoc,endPullLoc] = getPeaks(trial, markerName, dorsoVentralAxis, maxPeakHeight, varargin{:});
-	assert(length(pks)>=3, sprintf('Peak count = %d; Expected at least 3', length(pks)));
+	assert(length(pks)>=3, sprintf('getSegmentRhythymicPeak:%s:Peak count = %d; Expected at least 3', trial.trialName, length(pks)));
 	medianLoc = loc-median(loc);
     refRhythmicPeak = find(medianLoc == min(medianLoc((medianLoc>0))));
 	segmentPre = [loc(refRhythmicPeak-1),loc(refRhythmicPeak)]/getSamplingFrequency(trial);
