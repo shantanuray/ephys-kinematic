@@ -27,8 +27,9 @@ function poseLateralDistance = getPoseLateralDistance(trial, baseMarkerNames, pe
 
 	% Get xyz of mid base (mid base of left foot - right foot)
 	for i = 1:length(baseMarkerNames)
-			baseMarkerXYZ{i} = getTrialXYZ(trial, baseMarkerNames{i});
-		end
+		baseMarkerXYZ{i} = getTrialXYZ(trial, baseMarkerNames{i});
+	end
+	% Along the lateral axis,  baseMarkerNames is ordered in increasing order from 0
 	poseMidBaseXYZ = ((baseMarkerXYZ{2} - baseMarkerXYZ{1})/2)  + baseMarkerXYZ{1};
 	poseMidBaseXYZ = squeeze(poseMidBaseXYZ);
 	% Get xyz of peak marker (nose)

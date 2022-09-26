@@ -15,6 +15,7 @@ function trial = getTrialData(pose_3d, trialName, varargin)
     [video_fps,...
     	dorsoVentralAxis,...
     	peakMarkerName, baseMarkerNames,...
+    	shoulderName, elbowJointName, wristMarkerName,...
     	peakAnalysisMarkerNames, peakSegmentVariables,...
     	markerNames,...
     	maxPeakHeight, minPeakProminence,...
@@ -38,6 +39,8 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 	trial.poseLateralDistance = getPoseLateralDistance(trial, baseMarkerNames, peakMarkerName, dorsoVentralAxis);
 	% Get local azi and elev between consecutive points of the trial
 	[trial.azi, trial.elev] = getLocalAziElev(trial);
+	% Get elbow angle
+	trial.elbowAngle = getElbowJointAngle(trial, shoulderName, elbowJointName, wristMarkerName);
 	% Number of peaks and peak frequency for peakAnalysisMarkerNames
 	for m = 1:length(peakAnalysisMarkerNames)
 		% Number of peaks in trial and peak frequency
@@ -109,6 +112,9 @@ function trial = getTrialData(pose_3d, trialName, varargin)
     	expectedAxes = {'x','y','z'};
     	peakMarkerName = 'nose';
     	baseMarkerNames = {'foot_left', 'foot_right'};
+    	shoulderName = 'shoulder_right';
+    	elbowJointName = 'elbow_right';
+    	wristMarkerName = 'wrist_right';
     	markerNames = {'nose', 'foot_right', 'foot_left', 'hand_right', 'hand_left',...
 					   'elbow_right', 'shoulder_right', 'rope_top', 'rope_base',...
 					   'wrist_right', 'rope_mid'};
@@ -123,6 +129,9 @@ function trial = getTrialData(pose_3d, trialName, varargin)
         	@(x) any(validatestring(x, expectedAxes)));
         addParameter(p,'peakMarkerName',peakMarkerName, @ischar);
         addParameter(p,'baseMarkerNames',baseMarkerNames, @iscell);
+        addParameter(p,'shoulderName',shoulderName, @ischar);
+        addParameter(p,'elbowJointName',elbowJointName, @ischar);
+        addParameter(p,'wristMarkerName',wristMarkerName, @ischar);
         addParameter(p,'markerNames',markerNames, @iscell);
         addParameter(p,'maxPeakHeight',maxPeakHeight, @isnumeric);
         addParameter(p,'minPeakProminence',minPeakProminence, @isnumeric);
@@ -135,6 +144,7 @@ function trial = getTrialData(pose_3d, trialName, varargin)
     function [video_fps,...
     	dorsoVentralAxis,...
     	peakMarkerName, baseMarkerNames,...
+    	shoulderName, elbowJointName, wristMarkerName,...
     	peakAnalysisMarkerNames, peakSegmentVariables,...
     	markerNames,...
     	maxPeakHeight, minPeakProminence,...
@@ -142,6 +152,9 @@ function trial = getTrialData(pose_3d, trialName, varargin)
         video_fps = p.video_fps;
         dorsoVentralAxis = p.dorsoVentralAxis;
         peakMarkerName = p.peakMarkerName;
+        shoulderName = p.shoulderName;
+        elbowJointName = p.elbowJointName;
+        wristMarkerName = p.wristMarkerName;
         baseMarkerNames = p.baseMarkerNames;
         peakAnalysisMarkerNames = p.peakAnalysisMarkerNames;
         peakSegmentVariables = p.peakSegmentVariables;
