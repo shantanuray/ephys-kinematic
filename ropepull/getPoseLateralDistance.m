@@ -26,11 +26,15 @@ function poseLateralDistance = getPoseLateralDistance(trial, baseMarkerNames, pe
 	end
 
 	% Get xyz of mid base (mid base of left foot - right foot)
-	poseMidBaseXYZ = getPoseMidBase(trial, baseMarkerNames);
+	for i = 1:length(baseMarkerNames)
+			baseMarkerXYZ{i} = getTrialXYZ(trial, baseMarkerNames{i});
+		end
+	poseMidBaseXYZ = ((baseMarkerXYZ{2} - baseMarkerXYZ{1})/2)  + baseMarkerXYZ{1};
+	poseMidBaseXYZ = squeeze(poseMidBaseXYZ);
 	% Get xyz of peak marker (nose)
 	peakMarkerXYZ = getTrialXYZ(trial, peakMarkerName);
 	% for lateral distance, make the dorso-central coordinate of midbase = peak
     poseMidBaseXYZLateral = poseMidBaseXYZ;
 	poseMidBaseXYZLateral(:, dorsoVentralAxisIndx) = peakMarkerXYZ(:, dorsoVentralAxisIndx);
 	% Calculate Euclidean distance
-	poseLateralDistance = norm(peakMarkerXYZ - poseMidBaseXYZLateral, 2, 2);
+	poseLateralDistance = vecnorm(peakMarkerXYZ - poseMidBaseXYZLateral, 2, 2);

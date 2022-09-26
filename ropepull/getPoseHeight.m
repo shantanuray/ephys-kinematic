@@ -25,8 +25,12 @@ function poseHeight = getPoseHeight(trial, baseMarkerNames, peakMarkerName, dors
 		baseMarkerNames = {'foot_left', 'foot_right'};
 	end
 	% Get xyz of mid base (mid base of left foot - right foot)
-	poseMidBaseXYZ = getPoseMidBase(trial, baseMarkerNames);
+	for i = 1:length(baseMarkerNames)
+		baseMarkerXYZ{i} = getTrialXYZ(trial, baseMarkerNames{i});
+	end
+	poseMidBaseDV = abs(baseMarkerXYZ{1}(dorsoVentralAxisIndx) - baseMarkerXYZ{2}(dorsoVentralAxisIndx))/2;
+	poseMidBaseDV = squeeze(poseMidBaseDV);
 	% Get xyz of peak marker (nose)
 	peakMarkerXYZ = getTrialXYZ(trial, peakMarkerName);
 	% Get distance along the dorso-ventral axis
-	poseHeight = abs(peakMarkerXYZ(:, dorsoVentralAxisIndx) - poseMidBaseXYZ(:, dorsoVentralAxisIndx));
+	poseHeight = abs(peakMarkerXYZ(:, dorsoVentralAxisIndx) - poseMidBaseDV);
