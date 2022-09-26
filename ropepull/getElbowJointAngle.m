@@ -14,4 +14,4 @@ function vecAngle = getElbowJointAngle(trial, shoulderName, elbowJointName, wris
 	shoulder_xyzNorm = vecnorm(shoulder_xyz,2,2);
 	wrist_xyzNorm = vecnorm(wrist_xyz,2,2);
 	cosVecAngle = shoulder_xyzDotwrist_xyz./(shoulder_xyzNorm.*wrist_xyzNorm);
-	vecAngle = acosd(cosvecangle);
+	vecAngle = acosd(cosVecAngle);
