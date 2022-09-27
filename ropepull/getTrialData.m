@@ -95,6 +95,9 @@ function trial = getTrialData(pose_3d, trialName, varargin)
     	disp(sprintf('Error processing %s', trial.trialName));
     	disp(sprintf('Error message: %s', ME.message));
     	trial.('firstPullMarker') = nan;
+    	trial.('firstPkSegmentT') = nan;
+    	trial.('segmentPreT') = nan;
+	    trial.('segmentPostT') = nan;
 	    for ms =1:length(peakSegmentVariables)
 		    % Segment peakSegmentVariables using firstPkSegmentTS
 		    trial.(strcat(peakSegmentVariables{ms}, 'FirstPullData')) = nan;
