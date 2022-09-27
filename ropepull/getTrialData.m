@@ -61,14 +61,17 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 		    dorsoVentralAxis,...
 		    maxPeakHeight,...
 		    'minPeakProminence',minPeakProminence);
+	    trial.('firstPkSegmentT') = firstPkSegmentT;
 	    firstPkSegmentTS = tsFromTime(firstPkSegmentT, retrieveDataFS);
 	    trial.('firstPullMarker') = peakAnalysisMarkerNames{firstMarker};
 	    % 2. Get rhythmic peak definitions for peakAnalysisMarkerNames and compute segment time stamps
 	    for m = 1:length(peakAnalysisMarkerNames)
-		    [segmentPre, segmentPost] = getSegmentRhythymicPeak(trial, peakAnalysisMarkerNames{m}, dorsoVentralAxis, maxPeakHeight, 'minPeakProminence',minPeakProminence);
-		    segmentPreTS{m} = tsFromTime(segmentPre, retrieveDataFS);
-		    segmentPostTS{m} = tsFromTime(segmentPost, retrieveDataFS);
+		    [segmentPre{m} segmentPost{m}] = getSegmentRhythymicPeak(trial, peakAnalysisMarkerNames{m}, dorsoVentralAxis, maxPeakHeight, 'minPeakProminence',minPeakProminence);
+		    segmentPreTS{m} = tsFromTime(segmentPre{m}, retrieveDataFS);
+		    segmentPostTS{m} = tsFromTime(segmentPost{m}, retrieveDataFS);
 	    end
+	    trial.('segmentPreT') = segmentPre;
+	    trial.('segmentPostT') = segmentPost;
 	    % Segment existing data in trial using first pull segment and rhythmic segments
 	    for ms =1:length(peakSegmentVariables)
 		    % Segment peakSegmentVariables using firstPkSegmentTS
