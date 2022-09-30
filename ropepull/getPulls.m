@@ -3,7 +3,7 @@ function data = getPulls(trial, colName, pkSegment, markerName)
 	% data = getPulls(trial, 'speed', pkSegment, 'hand_left');
 
 	data = trial.(colName)(pkSegment,:,:);
-	if nargin==4
+	if nargin==4 & size(data, 2) > 1
 		markerNames = trial.markerNames;
 		markerID = searchStrInCell(markerNames, markerName);
 		data = data(:,markerID,:);
