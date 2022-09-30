@@ -23,6 +23,7 @@ function emgSegments = emgSegmentation(trial, emgTrialData, varargin)
 
 	for chan = 1:length(channels)
 		emgSegments.(strcat(channels{chan}, '_firstPull')) = emgTrialData.(channels{chan}).(emgDataType).('data')(firstPullSegment_ephys_idx);
+		emgSegments.(strcat(channels{chan}, '_firstPull_AUC'))  = areaUnderCurve(emgSegments.(strcat(channels{chan}, '_firstPull')));
 	end
 
 	% Retrieve segments for rhythmic section
@@ -36,12 +37,12 @@ function emgSegments = emgSegmentation(trial, emgTrialData, varargin)
 		for chan = 1:length(channels)
 			% TODO: refactor this hack to match handedness between kinematic and EMG data
 			if contains(lower(peakAnalysisMarkerNames{ms}), '_left') &&...
-				contains(lower(channels{chan}), '_l')
+				contains(upper(channels{chan}), '_L')
 				emgSegments.(strcat(channels{chan}, '_segmentPre')) = emgTrialData.(channels{chan}).(emgDataType).('data')(segmentPre_ephys_idx);
 				emgSegments.(strcat(channels{chan}, '_segmentPost')) = emgTrialData.(channels{chan}).(emgDataType).('data')(segmentPost_ephys_idx);
 			end
 			if contains(lower(peakAnalysisMarkerNames{ms}), '_right') &&...
-				contains(lower(channels{chan}), '_r')
+				contains(upper(channels{chan}), '_R')
 				emgSegments.(strcat(channels{chan}, '_segmentPre')) = emgTrialData.(channels{chan}).(emgDataType).('data')(segmentPre_ephys_idx);
 				emgSegments.(strcat(channels{chan}, '_segmentPost')) = emgTrialData.(channels{chan}).(emgDataType).('data')(segmentPost_ephys_idx);
 			end
