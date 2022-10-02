@@ -6,7 +6,7 @@ import re
 
 fpath = join('/mnle/data/AYESHA_THANAWALLA/U19/','CFL*','*_data')
 file_pattern = 'CFL*CoolTerm*.txt'
-file_list = glob(join(fpath,'CFL*','*_data',file_pattern))
+file_list = glob(join(fpath,file_pattern))
 
 columns = ['TIME (ms)', 'BNC1', 'BNC2', 'ABORT']
 regex_columns = ['TIME \(ms\): *(\d+)\n', 'BNC1: *(\d+)\n', 'BNC2: *(\d+)\n', '(ABORT)\n']
