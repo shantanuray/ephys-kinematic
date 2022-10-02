@@ -3,9 +3,20 @@ function trialList = updateTrialListAccelerationPeaks(trialList, varargin)
 	% 	Update acceleration segments of trial list with num peaks
 	p = readInput(varargin);
 	[peakAnalysisColNames] = parseInput(p.Results);
+    dataExists = false;
 	for t = 1:length(trialList)
 		for col = 1:length(peakAnalysisColNames)
-			trialList(t).(peakAnalysisColNames{col}).('NumPeaks') = getSegmentNumPeaks(trialList(t), peakAnalysisColNames{col});
+            dataExists = false;
+            if strfind(lower(peakAnalysisColNames{col}), 'first') & ~isnan(trialList(t).('firstPkSegmentT'))
+                dataExists = true;
+            elseif strfind(lower(peakAnalysisColNames{col}), 'pre') & iscell(trialList(t).('segmentPreT'))
+                dataExists = true;
+            elseif strfind(lower(peakAnalysisColNames{col}), 'post') & iscell(trialList(t).('segmentPostT'))
+                dataExists = true;
+            end
+            if dataExists
+                trialList(t).(peakAnalysisColNames{col}).('NumPeaks') = getSegmentNumPeaks(trialList(t), peakAnalysisColNames{col});
+            end
 		end
 	end
 
