@@ -9,9 +9,9 @@ function trialList = updateTrialListAccelerationPeaks(trialList, varargin)
             dataExists = false;
             if strfind(lower(peakAnalysisColNames{col}), 'first') & ~isnan(trialList(t).('firstPkSegmentT'))
                 dataExists = true;
-            elseif strfind(lower(peakAnalysisColNames{col}), 'pre') & iscell(trialList(t).('segmentPreT'))
+            elseif strfind(lower(peakAnalysisColNames{col}), 'pre') & ~isnan(trialList(t).('segmentPreT'){1})
                 dataExists = true;
-            elseif strfind(lower(peakAnalysisColNames{col}), 'post') & iscell(trialList(t).('segmentPostT'))
+            elseif strfind(lower(peakAnalysisColNames{col}), 'post') & ~isnan(trialList(t).('segmentPostT'){1})
                 dataExists = true;
             end
             if dataExists

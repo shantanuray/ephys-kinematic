@@ -54,7 +54,7 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 	end
 	% Get segment definitions based on Peak analysis for peakAnalysisMarkerNames
 	% 1. Get first peak between peakAnalysisMarkerNames and compute segment time stamps
-    try
+    % try
 	    [firstPkSegmentT, pkLoc, firstMarker] = getFirstMarker(...
 		    trial,...
 		    peakAnalysisMarkerNames,...
@@ -62,11 +62,16 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 		    maxPeakHeight,...
 		    'minPeakProminence',minPeakProminence);
 	    trial.('firstPkSegmentT') = firstPkSegmentT;
-	    firstPkSegmentTS = tsFromTime(firstPkSegmentT, retrieveDataFS);
-	    trial.('firstPullMarker') = peakAnalysisMarkerNames{firstMarker};
+        if ~isnan(firstPkSegmentT)
+	        firstPkSegmentTS = tsFromTime(firstPkSegmentT, retrieveDataFS);
+	        trial.('firstPullMarker') = peakAnalysisMarkerNames{firstMarker};
+        else
+            firstPkSegmentTS = nan;
+            trial.('firstPullMarker') = nan;
+        end
 	    % 2. Get rhythmic peak definitions for peakAnalysisMarkerNames and compute segment time stamps
 	    for m = 1:length(peakAnalysisMarkerNames)
-		    [segmentPre{m} segmentPost{m}] = getSegmentRhythymicPeak(trial, peakAnalysisMarkerNames{m}, dorsoVentralAxis, maxPeakHeight, 'minPeakProminence',minPeakProminence);
+		    [segmentPre{m}, segmentPost{m}] = getSegmentRhythymicPeak(trial, peakAnalysisMarkerNames{m}, dorsoVentralAxis, maxPeakHeight, 'minPeakProminence',minPeakProminence);
 		    segmentPreTS{m} = tsFromTime(segmentPre{m}, retrieveDataFS);
 		    segmentPostTS{m} = tsFromTime(segmentPost{m}, retrieveDataFS);
 	    end
@@ -80,40 +85,45 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 			    peakSegmentVariables{ms},...
 			    firstPkSegmentTS,...
 			    trial.('firstPullMarker'));
-		    trial.(strcat(peakSegmentVariables{ms}, 'FirstPullData')).('areaUnderCurve') = areaUnderCurve(trial.(strcat(peakSegmentVariables{ms}, 'FirstPullData')).('data'));
 		    % Segment peakSegmentVariables using segmentPreTS and segmentPostTS
 		    for m = 1:length(peakAnalysisMarkerNames)
-			    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPreV', peakAnalysisMarkerNames{m})).('data') = getPulls(...
-				    trial,...
-				    peakSegmentVariables{ms},...,
-				    segmentPreTS{m},...
-				    peakAnalysisMarkerNames{m});
-			    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPreV', peakAnalysisMarkerNames{m})).('areaUnderCurve') = areaUnderCurve(trial.(strcat(peakSegmentVariables{ms}, 'FirstPullData')).('data'));
-			    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPostV', peakAnalysisMarkerNames{m})).('data') = getPulls(...
-				    trial,...
-				    peakSegmentVariables{ms},...,
-				    segmentPostTS{m},...
-				    peakAnalysisMarkerNames{m});
-			    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPostV', peakAnalysisMarkerNames{m})).('areaUnderCurve') = areaUnderCurve(trial.(strcat(peakSegmentVariables{ms}, 'FirstPullData')).('data'));
+		    	if ~isnan(segmentPre{m})
+				    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPreV', peakAnalysisMarkerNames{m})).('data') = getPulls(...
+					    trial,...
+					    peakSegmentVariables{ms},...,
+					    segmentPreTS{m},...
+					    peakAnalysisMarkerNames{m});
+				else
+					trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPreV', peakAnalysisMarkerNames{m})).('data') = nan;
+				end
+				if ~isnan(segmentPost{m})
+				    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPostV', peakAnalysisMarkerNames{m})).('data') = getPulls(...
+					    trial,...
+					    peakSegmentVariables{ms},...,
+					    segmentPostTS{m},...
+					    peakAnalysisMarkerNames{m});
+				else
+					trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPostV', peakAnalysisMarkerNames{m})).('data') = nan;
+				end
 		    end
         end
-    catch ME
-    	disp(sprintf('Error processing %s', trial.trialName));
-    	disp(sprintf('Error message: %s', ME.message));
-    	trial.('firstPullMarker') = nan;
-    	trial.('firstPkSegmentT') = nan;
-    	trial.('segmentPreT') = nan;
-	    trial.('segmentPostT') = nan;
-	    for ms =1:length(peakSegmentVariables)
-		    % Segment peakSegmentVariables using firstPkSegmentTS
-		    trial.(strcat(peakSegmentVariables{ms}, 'FirstPullData')) = nan;
-		    % Segment peakSegmentVariables using segmentPreTS and segmentPostTS
-		    for m = 1:length(peakAnalysisMarkerNames)
-			    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPreV', peakAnalysisMarkerNames{m})) = nan;
-			    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPostV', peakAnalysisMarkerNames{m})) = nan;
-		    end
-        end
-    end
+    % catch ME
+    % 	disp(sprintf('Error processing %s', trial.trialName));
+    % 	disp(sprintf('Error message: %s', ME.message));
+    % 	trial.('firstPullMarker') = nan;
+    % 	trial.('firstPkSegmentT') = nan;
+    % 	trial.('segmentPreT') = nan;
+	   %  trial.('segmentPostT') = nan;
+	   %  for ms =1:length(peakSegmentVariables)
+		  %   % Segment peakSegmentVariables using firstPkSegmentTS
+		  %   trial.(strcat(peakSegmentVariables{ms}, 'FirstPullData')) = nan;
+		  %   % Segment peakSegmentVariables using segmentPreTS and segmentPostTS
+		  %   for m = 1:length(peakAnalysisMarkerNames)
+			 %    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPreV', peakAnalysisMarkerNames{m})) = nan;
+			 %    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPostV', peakAnalysisMarkerNames{m})) = nan;
+		  %   end
+    %     end
+    % end
        
 
 	%% Read input
