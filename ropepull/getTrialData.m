@@ -54,7 +54,7 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 	end
 	% Get segment definitions based on Peak analysis for peakAnalysisMarkerNames
 	% 1. Get first peak between peakAnalysisMarkerNames and compute segment time stamps
-    % try
+    try
 	    [firstPkSegmentT, pkLoc, firstMarker] = getFirstMarker(...
 		    trial,...
 		    peakAnalysisMarkerNames,...
@@ -107,23 +107,23 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 				end
 		    end
         end
-    % catch ME
-    % 	disp(sprintf('Error processing %s', trial.trialName));
-    % 	disp(sprintf('Error message: %s', ME.message));
-    % 	trial.('firstPullMarker') = nan;
-    % 	trial.('firstPkSegmentT') = nan;
-    % 	trial.('segmentPreT') = nan;
-	   %  trial.('segmentPostT') = nan;
-	   %  for ms =1:length(peakSegmentVariables)
-		  %   % Segment peakSegmentVariables using firstPkSegmentTS
-		  %   trial.(strcat(peakSegmentVariables{ms}, 'FirstPullData')) = nan;
-		  %   % Segment peakSegmentVariables using segmentPreTS and segmentPostTS
-		  %   for m = 1:length(peakAnalysisMarkerNames)
-			 %    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPreV', peakAnalysisMarkerNames{m})) = nan;
-			 %    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPostV', peakAnalysisMarkerNames{m})) = nan;
-		  %   end
-    %     end
-    % end
+    catch ME
+    	disp(sprintf('Error processing %s', trial.trialName));
+    	disp(sprintf('Error message: %s', ME.message));
+    	trial.('firstPullMarker') = nan;
+    	trial.('firstPkSegmentT') = nan;
+    	trial.('segmentPreT') = nan;
+	    trial.('segmentPostT') = nan;
+	    for ms =1:length(peakSegmentVariables)
+		    % Segment peakSegmentVariables using firstPkSegmentTS
+		    trial.(strcat(peakSegmentVariables{ms}, 'FirstPullData')) = nan;
+		    % Segment peakSegmentVariables using segmentPreTS and segmentPostTS
+		    for m = 1:length(peakAnalysisMarkerNames)
+			    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPreV', peakAnalysisMarkerNames{m})) = nan;
+			    trial.(strcat(peakSegmentVariables{ms}, 'RhythymicPeakPostV', peakAnalysisMarkerNames{m})) = nan;
+		    end
+        end
+    end
        
 
 	%% Read input
