@@ -4,6 +4,12 @@ function [firstPkSegment, firstPkLoc] = getSegmentFirstPeak(trial, markerName, d
 	%
 	% Ayesha: Write description
 	[loc,pks,startPullLoc,endPullLoc] = getPeaks(trial, markerName, dorsoVentralAxis, maxPeakHeight, varargin{:});
-	assert(~isempty(pks), sprintf('getSegmentFirstPeak:%s: No peaks', trial.trialName));
-	firstPkLoc = loc(1);
-	firstPkSegment = [startPullLoc,firstPkLoc]/getSamplingFrequency(trial);
+	if isempty(pks)
+          sprintf('getSegmentFirstPeak:%s: No peaks', trial.trialName);
+          firstPkSegment = nan;
+          firstPkLoc = nan;
+    else
+	    firstPkLoc = loc(1);
+	    firstPkSegment = [startPullLoc,firstPkLoc]/getSamplingFrequency(trial);
+    end
+end

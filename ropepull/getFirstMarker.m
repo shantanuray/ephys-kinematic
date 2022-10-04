@@ -4,8 +4,19 @@ function [pkSegment, pkLoc, firstMarker] = getFirstMarker(trial, markerNames, do
 	pkSegments = {};
 	pkLocs = [];
 	for m = 1:length(markerNames)
-		[pkSegments{m}, pkLocs(m)] = getSegmentFirstPeak(trial, markerNames{m}, dorsoVentralAxis, maxPeakHeight, varargin{:});
+		[pkSegments{m}, pkLocs(m)] = getSegmentFirstPeak(...
+            trial,...
+            markerNames{m},...
+            dorsoVentralAxis,...
+            maxPeakHeight,...
+            varargin{:});
 	end
 	firstMarker = find(pkLocs==min(pkLocs));
-	pkSegment = pkSegments{firstMarker};
-	pkLoc = pkLocs(firstMarker);
+	if ~isnan(firstMarker)
+		pkSegment = pkSegments{firstMarker};
+		pkLoc = pkLocs(firstMarker);
+    else
+        pkSegment = nan;
+        pkLoc = nan;
+    end
+end
