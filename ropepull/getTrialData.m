@@ -143,7 +143,7 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 		maxPeakHeight = 0;
 		minPeakProminence = 0.2;
 		peakAnalysisMarkerNames = {'hand_left', 'hand_right'};
-		peakSegmentVariables = {'trialXYZ', 'speed', 'acceleration', 'azi', 'elev', 'elbowAngle'};
+		peakSegmentVariables = {'trialXYZ','pathLength' 'speed', 'acceleration', 'azi', 'elev', 'elbowAngle'};
 		retrieveDataFS = 200;
 
         addParameter(p,'video_fps',video_fps, @isnumeric);
