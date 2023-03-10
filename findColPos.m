@@ -1,7 +1,7 @@
 function colPos = findColPos(dataTable, colLabelStrCell)
-% colPos = findColPos(dataTable, colLabelCell);
-% Find table dataTable VariableNames that "contain" column labels specified in colLabelStrCell
-% and return column position of matching VariableNames
+% colPos = findColPos(dataTable, colLabelStrCell);
+% Find column names of table dataTable that "contain" column labels specified in colLabelStrCell
+% and return column position of matching column names
 % 
 % Arguments:
 %   - dataTable: Input table
