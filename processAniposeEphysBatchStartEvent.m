@@ -77,7 +77,7 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
             % Find columns in aniposeData with xyz data for filtering
             xyzColPos = findColPos(aniposeData, {'_x', '_y','_z'});
             aniposeDataArray = table2array(aniposeData(:, xyzColPos));
-            aniposeDataArray = filtfilt(passbandloFilt, aniposeDataArray);
+            aniposeDataArray = filtfilt(signalFilter, aniposeDataArray);
             aniposeData(:, xyzColPos) = array2table(aniposeDataArray);
         end
         
