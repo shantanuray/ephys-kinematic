@@ -27,13 +27,13 @@ reply = input(['\nDo you wish filter anipose data??\n\n',...
             '[n/N]          => No    \n'],'s');
 switch lower(reply)
     case 'y'
-        filterAniposeFlag = true;
+        filterThresholdFlag = true;
     case 'n'
-        filterAniposeFlag = false;
+        filterThresholdFlag = false;
     otherwise
-        filterAniposeFlag = true;
+        filterThresholdFlag = true;
 end
-if filterAniposeFlag
+if filterThresholdFlag
     % Default score threhold
     reply = input(['\nWhat is filter score threshold??? ',...
                    sprintf('[Click Enter to use default = (%.2f)]\n', scoreThresh)],...
@@ -78,6 +78,6 @@ aniposeDirList = {'/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behav
                   '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-2/A11-2_2022-03-21_16-56-10_video'};
 %% Pass parameters to batch function
 processAniposeEphysBatchStartEvent(root_dir, save_dir,...
-                                   'AniposeDirList', aniposeDirList, 'StartEvents', startEvents,...
-                                   'FilterAniposeFlag', filterAniposeFlag,...
-                                   'ScoreThresh', scoreThresh, 'MaxGap', fillMissingGapSize, 'FixedReachInterval', fixedReachInterval);
+                                   'aniposeDirList', aniposeDirList, 'startEvents', startEvents,...
+                                   'filterThresholdFlag', filterThresholdFlag,...
+                                   'scoreThresh', scoreThresh, 'maxGap', fillMissingGapSize, 'fixedReachInterval', fixedReachInterval);
