@@ -44,7 +44,7 @@ if filterThresholdFlag
 end
 
 %% Time duration for extracting fixed trial data in ms
-fixedReachInterval = 750; % ms
+fixedReachInterval = 1000; % ms
 reply = input(['\nTime interval (ms) to use for extracting fixed trial data?\n\n',...
             sprintf('[Enter/y/Y]    => %dms (default)\n', fixedReachInterval),...
             'Else enter time interval in ms:\n'],'s');
@@ -74,8 +74,12 @@ end
 
 %% Important: Run this on select folders only,
 %% Initialize AniposeDirList and pass that to batch script
-aniposeDirList = {'/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3/A11-3_2022-02-25_11-59-18_video',...
-                  '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-2/A11-2_2022-03-21_16-56-10_video'};
+
+% % if root_dir is like '/Volumes/dcn_emg_behavior/Ayesha/A11-1/A11-1_2022-04-04_10-36-13_video', use:
+% aniposeDirList = {root_dir}; % Run on root_dir
+% % If root_dir is like '/Volumes/dcn_emg_behavior/Ayesha/A11-1' with several _video folders, use:
+% aniposeDirList = {}; % Auto-discovers _video within root_dir
+
 %% Pass parameters to batch function
 processAniposeEphysBatchStartEvent(root_dir, save_dir,...
                                    'aniposeDirList', aniposeDirList, 'startEvents', startEvents,...

@@ -27,11 +27,8 @@ function [spoutContact_ON, spoutContact_OFF, lightON] = plot_computed_mean(trial
 %   - savefig: (logical) true to save figure automatically (Default: false)
 %   - saveloc: (str) if savefig is true, where to save the figures
 %
-% Example: plot_computed_mean(trial_list, 'anipose_fixed_relative_velocity', 'right_d2_knuckle_xyzSpeed',...
-%                        'AT_A19-1_2021-09-01_12-15-40_hfwr_manual_16mW_video',...
-%                        200,30000,...
-%                        true, true, ...
-%                        false, true, '/Users/chico/Desktop');
+% Example: 
+% plot_computed_mean(trial_list, 'aniposeData_fixed_relative_acceleration', 'right_d3_knuckle_r','A17-2',200,30000,'refMax')
 
 
 if nargin<4
@@ -144,16 +141,22 @@ for trial_idx=1:length(trial_list)
 end
 data_ON_std = std(data_ON, 1, 2, 'omitnan');
 data_ON_mean = mean(data_ON, 2, 'omitnan');
-data_ON_mean_plus = data_ON_mean + data_ON_std;
-data_ON_mean_minus = data_ON_mean - data_ON_std;
+data_ON_SEM=data_ON_std /sqrt(length(data_ON));
+% data_ON_mean_plus = data_ON_mean + data_ON_std;
+% data_ON_mean_minus = data_ON_mean - data_ON_std;
+data_ON_mean_plus = data_ON_mean + data_ON_SEM;
+data_ON_mean_minus = data_ON_mean - data_ON_SEM;
 t_ON = 1:length(data_ON_mean);
 t_ON = t_ON/fsKinematic;
 t2_ON = [t_ON, fliplr(t_ON)];
 inBetween_ON = [data_ON_mean_plus', fliplr(data_ON_mean_minus')];
 data_OFF_std = std(data_OFF, 1, 2, 'omitnan');
 data_OFF_mean = mean(data_OFF, 2, 'omitnan');
-data_OFF_mean_plus = data_OFF_mean + data_OFF_std;
-data_OFF_mean_minus = data_OFF_mean - data_OFF_std;
+data_OFF_SEM=data_OFF_std /sqrt(length(data_OFF));
+% data_OFF_mean_plus = data_OFF_mean + data_OFF_std;
+% data_OFF_mean_minus = data_OFF_mean - data_OFF_std;
+data_OFF_mean_plus = data_OFF_mean + data_OFF_SEM;
+data_OFF_mean_minus = data_OFF_mean - data_OFF_SEM;
 t_OFF = 1:length(data_OFF_mean);
 t_OFF = t_OFF/fsKinematic;
 t2_OFF = [t_OFF, fliplr(t_OFF)];

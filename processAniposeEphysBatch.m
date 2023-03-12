@@ -21,6 +21,11 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
     p = readInput(varargin);
     [fixedReachIntervalms, filterAniposeFlag, scoreThresh, maxGap, aniposeDirList] = parseInput(p.Results);
 
+    %passbandloFilt = designfilt('lowpassiir','FilterOrder',8, ...
+    %                        'PassbandFrequency',40,...
+    %                        'PassbandRipple',0.2,...
+    %                        'SampleRate',200);
+
     % Get list of all dir with anipose data
     indicator = 'pose-3d';
     if isempty(aniposeDirList)
@@ -55,8 +60,10 @@ function processAniposeEphysBatch(rootdir, savedir, varargin)
             %                           'MaxGap', maxGap);
             % R2020b and earlier does not have MaxGap option
             aniposeData = fillmissing(aniposeData,...
-                                      'linear',...
+                                      'makima',...
                                       'EndValues','nearest');
+            % aniposeData =filtfilt(passbandloFilt,aniposeData);%% alternative filter methods 
+
         end
         disp(sprintf('Loading ephys data from %s', anipose_ephys_loc.ephys_loc));
         try

@@ -32,7 +32,7 @@ function [ON_trial_dataMean,...
 %                        'waterSpout',...
 %                        true, ...
 %                        false, true, '/Users/chico/Desktop');
-%          plot_3DDataMean(trial_list, 'aniposeData_first_sc_relative', 'right_d2_knuckle', 200, 300, 'AT_A19-2', 'waterSpout', true, true);
+%          plot_3DDataMean(trial_list,'aniposeData_fixed_relative', 'right_d3_knuckle', 200, 300000, 'A15-2', 'waterSpout', true, true);
 
 if nargin<6
     title_str='';
@@ -150,7 +150,7 @@ end
 anipose_lightOn_idxMean = mean(anipose_lightOn_idx, 1, 'omitnan');
 spoutOn_idxMean = mean(spoutOn_idx, 1, 'omitnan');
 if ~isempty(ON_trial_dataMean)
-    plot3(ON_trial_dataMean(:, 1),ON_trial_dataMean(:,3),-ON_trial_dataMean(:,2), 'b');
+    plot3(ON_trial_dataMean(:, 1),ON_trial_dataMean(:,3),-ON_trial_dataMean(:,2), 'b','LineWidth',4);
 end
 hold on
 % if (anipose_lightOn_idxMean <= length(ON_trial_dataMean)) & (length(anipose_lightOn_idxMean)>0)
@@ -163,7 +163,7 @@ hold on
 %           'MarkerSize',10);
 % end
 if ~isempty(OFF_trial_dataMean)
-    plot3(OFF_trial_dataMean(:, 1),OFF_trial_dataMean(:,3),-OFF_trial_dataMean(:,2), 'k');
+    plot3(OFF_trial_dataMean(:, 1),OFF_trial_dataMean(:,3),-OFF_trial_dataMean(:,2), 'k','LineWidth',4);
 end
 % if (spoutOn_idxMean <= length(OFF_trial_dataMean)) & (length(spoutOn_idxMean)>0)
 %     spoutOn_idxMean = round(spoutOn_idxMean, 0);

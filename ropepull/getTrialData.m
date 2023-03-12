@@ -31,6 +31,8 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 	trial.pathLength = getPathLength(trial);
 	% Get average speed between consecutive points of the trial
 	trial.speed = getSpeed(trial);
+	%get velocity using diff
+	trial.velocity = getVelocity(trial);
 	% Get acceleration ...
 	trial.acceleration = getAcceleration(trial);
 	% Get distance along dorsoVentralAxis between midbase of baseMarkerNames to peakMarkerName
@@ -143,7 +145,7 @@ function trial = getTrialData(pose_3d, trialName, varargin)
 		maxPeakHeight = 0;
 		minPeakProminence = 0.2;
 		peakAnalysisMarkerNames = {'hand_left', 'hand_right'};
-		peakSegmentVariables = {'trialXYZ','pathLength' 'speed', 'acceleration', 'azi', 'elev', 'elbowAngle'};
+		peakSegmentVariables = {'trialXYZ','pathLength','speed', 'velocity','acceleration', 'azi', 'elev', 'elbowAngle'};
 		retrieveDataFS = 200;
 
         addParameter(p,'video_fps',video_fps, @isnumeric);

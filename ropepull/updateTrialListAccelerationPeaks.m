@@ -15,7 +15,12 @@ function trialList = updateTrialListAccelerationPeaks(trialList, varargin)
                 dataExists = true;
             end
             if dataExists
-                trialList(t).(peakAnalysisColNames{col}).('NumPeaks') = getSegmentNumPeaks(trialList(t), peakAnalysisColNames{col});
+            	data = trialList(t).(peakAnalysisColNames{col}).data;
+            	if length(data)>=3
+                	trialList(t).(peakAnalysisColNames{col}).('NumPeaks') = getSegmentNumPeaks(trialList(t), peakAnalysisColNames{col});
+                else
+                	trialList(t).(peakAnalysisColNames{col}).('NumPeaks') = nan;
+                end
             end
 		end
 	end

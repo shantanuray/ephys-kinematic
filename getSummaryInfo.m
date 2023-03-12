@@ -23,7 +23,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 	%		* xyzSpeed = Average speed
 	%		* x,y,zSpeed = Average speed along the x,y,z axis resp
 	% Examples
-	% summaryTable = getSummaryInfo(trial_list, 200, 'AT_A19-2_2021-09-10_14-18-39_hfwr_auto_lighton_noisy_091021_218pm');
+	% summaryTable = getSummaryInfo(trial_list, 200,'A11-1_2022-04-21_11-43-33_solenoid_on_filtered','right_d3_knuckle');
 	% summaryTable = getSummaryInfo(trial_list, 200, 'AT_A19-2_2021-09-10_14-18-39_hfwr_auto_lighton_noisy_091021_218pm', 'right_d2_knuckle', 'aniposeData_fixed');
 
 	if nargin<4
@@ -50,7 +50,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 	xSpeed = []; ySpeed = []; zSpeed = []; averageSpeed = [];
 	maxSpeed = []; distRelMaxSpeed = [];
 	xyzSpeedPeakCount = []; jerkPeakCount = [];
-
+	totalTimeTrialOut = [];
 
 	% Extract distance and speed from velocity table
 	dt = 1/fs;
@@ -74,6 +74,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 		        xRelTrial = trial_list(trial_idx).(distDataLabel).(xColLabel);
 		    end
 		end
+		totalTimeTrial = nan;
 		if ~isempty(xRelTrial)
 			totalTimeTrial = size(xRelTrial, 1)/fs;
 			xyzSpeedTrialPt = abs(trial_list(trial_idx).(velDataLabel).(speedColLabel));
@@ -125,6 +126,7 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 			end
 			jerkTrialPeakCount = length(jerkTrialPeaks);
 		end
+		totalTimeTrialOut = [totalTimeTrialOut; totalTimeTrial];
 		xDist = [xDist; xDistTrial]; yDist = [yDist; yDistTrial]; zDist = [zDist; zDistTrial];
 		totalDist = [totalDist; totalDistTrial]; firstSCDist = [firstSCDist; rRelFirstSCTrial];
 		xSpeed = [xSpeed; xSpeedTrial]; ySpeed = [ySpeed; ySpeedTrial]; zSpeed = [zSpeed; zSpeedTrial];
@@ -149,5 +151,6 @@ function summaryTable = getSummaryInfo(trial_list, fs, outputLabel, bodyPart, da
 						 maxSpeed,...
 						 distRelMaxSpeed,...
 						 xyzSpeedPeakCount,...
-						 jerkPeakCount);
+						 jerkPeakCount,...
+						 totalTimeTrialOut);
 end

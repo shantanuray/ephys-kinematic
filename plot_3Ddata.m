@@ -17,19 +17,20 @@ function plot_3Ddata(trial_list, dataLabel, bodyPart, fsKinematic, fsEphys, titl
 %                     'aniposeData_last_sc'  - Last spout contact
 %   - bodyPart: (str) string with data label name or index position
 %                 eg. 'left_wrist' or 'right_d2_knuckle'
-%   - fsKinematic, fsEphys: (float) Smapling frequence for kinematic and ephys data resp.
+%   - fsKinematic, fsEphys: (float) Sampling frequence for kinematic and ephys data resp.
 %   - title_str: (str) Used in labeling plot and saving plot
 %   - refLabel: (str) string with ref label (default: 'waterSpout')
 %   - annotateON: (logical) If true, mark when light ON (default: true)
 %   - savefig: (logical) true to save figure automatically (Default: false)
 %   - saveloc: (str) if savefig is true, where to save the figures
 %
-% Example: plot_3Ddata(trial_list, {'anipose_fixed_sc'}, 'right_d2_knuckle',200, 30000,...
-%                        'AT_A19-2',...
+% Example: 
+% trial_list=trialList_solenoid_on;
+% plot_3Ddata(trial_list(10),'aniposeData_first_sc', 'right_d3_knuckle',200, 30000,...
 %                        'waterSpout',...
-%                        true, ...
-%                        false, true, '/Users/chico/Desktop');
-%          plot_3Ddata(trial_list, {'aniposeData_first_sc'}, 'right_d2_knuckle', 200, 300, 'AT_A19-2', 'waterSpout', true, true);
+%                        true,...
+%                        true);
+% plot_3Ddata(trial_list,'aniposeData_fixed_relative', 'right_d2_knuckle', 200, 30000, 'A15-2', 'waterSpout', true, true);
 
 if nargin<6
     title_str='';
@@ -101,7 +102,7 @@ for trial_idx=1:length(trial_list)
         plot_data = data(:, bodyPartLocation);
         if ~isempty(plot_data)
             if strcmpi(trial_list(trial_idx).lightTrig, 'ON')
-                plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'b');
+                plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'b','LineWidth',1.5);
                 % text(t(1), plot_data(1), strcat('\leftarrow ', string(trial_idx)), 'Color','red','FontSize',10)
                 if annotateON
                     lightOn_start_ts_trial = trial_list(trial_idx).lightOnTrig_ts(1) -...
@@ -121,7 +122,7 @@ for trial_idx=1:length(trial_list)
                     end
                 end
             else
-                plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'k');
+                plot3(plot_data(:, 1),plot_data(:,3),-plot_data(:,2), 'k','LineWidth',1.5);
             end
             if annotateON
                 spoutOn_idx = trial_list(trial_idx).end_idx_first - trial_list(trial_idx).start_idx + 1 - n;

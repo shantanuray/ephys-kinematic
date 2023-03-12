@@ -31,7 +31,7 @@ function [avgDataCombined, avgDataCombinedMaxSize, avgDataCombinedMinSize] = get
             end
         end
     end
-    avgDataCombined = mean(dataCombined, 2,'omitnan');
-    avgDataCombinedMinSize = mean(dataCombined(1:min_size,:), 2,'omitnan');
-    avgDataCombinedMaxSize = mean(dataCombined(1:max_size,:), 2,'omitnan');
+    avgDataCombined = mean(dataCombined, 2,'includenan');
+    avgDataCombinedMinSize = mean(dataCombined(1:min_size,:), 2,'includenan');
+    avgDataCombinedMaxSize = mean(dataCombined(1:max_size,:), 2,'includenan');
 end

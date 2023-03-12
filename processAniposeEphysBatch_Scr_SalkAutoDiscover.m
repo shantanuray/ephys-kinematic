@@ -9,13 +9,20 @@
 % root_dir/ (eg. /mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3
 % Full path example: /mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3/A11-3_2022-02-25_11-59-18_video/pose-3d
 
-root_dir = '/mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3';
+%root_dir = '/Volumes/dcn_emg_behavior/Ayesha/A11-1/A11-1';
 
 % Save directory
-save_dir = fullfile(root_dir, datestr(now, 'yyyy-mm-dd'));
-if exist(save_dir, 'dir') ~= 7
-    mkdir(save_dir);
-end
+%save_dir = fullfile(root_dir, datestr(now, 'yyyy-mm-dd'));
+%if exist(save_dir, 'dir') ~= 7
+%    mkdir(save_dir);
+%end
+
+disp('Choose the root directory with all of the anipose and ephys data')
+root_dir = uigetdir('.', 'Choose root directory with all of the anipose and ephys data');
+
+% Get save directory
+disp('Choose common location to save trials')
+save_dir = uigetdir('.', 'Choose common location to save trials');
 
 %% Filter parameters
 scoreThresh = 0.05;

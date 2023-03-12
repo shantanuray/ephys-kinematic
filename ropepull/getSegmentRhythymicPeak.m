@@ -3,7 +3,7 @@ function [segmentPre, segmentPost] = getSegmentRhythymicPeak(trial, markerName, 
 	% segmentRhythymicPeak = getSegmentRhythymicPeak(trial, 'hand_left', 'x', 0, 'MinPeakProminence', .2);
 	%
 	% Ayesha: Write description
-	[loc,pks,startPullLoc,endPullLoc] = getPeaks(trial, markerName, dorsoVentralAxis, maxPeakHeight, varargin{:});
+	[loc,pks,startPullLoc,endPullLoc] = getPeaks_Lara(trial, markerName, dorsoVentralAxis, maxPeakHeight, varargin{:});
 
 	if length(pks)>=3,
         medianLoc = loc-median(loc);

@@ -10,14 +10,14 @@
 % Full path example: /mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3/A11-3_2022-02-25_11-59-18_video/pose-3d
 
 disp('Choose the root directory with all of the anipose and ephys data')
-root_dir = uigetdir('.', 'Choose root directory with all of the anipose and ephys data');
+root_dir = uigetdir('.', 'Choose root directory with all of the anipose and ephys data');% animal directory
 
 % Get save directory
 disp('Choose common location to save trials')
-save_dir = uigetdir('.', 'Choose common location to save trials');
+save_dir = uigetdir('.', 'Choose common location to save trials');% common folder for all mat files 
 
 %% Filter parameters
-scoreThresh = 0.05;
+scoreThresh = 0.05; % choose based on error 
 fillMissingGapSize = 50;
 reply = input(['\nDo you wish filter anipose data??\n\n',...
             '[Enter/y/Y]    => Yes\n',...
@@ -41,7 +41,7 @@ if filterThresholdFlag
 end
 
 %% Time duration for extracting fixed trial data in ms
-fixedReachInterval = 750; % ms
+fixedReachInterval = 1000; % ms
 reply = input(['\nTime interval (ms) to use for extracting fixed trial data?\n\n',...
             sprintf('[Enter/y/Y]    => %dms (default)\n', fixedReachInterval),...
             'Else enter time interval in ms:\n'],'s');
@@ -63,7 +63,7 @@ switch lower(reply)
         startEvents = {'solenoid_on'};
     case '2'
         startEvents = {'tone_on'};
-    case 3
+    case '3'
         startEvents = {'solenoid_on','tone_on'};
     otherwise
         startEvents = {'solenoid_on'};
