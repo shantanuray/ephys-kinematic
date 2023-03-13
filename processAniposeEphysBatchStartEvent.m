@@ -29,11 +29,12 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
 
     % Initialize inputs
     p = readInput(varargin);
-    [fixedReachIntervalms,...
-    filterThresholdFlag, scoreThresh,...
-    filterFlag, signalFilter,...
-    maxGap, aniposeDirList, startEvents, filterEMG] = parseInput(p.Results);
 
+    [aniposeDirList,...
+    fixedReachIntervalms,...
+    filterThresholdFlag, scoreThresh, maxGap,...
+    filterFlag, signalFilter,...
+    startEvents, filterEMG] = parseInput(p.Results);
     % Get list of all dir with anipose data
     indicator = 'pose-3d';
     if isempty(aniposeDirList)
@@ -88,6 +89,7 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
             % Find columns in aniposeData with xyz data for filtering
             xyzColPos = findColPos(aniposeData, {'_x', '_y','_z'});
             aniposeDataArray = table2array(aniposeData(:, xyzColPos));
+            aniposeDataArray(find(isnan(aniposeDataArray))) = 0.0;
             aniposeDataArray = filtfilt(signalFilter, aniposeDataArray);
             aniposeData(:, xyzColPos) = array2table(aniposeDataArray);
         end
@@ -193,8 +195,8 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
         defaultMaxGap = 50;
         defaultFixedReachIntervalms = 750;
         defaultStartEvents = {'solenoid_on', 'tone_on'};
-        filterEMG = false;
 
+        addParameter(p,'aniposeDirList',{}, @iscell);
         addParameter(p,'filterThresholdFlag',defaultThresholdFilterFlag, @islogical);
         addParameter(p,'filterFlag',defaultFilterFlag, @islogical);
         addParameter(p,'signalFilter',defaultFilter);
@@ -202,18 +204,18 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
         addParameter(p,'maxGap',defaultMaxGap, @isnumeric);
         addParameter(p,'fixedReachIntervalms',defaultFixedReachIntervalms, @isnumeric);
         addParameter(p,'startEvents',defaultStartEvents, @iscell);
-        addParameter(p,'filterEMG',filterEMG, @islogical);
+        addParameter(p,'filterEMG',false, @islogical);
         parse(p, input{:});
     end
 
-    function [fixedReachIntervalms, filterThresholdFlag, scoreThresh, maxGap, filterFlag, signalFilter, startEvents, filterEMG] = parseInput(p)
+    function [aniposeDirList, fixedReachIntervalms, filterThresholdFlag, scoreThresh, maxGap, filterFlag, signalFilter, startEvents, filterEMG] = parseInput(p)
+        aniposeDirList = p.aniposeDirList;
         fixedReachIntervalms = p.fixedReachIntervalms;
         filterThresholdFlag = p.filterThresholdFlag;
         scoreThresh = p.scoreThresh;
         maxGap = p.maxGap;
         filterFlag = p.filterFlag;
-        signalFilter = p.signalFilter
-        aniposeDirList = p.aniposeDirList;
+        signalFilter = p.signalFilter;
         startEvents = p.startEvents;
         filterEMG = p.filterEMG;
     end
