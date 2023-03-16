@@ -18,7 +18,7 @@ function plot_3Ddata(trial_list, dataLabel, bodyPart, fsKinematic, fsEphys, titl
 %   - bodyPart: (str) string with data label name or index position
 %                 eg. 'left_wrist' or 'right_d2_knuckle'
 %   - fsKinematic, fsEphys: (float) Sampling frequence for kinematic and ephys data resp.
-%   - title_str: (str) Used in labeling plot and saving plot
+%   - title_str: (str) Used in labeling plot and saving plot, use the name of the mat file 
 %   - refLabel: (str) string with ref label (default: 'waterSpout')
 %   - annotateON: (logical) If true, mark when light ON (default: true)
 %   - savefig: (logical) true to save figure automatically (Default: false)
@@ -26,8 +26,9 @@ function plot_3Ddata(trial_list, dataLabel, bodyPart, fsKinematic, fsEphys, titl
 %
 % Example: 
 % trial_list=trialList_solenoid_on;
-% plot_3Ddata(trial_list(10),'aniposeData_first_sc', 'right_d3_knuckle',200, 30000,...
-%                        'waterSpout',...
+% plot_3Ddata(trial_list(10),'aniposeData_first_sc', 'right_d3_knuckle',200, 30000,'namae of matfile',...
+%                       'waterSpout',...
+%                        true,...
 %                        true,...
 %                        true);
 % plot_3Ddata(trial_list,'aniposeData_fixed_relative', 'right_d2_knuckle', 200, 30000, 'A15-2', 'waterSpout', true, true);
@@ -59,9 +60,9 @@ end
 % Plot XYZ over time
 plot_str = strcat(title_str, ' ', bodyPart, ' 3D');
 f = figure('color', [1 1 1], 'visible', 'off');
-xlabel ('x','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-ylabel ('y','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
-zlabel ('z','FontSize', 16, 'FontWeight', 'bold', 'FontName', 'Arial');
+xlabel ('x','FontSize', 12, 'FontWeight', 'bold', 'FontName', 'Arial');
+ylabel ('y','FontSize', 12, 'FontWeight', 'bold', 'FontName', 'Arial');
+zlabel ('z','FontSize', 12, 'FontWeight', 'bold', 'FontName', 'Arial');
 % view([-37 -18]);
 %set (gca, 'linewidth', 2);
 plot_label = dataLabel;
@@ -83,15 +84,16 @@ if ~isempty(refLabel)
     refLocation = strfind(colNames, refLabel);
     refLocation = find(~cellfun(@isempty,refLocation));
     refLocation = refLocation(1:3);  % x,y,z only
+    %mean?
     dataref = data(1, refLocation);
     % Plot x axis corresponds to x coordinate in anipose
     % Plot y axis corresponds to z coordinate in anipose
     % Plot z axis corresponds to -y coordinate in anipose
     % Plot firs spout position
-    plot3(dataref(1, 1),dataref(1,3),-dataref(1,2), 'ks',...
+    plot3(dataref(1, 1),dataref(1,3),-dataref(1,2), 'x',...
                     'MarkerEdgeColor','k',...
                    'MarkerFaceColor','k',...
-                   'MarkerSize',5);
+                   'MarkerSize',7.5);
     hold on;
 end
 % Loop over every trial
@@ -118,7 +120,7 @@ for trial_idx=1:length(trial_list)
                         plot3(plot_data(anipose_lightOn_idx, 1),plot_data(anipose_lightOn_idx, 3),-plot_data(anipose_lightOn_idx, 2), 'yo',...
                               'MarkerEdgeColor',[0,0.5,0],...
                               'MarkerFaceColor',[0,0.5,0],...
-                              'MarkerSize',10);
+                              'MarkerSize',7.5);
                     end
                 end
             else

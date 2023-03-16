@@ -89,6 +89,7 @@ function processAniposeEphysBatchStartEvent(rootdir, savedir, varargin)
             % Find columns in aniposeData with xyz data for filtering
             xyzColPos = findColPos(aniposeData, {'_x', '_y','_z'});
             aniposeDataArray = table2array(aniposeData(:, xyzColPos));
+            % workaround filtfilt doesnt take NaN values so all NaN is set to zero
             aniposeDataArray(find(isnan(aniposeDataArray))) = 0.0;
             aniposeDataArray = filtfilt(signalFilter, aniposeDataArray);
             aniposeData(:, xyzColPos) = array2table(aniposeDataArray);

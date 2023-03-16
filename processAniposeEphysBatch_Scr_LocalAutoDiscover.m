@@ -11,17 +11,18 @@
 
 % disp('Choose the root directory with all of the anipose and ephys data')
 % root_dir = uigetdir('.', 'Choose root directory with all of the anipose and ephys data');% animal directory
-root_dir = "/Users/ayesha/Dropbox/Ayesha_post doc_local storage/Cerebellar_nuclei/INTRSECT/behavior/hfwr/A15-4/";
+root_dir = "/Users/ayesha/Dropbox/Ayesha_post doc_local storage/Cerebellar_nuclei/INTRSECT/behavior/hfwr/A34-2/";
 
 % % Get save directory
 % disp('Choose common location to save trials')
 % save_dir = uigetdir('.', 'Choose common location to save trials');% common folder for all mat files 
-save_dir = "/Users/ayesha/Dropbox/Ayesha_post doc_local storage/Cerebellar_nuclei/INTRSECT/behavior/hfwr/A15-4/data/filtered";
+save_dir = "/Users/ayesha/Dropbox/Ayesha_post doc_local storage/Cerebellar_nuclei/INTRSECT/behavior/hfwr/A34-2/data/filtered";
 
 %% Filter parameters
 scoreThresh = 0.05; % choose based on error 
 fillMissingGapSize = 50;
-filterThresholdFlag = true;
+filterThresholdFlag = false;
+filterFlag= true;
 % reply = input(['\nDo you wish filter anipose data??\n\n',...
 %             '[Enter/y/Y]    => Yes\n',...
 %             '[n/N]          => No    \n'],'s');
@@ -44,7 +45,7 @@ filterThresholdFlag = true;
 % end
 scoreThresh = 0.05;
 %% Time duration for extracting fixed trial data in ms
-fixedReachIntervalms = 1000; % ms
+fixedReachIntervalms = 1500; % ms
 % reply = input(['\nTime interval (ms) to use for extracting fixed trial data?\n\n',...
 %             sprintf('[Enter/y/Y]    => %dms (default)\n', fixedReachIntervalms),...
 %             'Else enter time interval in ms:\n'],'s');
@@ -77,6 +78,7 @@ startEvents = {'tone_on'};
 processAniposeEphysBatchStartEvent(root_dir, save_dir,...
                                    'startEvents', startEvents,...
                                    'filterThresholdFlag', filterThresholdFlag,...
+                                   'filterFlag',filterFlag,...
                                    'scoreThresh', scoreThresh,...
                                    'maxGap', fillMissingGapSize,...
                                    'fixedReachIntervalms', fixedReachIntervalms);

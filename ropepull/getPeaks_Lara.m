@@ -3,6 +3,8 @@ function [loc, pks, startPullLoc, endPullLoc] = getPeaks(trial, markerName, dors
 	expectedAxes = {'x','y','z'};
 	dorsoVentralAxisIdx = searchStrInCell(expectedAxes, dorsoVentralAxis);
 	dorsoVentralAxisData = xyz(:, dorsoVentralAxisIdx);
+	nodeNames = trial.markerNames;
+	nodeIDnose=searchStrInCell(nodeNames,'nose');
 	% Get all peaks
 	[pks, loc] = findpeaks(dorsoVentralAxisData, varargin{:});
 	% Start of the pulling behavior differs from trial to trial
@@ -15,10 +17,9 @@ function [loc, pks, startPullLoc, endPullLoc] = getPeaks(trial, markerName, dors
     startPullLoc = nan;
     endPullLoc = nan;
 	if ~isempty(loc)
-    	poseHeight = trial.poseHeight; 
-    	% poseHeight=trial.trialXYZ.(:,nodeIDnose,:); 
-    	poseHeight=squeeze(poseHeight);
-    	poseHeight=trial.poseHeight(:,1,:);
+      poseHeight=trial.('trialXYZ')(:,nodeIDnose,:); 
+      poseHeight=squeeze(poseHeight);
+      poseHeight=trial.poseHeight(:,1,:);
     	maxHeightLoc = find(poseHeight==max(poseHeight));
     	startPullLoc = find(poseHeight(1:maxHeightLoc)==min(poseHeight(1:maxHeightLoc)));
     	startPullLoc = startPullLoc(end);
