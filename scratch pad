@@ -8,9 +8,31 @@ plot_3Ddata(trialList_tone_on(9),'aniposeData_first_sc', 'right_d3_knuckle', 200
 %plot position, velocity, acceleration
 save_loc='/Users/ayesha/Dropbox/Ayesha_post doc_local storage/Cerebellar_nuclei/INTRSECT/behavior/hfwr/A15-4/figs/figsForFiltering';
 
+%calculate grip aperture
 trialList=trialList_tone_on;
-trialNum=29;
+trialNum=9;
 trial=trialList(trialNum);
+x= getGripAperture(trial);
+x=-x
+y=max(x((trial.end_idx_first-200*50/1000)-trial_start_idx:(trial.end_idx_first+200*50/1000)-trial_start_idx));
+w=find(x==y)
+
+windowCandidate = findReachStart(trial,'RefBodyPart', 'right_d3_knuckle_r','WindowStartKinematicVariable', 'aniposeData_fixed_relative','WindowStartLimitValue',3,'WindowSearchKinematicVariable','aniposeData_fixed_relative_jerk','WindowSelectorVariable','aniposeData_fixed_relative_velocity','WindowSelectorLimitValue', -5,'MinPeakDistance', 50,'MinPeakHeight', 3);
+
+
+
+for i = 1:length(trialList_1)
+    trial = trialList_1(i);
+    if isfield(trial.(colName), 'data')
+        data = trial.(colName).data;
+        data_max_speed(i)=max(data);
+    end
+end
+
+trialList=trialList_tone_on;
+trialNum=9;
+trial=trialList(trialNum);
+
 plotColour='b';% k for light OFF, b for light ON 
 
 tdistP = 0:1/200:(size(trial.aniposeData_fixed_relative.(212))/200);
