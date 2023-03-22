@@ -2,7 +2,7 @@
 %calling function that gets trial start and end, plots and saves  the data 
 
 trialList=trialList_tone_on;
-trialNum=39;
+trialNum=23;
 trial=trialList(trialNum);
 pose_ID='right_wrist_r';
 

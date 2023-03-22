@@ -1,8 +1,0 @@
-% get power spectrum and plot 
-trialList=trialList_tone_on;
-trialNum=13;
-trial=trialList(trialNum);
-
-p=pspectrum(-trial.aniposeData_fixed_relative_acceleration.(212));
-figure;
-plot(p); 

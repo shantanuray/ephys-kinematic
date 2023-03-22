@@ -2,8 +2,8 @@
 trialList=trialList_tone_on;
 trialNum=39;
 trial=trialList(trialNum);
-trial.property=trial.EMG_trap_fixed;
+trialproperty=trial.aniposeData_fixed_relative_acceleration.(164)
 
-[p,f]=pspectrum(trial.property,30000);
+[p,f]=pspectrum(trialproperty,200);
 figure;
-plot(f,p); 
+plot(f,p, 'k','LineWidth',1.5); 

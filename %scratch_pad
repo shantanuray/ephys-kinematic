@@ -1,0 +1,12 @@
+%scratch pad
+
+plot_3Ddata(trialList_tone_on,'aniposeData_fixed_relative', 'right_d3_knuckle', 200, 30000, 'A34-2', 'waterSpout', true, true);
+
+
+plot_3Ddata(trialList_tone_on(9),'aniposeData_first_sc', 'right_d3_knuckle', 200, 30000, 'A11-1', 'waterSpout', true, true);
+
+%crosscorrelation
+[c,lags] = xcorr(x,y);
+[c,lags] = xcorr(x);
+
+cross corelation of each muscle with acceleration

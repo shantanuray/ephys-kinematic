@@ -17,8 +17,8 @@ first_sc_window=((trial.end_idx_first-200*100/1000)-trial.start_idx:(trial.end_i
 gripAperture_max=max(gripAperture(first_sc_window));
 %GA idx
 gripAperture_max_idx=find(gripAperture==gripAperture_max);
-% get trial relative speed
 
+% get trial relative speed
 trial_velocity=-[trial.aniposeData_fixed_relative_velocity.([pose_ID])];
 %identifies local speed minima
 velocityMinima= islocalmin(trial_velocity,'MinProminence',5);
