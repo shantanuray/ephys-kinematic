@@ -66,9 +66,8 @@ function windowCandidate = findReachStart(trial, varargin)
         % - windowStartKinematicVariable is a relative measurement wrt to a fixed point such as spout
         % - WindowStartLimitValue has been provided wrt to first point
         % Find diff to get relative measurement to frst point
-        % trialData_startmax = [0; diff(trialData_windowStart)];
-        trialData_startmax = [0; (trialData_windowStart)-(trialData_windowStart(1))];
-        trialData_startmax = -trialData_startmax;
+        % Relative measurements are wrt spout and hence first point is the furthest away
+        trialData_startmax = trialData_windowStart(1) - trialData_windowStart;
         trialData_startMaxPos = find(trialData_startmax>=windowStartLimitValue);
         % Please note that if windowStartLimitValue is not reached then trialData_startMaxPos = []
         if length(trialData_startMaxPos) >=1
