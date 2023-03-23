@@ -17,6 +17,7 @@ function trialListGold = trialSegmentationGold(trialListSilver, varargin)
     %               Default = 'aniposeData_fixed_relative_velocity'
     %   'WindowSelectorLimitValue': Choose candidates with WindowSelectorVariable value >= WindowSelectorLimitValue
     %               Default = 5mm/s
+    %   'MinPeakDistance', 'minPeakHeight': findpeaks params. Default = nan
     %   'GripApertureDigit1': Choose body part 1 for measuring grip aperture to mark prehension
     %               Default = 'right_d5_knuckle'
     %   'GripApertureDigit2': Choose body part 2 for measuring grip aperture to mark prehension
@@ -36,7 +37,16 @@ function trialListGold = trialSegmentationGold(trialListSilver, varargin)
         windowStartKinematicVariable, windowStartLimitValue,...
         windowSearchKinematicVariable,...
         windowSelectorVariable, windowSelectorLimitValue,...
+        minPeakDistance, minPeakHeight,...
         gripApertureDigit1, gripApertureDigit2] = parseInput(p.Results);
+
+    findPeaksArgins = {};
+    if ~isnan(minPeakDistance)
+        findPeaksArgins = cat(1, {findPeaksArgins{:}, 'MinPeakDistance', minPeakDistance});
+    end
+    if ~isnan(minPeakHeight)
+        findPeaksArgins = cat(1, {findPeaksArgins{:}, 'MinPeakHeight', minPeakHeight});
+    end
 
     for trialIdx = 1:length(trialListSilver)
         % Get as-is trial data
@@ -55,7 +65,8 @@ function trialListGold = trialSegmentationGold(trialListSilver, varargin)
                 'WindowStartLimitValue', windowStartLimitValue,...
                 'WindowSearchKinematicVariable', windowSearchKinematicVariable,...
                 'WindowSelectorVariable', windowSelectorVariable,...
-                'WindowSelectorLimitValue', windowSelectorLimitValue);
+                'WindowSelectorLimitValue', windowSelectorLimitValue,...
+                findPeaksArgins{:});
             if isempty(reachStartBestCandidate)
                 fprintf('No peaks found for reach start in trial number %d\n', trialIdx)
                 fprintf('Using start of reach = %d\n', 1)
@@ -120,10 +131,11 @@ function trialListGold = trialSegmentationGold(trialListSilver, varargin)
         addParameter(p, 'WindowStartLimitValue', 3, @isfloat);
         addParameter(p, 'WindowSearchKinematicVariable', 'aniposeData_fixed_relative_jerk', @isstr);
         addParameter(p, 'WindowSelectorVariable', 'aniposeData_fixed_relative_velocity', @isstr);
-        addParameter(p, 'WindowSelectorLimitValue',5,@isfloat); 
+        addParameter(p, 'WindowSelectorLimitValue',5,@isfloat);
+        addParameter(p, 'MinPeakDistance', nan, @isfloat);
+        addParameter(p, 'MinPeakHeight', nan, @isfloat);
         addParameter(p, 'GripApertureDigit1', 'right_d5_knuckle', @isstr);
         addParameter(p, 'GripApertureDigit2', 'right_d2_knuckle', @isstr);
-
         parse(p, input{:});
     end
 
@@ -131,6 +143,7 @@ function trialListGold = trialSegmentationGold(trialListSilver, varargin)
         windowStartKinematicVariable, windowStartLimitValue,...
         windowSearchKinematicVariable,...
         windowSelectorVariable, windowSelectorLimitValue,...
+        minPeakDistance, minPeakHeight,...
         gripApertureDigit1, gripApertureDigit2] = parseInput(p)
         refBodyPart = p.RefBodyPart;
         windowStartKinematicVariable = p.WindowStartKinematicVariable;
@@ -138,6 +151,8 @@ function trialListGold = trialSegmentationGold(trialListSilver, varargin)
         windowSearchKinematicVariable = p.WindowSearchKinematicVariable;
         windowSelectorVariable = p.WindowSelectorVariable;
         windowSelectorLimitValue = p.WindowSelectorLimitValue;
+        minPeakDistance = p.MinPeakDistance;
+        minPeakHeight = p.MinPeakHeight;
         gripApertureDigit1 = p.GripApertureDigit1;
         gripApertureDigit2 = p.GripApertureDigit2;
     end
