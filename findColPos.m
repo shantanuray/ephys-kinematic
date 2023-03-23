@@ -1,14 +1,14 @@
-function colPos = findColPos(dataTable, colLabelStrCell)
-% colPos = findColPos(dataTable, colLabelStrCell);
-% Find column names of table dataTable that "contain" column labels specified in colLabelStrCell
+function colPos = findColPos(dataObj, colLabelStrCell)
+% colPos = findColPos(dataObj, colLabelStrCell);
+% Find column names of table/struct dataObj that "contain" column labels specified in colLabelStrCell
 % and return column position of matching column names
 % 
 % Arguments:
-%   - dataTable: Input table
+%   - dataObj: Input table/ struct
 %   - colLabelStrCell: str or cell of str with pattern for finding appropriate columns in table (eg. '_x')
 %
 % Returns:
-%   - colPos: Array of column indexes of table VariableNames that contain strings in colLabelStrCell
+%   - colPos: Array of column indexes of table VariableNames or struct fieldnames that contain strings in colLabelStrCell
 %
 % Examples:
 % % Assumption:
@@ -17,13 +17,20 @@ function colPos = findColPos(dataTable, colLabelStrCell)
 % colPos = findColPos(aniPoseData, {'_x', '_y', '_z'});
 
 colPos = [];
-if ~isempty(dataTable)
-    % Get table column names
-    colNames = dataTable.Properties.VariableNames;
+if ~isempty(dataObj)
     % Check if patterns have been provided for matching column names 
     if ~isempty(colLabelStrCell)
         if isstr(colLabelStrCell)
             colLabelStrCell = {colLabelStrCell};
+        end
+        if istable(dataObj)
+            % Get table column names
+            colNames = dataObj.Properties.VariableNames;
+        elseif isstruct(dataObj)
+            % Get struct field names
+            colNames = fieldnames(dataObj);
+        else
+            error("findColPos: dataObj is not a valid table or struct")
         end
         % Check if patterns are strings (cell of strings)
         if ~iscellstr(colLabelStrCell)
@@ -38,7 +45,7 @@ if ~isempty(dataTable)
             colPos = [colPos, lblPos];
         end
         % It may be desirable to sort the column positions so that they are aggregated in functional groups (eg. body parts) and not the matching label (eg. 'x')
-        colPos = sort(colPos);
+        colPos = sort(colPos(:));
     else
         error("findColPos: No patterns provided to match table variable names")
     end

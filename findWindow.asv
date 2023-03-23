@@ -33,13 +33,7 @@ function windowCandidatesStartEnd = findWindow(trialData, windowSearchStartTS, w
         error('findWindow: windowSearch[Start|end]TS is not integer. Check windowSearch[Start,End]TS and try again');
     end
     % Find peaks in trialData from windowSearchStartTS->EndTS
-    try
-        [pks, pkLocs] = findpeaks(trialData(windowSearchStartTS:windowSearchEndTS), varargin{:});
-    catch ME
-        windowCandidatesStartEnd = [];
-        fprintf('findWindow: %s\n', ME.message)
-        return
-    end
+    [pks, pkLocs] = findpeaks(trialData(windowSearchStartTS:windowSearchEndTS), varargin{:});
     if isempty(pkLocs)
         % Init output
         windowCandidatesStartEnd = [];

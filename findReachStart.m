@@ -48,8 +48,10 @@ function windowCandidate = findReachStart(trial, varargin)
     [refBodyPart,...
         windowStartKinematicVariable, windowStartLimitValue,...
         windowSearchKinematicVariable,...
-        windowSelectorVariable, windowSelectorLimitValue,...
-        minPeakDistance, minPeakHeight] = parseInput(p.Results);
+        windowSelectorVariable, windowSelectorLimitValue] = parseInput(p.Results);
+
+    % Init output
+    windowCandidate = [];
  
     % 1. Identify section of trial that could be included in reach start analysis
     %    Example: 3mm of trial trajectory from the start (tone_on)
@@ -65,10 +67,9 @@ function windowCandidate = findReachStart(trial, varargin)
         % Assumptions:
         % - windowStartKinematicVariable is a relative measurement wrt to a fixed point such as spout
         % - WindowStartLimitValue has been provided wrt to first point
-        % Find diff to get relative measurement to frst point
-        % trialData_startmax = [0; diff(trialData_windowStart)];
-        trialData_startmax = [0; (trialData_windowStart)-(trialData_windowStart(1))];
-        trialData_startmax = -trialData_startmax;
+        % Find diff to get relative measurement to first point
+        % Relative measurements are wrt spout and hence first point is the furthest away
+        trialData_startmax = trialData_windowStart(1) - trialData_windowStart;
         trialData_startMaxPos = find(trialData_startmax>=windowStartLimitValue);
         % Please note that if windowStartLimitValue is not reached then trialData_startMaxPos = []
         if length(trialData_startMaxPos) >=1
@@ -79,23 +80,30 @@ function windowCandidate = findReachStart(trial, varargin)
     % Init trialData to be used for window candidate analysis
     trialData_windowCandidates = trial.(windowSearchKinematicVariable).(refBodyPart);
     % Use findWindow to get windowCandidates. See `help findWindow`
-    if (length(trialData_startMaxPos) == 0) | (trialData_startMaxPos > length(trialData_windowCandidates))
-        trialData_startMaxPos = length(trialData_windowCandidates);
+    if (isempty(trialData_startMaxPos)) | (trialData_startMaxPos > length(trialData_windowCandidates))
+        trialData_startMaxPos = height(trialData_windowCandidates);
     end
     
     %% Expected MinPeakDistance to be a scalar with value < 0.965.
     % windowCandidates = findWindow(trialData_windowCandidates, 1, trialData_startMaxPos,...
     %                              'MinPeakDistance', minPeakDistance, 'MinPeakHeight', minPeakHeight);
     % TODO: Find findpeaks optimal params
-    windowCandidates = findWindow(trialData_windowCandidates, 1, trialData_startMaxPos);
+    windowCandidates = findWindow(trialData_windowCandidates, 1, trialData_startMaxPos,...
+                                  'MinPeakDistance', 10,'MinPeakHeight', 3);
+    if isempty(windowCandidates)
+        fprintf('findReachStart: Unable to find window candidates for %s; start pos = %d\n', windowSearchKinematicVariable, trialData_startMaxPos)
+        windowCandidate = [];
+        return;
+    end
+
     % 3. Use max of windowSelectorVariable to identify which window correlates to the best candidate for reach start
     % Init trialData to be used for window candidate selection
     trialData_windowSelection = trial.(windowSelectorVariable).(refBodyPart)(1:trialData_startMaxPos);
     % TODO: Optimize by replacing loop with one of the `fun` functions
     % Init loop temp variables
     windowCandidateNum = 0;
-    trialData_window_max = repmat(-Inf, length(windowCandidates), 1);
-    for num_candidate = 1:length(windowCandidates)
+    trialData_window_max = repmat(-Inf, height(windowCandidates), 1);
+    for num_candidate = 1:height(windowCandidates)
         % Find max within windows
         trialData_window_max(num_candidate) = max(trialData_windowSelection(windowCandidates(num_candidate, 1):windowCandidates(num_candidate, 2)));
     end
@@ -105,8 +113,10 @@ function windowCandidate = findReachStart(trial, varargin)
     if length(windowCandidateNum) >= 1
         windowCandidateNum = windowCandidateNum(end);
     end
-    if length(windowCandidateNum) == 0
-        error(sprintf('findReachStart: Unable to find window with %s > %0.1f', windowSelectorVariable, windowSelectorLimitValue))
+    if isempty(windowCandidateNum)
+        fprintf('findReachStart: Unable to find window with %s > %0.1f', windowSelectorVariable, windowSelectorLimitValue)
+        windowCandidate = [];
+        return;
     end
     % Init output to the best candidate
     windowCandidate.startPos = windowCandidates(windowCandidateNum, 1);
@@ -131,15 +141,12 @@ function windowCandidate = findReachStart(trial, varargin)
     function [refBodyPart,...
         windowStartKinematicVariable, windowStartLimitValue,...
         windowSearchKinematicVariable,...
-        windowSelectorVariable, windowSelectorLimitValue,...
-        minPeakDistance, minPeakHeight] = parseInput(p)
+        windowSelectorVariable, windowSelectorLimitValue] = parseInput(p)
         refBodyPart = p.RefBodyPart;
         windowStartKinematicVariable = p.WindowStartKinematicVariable;
         windowStartLimitValue = p.WindowStartLimitValue;
         windowSearchKinematicVariable = p.WindowSearchKinematicVariable;
         windowSelectorVariable = p.WindowSelectorVariable;
         windowSelectorLimitValue = p.WindowSelectorLimitValue;
-        minPeakDistance = p.MinPeakDistance;
-        minPeakHeight = p.MinPeakHeight;
     end
 end
