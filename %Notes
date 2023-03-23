@@ -1,22 +1,93 @@
 Notes
 to run trial seg autoDiscover; choose folder for use and save folder 
-getSummaryBatchScr, change rootdir and summary file , for summary data if i wanted to get it from fixed/ last SC change line #25 getSummaryInfo
-get summary info: findpeaks 
-definition velocity 
- plot_3Ddata(trialList_tone_on, 'aniposeData_first_sc', 'right_d2_knuckle', 200, 30000, 'A11-1', 'waterSpout');
-calculate grip aperture an max grip aperture
-Endpoint
-        for i=1:length(trialList_tone_on(9).aniposeData_first_sc_relative)
-            gripaperture(i)= right_d5_tip_r-right_d5_tip_r;
-        end 
-        endpoint=max(gripaperture);
-Start 
+getSummaryBatchScr, change rootdir and summary file , for summary data if i wanted to get it from fixed/ last SC change line #25 
+definition velocity --> forward and backward
 
-for i=1:length(trialList_tone_on(9).aniposeData_first_sc
- if frames x positions > -10 
- from these pick first frame where velocity start showing and increase towards the water spout 
+add check to end point for no spout contact
+getSummaryInfo, currently gives
+label 
+trialIndex 
+hitormiss 
+lightTrig = lightTrig(trialIndex)';
+xDist 
+yDist  
+zDist
+totalDist 
+firstSCDist 
+xSpeed  
+ySpeed 
+zSpeed 
+averageSpeed 
+maxSpeed 
+distRelMaxSpeed = [];
+xyzSpeedPeakCount = []; 
+jerkPeakCount = [];
+totalTimeTrialOut = [];
 
- cross corelation of each muscle with velocity 
+getSummaryInfo:start to endpoint
 
- angle(cart2sphere from reach start to poistion at max speed)
+use right_d3_knuckle_r, 
+trialIndex 
+hitormiss 
+lightTrig_idx
+lightTrig 
 
+% endpoint error 
+wrist endpoint relative
+d3 knuckle endpoint relative
+
+% speed 
+xSpeed 
+ySpeed 
+zSpeed 
+averageSpeed 
+maxSpeed 
+totalTimeTrialOut
+
+% position/ smoothness
+
+xDist 
+yDist 
+zDist 
+totalDist 
+distRelMaxSpeed 
+
+tortuosity
+acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth ,acceleration frequency, acceleration period 
+
+% endpoint error 
+wrist endpoint relative
+d3 knuckle endpoint relative
+
+%directional deviation 
+angular deviation vs smoothness(acceleration peaks)
+azi/ elevation from start to end 
+azi/elev start to max speed
+
+%variation in reach start 
+start value 
+
+%digit control
+max grip aperture 
+
+
+%Allow user to define the start and end of the data to be inputed with reference to a process label  and the pose_ID its working on 
+
+%getSummaryInfo:endpoint to grasp end
+%right_d3_knuckle
+acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth, acceleration frequency, acceleration period 
+
+%getSummaryInfo:start to position at max velocity
+%right_d3_knuckle
+acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth, acceleration frequency, acceleration period 
+
+%getSummaryInfo:position at max velocity to end 
+%right_d3_knuckle
+acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth, acceleration frequency, acceleration period  
+azi/elev start to max speed
+
+%getSummaryInfo: start to end point
+% left_d3_knucle
+pathlength
+average speed
+acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth, acceleration frequency, acceleration period  
