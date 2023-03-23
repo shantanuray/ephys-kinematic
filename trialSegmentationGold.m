@@ -58,6 +58,7 @@ function trialListGold = trialSegmentationGold(trialListSilver, varargin)
                 'WindowSelectorLimitValue', windowSelectorLimitValue);
             if isempty(reachStartBestCandidate)
                 fprintf('No peaks found for reach start in trial number %d\n', trialIdx)
+                fprintf('Using start of reach = %d\n', 1)
                 disp(repmat('-', 1,80))
                 reachStartBestCandidate.startPos = 1;
             end
