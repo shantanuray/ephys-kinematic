@@ -1,11 +1,13 @@
-function trialListGold = trialSegmentationGold(trialListSilver, varargin)
+function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_timestamps, varargin)
     % trialSegmentationGold builds on first pass trial segmentation in trial_segmentation.m. It refines the trial segments:
     %   - Reach start: Instead ofsolely relying on start trigger (eg. tone_on), searches for start of trial
     %     by using jerk peaks and relative velocity (see findReachStart.m)
     %   - Reach end: Instead of solely relying on spout contact, use combination of grip aperture signifying prehension
     %     and relative velocity to mark the retract phase of the reach to identify reach end (see getReachEnd.m)
+    % trialListGold = trialSegmentationGold(trialListSilver, videoFrames_timestamps);
     % Arguments:
     %   trialListSilver: struct array with list of trials - see trial_segmentation.m
+    %   videoFrames_timestamps: Video time stamps synced to ephys contDataTimestamps. see loadOEbinary_AT.m
     %   'RefBodyPart': Reference body part for fine tuning segmentation
     %               Default = 'right_d3_knuckle_r'
     %   'WindowStartKinematicVariable': Function used to determine which window to choose
@@ -81,41 +83,27 @@ function trialListGold = trialSegmentationGold(trialListSilver, varargin)
             trialGold.('reach_end_idx') = reach_end_idx;
             trialGold.('grasp_start_idx') = grasp_start_idx;
             trialGold.('grasp_end_idx') = grasp_end_idx;
-            % % lightOnTrig_ts is a subset of contDataTimestamps
-            % % and start_ts is from videoFrames_timestamps, which is a subset of contDataTimestamps
-            % % Hence lightOnTrig_ts value is comparable to start_ts (do not use index)
-            % trial.('lightOnTrig_ts') = intersect(start_ts:end_ts_first, lightOnTrig_ts);
-            % if isempty(trial.('lightOnTrig_ts'))
-            %     trial.('lightTrig') = 'OFF';
-            % else
-            %     trial.('lightTrig') = 'ON';
-            % end
             trialGold.('aniposeData_reach') = trialSilver.('aniposeData_fixed')(reach_start_idx:reach_end_idx, :);
             trialGold.('aniposeData_grasp') = trialSilver.('aniposeData_fixed')(grasp_start_idx:grasp_end_idx, :);
             trialGold.('aniposeData_reach_relative') = trialSilver.('aniposeData_fixed_relative')(reach_start_idx:reach_end_idx, :);
             trialGold.('aniposeData_grasp_relative') = trialSilver.('aniposeData_fixed_relative')(grasp_start_idx:grasp_end_idx, :);
             
-            % % takes all the EMG data between each start and end index
-            % ephys_end_idx_first_sc = find(contDataTimestamps == end_ts_first);
-            % ephys_end_idx_last_sc = find(contDataTimestamps == end_ts_last);
-            % trial.('EMG_biceps_first_sc') = EMG_biceps(:, ephys_start_idx:min(size(EMG_biceps, 2), ephys_end_idx_first_sc))';
-            % trial.('EMG_triceps_first_sc') = EMG_triceps(:, ephys_start_idx:min(size(EMG_triceps, 2), ephys_end_idx_first_sc))';
-            % trial.('EMG_ecu_first_sc') = EMG_ecu(:, ephys_start_idx:min(size(EMG_ecu, 2), ephys_end_idx_first_sc))';
-            % trial.('EMG_trap_first_sc') = EMG_trap(:, ephys_start_idx:min(size(EMG_trap, 2), ephys_end_idx_first_sc))';
-            % trial.('EMG_biceps_last_sc') = EMG_biceps(:, ephys_start_idx:min(size(EMG_biceps, 2), ephys_end_idx_last_sc))';
-            % trial.('EMG_triceps_last_sc') = EMG_triceps(:, ephys_start_idx:min(size(EMG_triceps, 2), ephys_end_idx_last_sc))';
-            % trial.('EMG_ecu_last_sc') = EMG_ecu(:, ephys_start_idx:min(size(EMG_ecu, 2), ephys_end_idx_last_sc))';
-            % trial.('EMG_trap_last_sc') = EMG_trap(:, ephys_start_idx:min(size(EMG_trap, 2), ephys_end_idx_last_sc))';
-            % if filterEMG
-            %     trial.('EMG_biceps_first_sc_filtered') = EMG_biceps_filtered(:, ephys_start_idx:min(size(EMG_biceps_filtered, 2), ephys_end_idx_first_sc))';
-            %     trial.('EMG_triceps_first_sc_filtered') = EMG_triceps_filtered(:, ephys_start_idx:min(size(EMG_triceps_filtered, 2), ephys_end_idx_first_sc))';
-            %     trial.('EMG_ecu_first_sc_filtered') = EMG_ecu_filtered(:, ephys_start_idx:min(size(EMG_ecu_filtered, 2), ephys_end_idx_first_sc))';
-            %     trial.('EMG_trap_first_sc_filtered') = EMG_trap_filtered(:, ephys_start_idx:min(size(EMG_trap_filtered, 2), ephys_end_idx_first_sc))';
-            %     trial.('EMG_biceps_last_sc_filtered') = EMG_biceps_filtered(:, ephys_start_idx:min(size(EMG_biceps_filtered, 2), ephys_end_idx_last_sc))';
-            %     trial.('EMG_triceps_last_sc_filtered') = EMG_triceps_filtered(:, ephys_start_idx:min(size(EMG_triceps_filtered, 2), ephys_end_idx_last_sc))';
-            %     trial.('EMG_ecu_last_sc_filtered') = EMG_ecu_filtered(:, ephys_start_idx:min(size(EMG_ecu_filtered, 2), ephys_end_idx_last_sc))';
-            %     trial.('EMG_trap_last_sc_filtered') = EMG_trap_filtered(:, ephys_start_idx:min(size(EMG_trap_filtered, 2), ephys_end_idx_last_sc))';
-            % end
+            %% takes all the EMG data between each start and end index
+            %% start_ts is in terms of videoFrames_timestamps
+            %% start_idx is the index into videoFrames_timestamps
+            %% reach/grasp_start/end_idx is wrt start_idx
+            ephys_reach_start_idx = videoFrames_timestamps(trialSilver.start_idx+reach_start_idx-1)-trialSilver.start_ts+1;
+            ephys_reach_end_idx = videoFrames_timestamps(trialSilver.start_idx+reach_end_idx-1)-trialSilver.start_ts+1;
+            ephys_grasp_start_idx = videoFrames_timestamps(trialSilver.start_idx+grasp_start_idx-1)-trialSilver.start_ts+1;
+            ephys_grasp_end_idx = videoFrames_timestamps(trialSilver.start_idx+grasp_end_idx-1)-trialSilver.start_ts+1;
+            emgColPos = findColPos(trialGold, 'EMG_');
+            emgCols = fieldnames(trialGold);
+            emgCols = emgCols(emgColPos);
+            for emgColIdx = 1:length(emgCols)
+                emgCol = emgCols{emgColIdx};
+                trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_reach')) = trialGold.(emgCol)(ephys_reach_start_idx:ephys_reach_end_idx);
+                trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_grasp')) = trialGold.(emgCol)(ephys_grasp_start_idx:ephys_grasp_end_idx);
+            end
         end
         fn = fieldnames(trialGold);
         for f =1:length(fn)
