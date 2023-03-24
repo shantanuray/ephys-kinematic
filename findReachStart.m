@@ -5,7 +5,8 @@ function windowCandidate = findReachStart(trial, varargin)
     %                 'WindowStartLimitValue', windowStartLimitValue,...
     %                 'WindowSearchKinematicVariable', windowSearchKinematicVariable,...
     %                 'WindowSelectorKinematicVariable', windowSelectorKinematicVariable,...
-    %                 'WindowSelectorLimitValue', windowSelectorLimitValue);
+    %                 'WindowSelectorLimitValue', windowSelectorLimitValue,...
+    %                 'MinPeakDistance', 50, 'MinPeakHeight', 3);
     % Reach trials are triggered using events such as tone_on. In addition, other events such as solemoid_on provide motivation to the subject to start the reaching movement. However, the subject often does not immediately start the reaching movement after these events. This function will identify the start of the start of reach segment using kinematic variables. Process:
     % - Identify segment of trial that could be included in reach start (such as max relative distance of refBodyPart from tone_on)
     % - Use peaks of relative_jerk (or similar) to identify windows where the reach could have started
@@ -48,7 +49,15 @@ function windowCandidate = findReachStart(trial, varargin)
     [refBodyPart,...
         windowStartKinematicVariable, windowStartLimitValue,...
         windowSearchKinematicVariable,...
-        windowSelectorVariable, windowSelectorLimitValue] = parseInput(p.Results);
+        windowSelectorVariable, windowSelectorLimitValue,...
+        minPeakDistance, minPeakHeight] = parseInput(p.Results);
+    findPeaksArgins = {};
+    if ~isnan(minPeakDistance)
+        findPeaksArgins = cat(1, {findPeaksArgins{:}, 'MinPeakDistance', minPeakDistance});
+    end
+    if ~isnan(minPeakHeight)
+        findPeaksArgins = cat(1, {findPeaksArgins{:}, 'MinPeakHeight', minPeakHeight});
+    end
 
     % Init output
     windowCandidate = [];
@@ -89,7 +98,7 @@ function windowCandidate = findReachStart(trial, varargin)
     %                              'MinPeakDistance', minPeakDistance, 'MinPeakHeight', minPeakHeight);
     % TODO: Find findpeaks optimal params
     windowCandidates = findWindow(trialData_windowCandidates, 1, trialData_startMaxPos,...
-                                  'MinPeakDistance', 10,'MinPeakHeight', 3);
+                                  findPeaksArgins{:});
     if isempty(windowCandidates)
         fprintf('findReachStart: Unable to find window candidates for %s; start pos = %d\n', windowSearchKinematicVariable, trialData_startMaxPos)
         windowCandidate = [];
@@ -133,20 +142,24 @@ function windowCandidate = findReachStart(trial, varargin)
         addParameter(p, 'WindowSearchKinematicVariable', 'aniposeData_fixed_relative_jerk', @isstr);
         addParameter(p, 'WindowSelectorVariable', 'aniposeData_fixed_relative_velocity', @isstr);
         addParameter(p, 'WindowSelectorLimitValue',5,@isfloat); 
-        addParameter(p, 'MinPeakDistance', 50, @isfloat);
-        addParameter(p, 'MinPeakHeight', 3, @isfloat);
+        addParameter(p, 'MinPeakDistance', nan, @isfloat);
+        addParameter(p, 'MinPeakHeight', nan, @isfloat);
         parse(p, input{:});
     end
 
     function [refBodyPart,...
         windowStartKinematicVariable, windowStartLimitValue,...
         windowSearchKinematicVariable,...
-        windowSelectorVariable, windowSelectorLimitValue] = parseInput(p)
+        windowSelectorVariable, windowSelectorLimitValue,...
+        minPeakDistance, minPeakHeight] = parseInput(p)
         refBodyPart = p.RefBodyPart;
         windowStartKinematicVariable = p.WindowStartKinematicVariable;
         windowStartLimitValue = p.WindowStartLimitValue;
         windowSearchKinematicVariable = p.WindowSearchKinematicVariable;
         windowSelectorVariable = p.WindowSelectorVariable;
         windowSelectorLimitValue = p.WindowSelectorLimitValue;
+        minPeakDistance = p.MinPeakDistance;
+        minPeakHeight = p.MinPeakHeight;
+
     end
 end
