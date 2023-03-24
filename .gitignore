@@ -3,3 +3,4 @@ plots
 .idea/
 data/
 .DS_Store
+tmp/
