@@ -116,8 +116,8 @@ function windowCandidate = findReachStart(trial, varargin)
         % Find max within windows
         trialData_window_max(num_candidate) = max(trialData_windowSelection(windowCandidates(num_candidate, 1):windowCandidates(num_candidate, 2)));
     end
-    % Find which window have max >= windowSelectorLimitValue
-    windowCandidateNum = find(trialData_window_max>=windowSelectorLimitValue);
+    % Find which window have max <= windowSelectorLimitValue, < because velocity towards spout will be negative 
+    windowCandidateNum = find(abs(trialData_window_max)>=windowSelectorLimitValue);
     % If multiple candidates, choose the latest candidate
     if length(windowCandidateNum) >= 1
         windowCandidateNum = windowCandidateNum(end);
@@ -132,18 +132,19 @@ function windowCandidate = findReachStart(trial, varargin)
     windowCandidate.endPos = windowCandidates(windowCandidateNum, 2);
     trialData_windowSelected = trialData_windowSelection(windowCandidate.startPos:windowCandidate.endPos);
     windowCandidate.maxPos = windowCandidate.startPos + find(trialData_windowSelected == max(trialData_windowSelected)) - 1;
+    windowCandidate.minPos = windowCandidate.startPos + find(trialData_windowSelected == min(trialData_windowSelected)) - 1;
     
     %% Read input
     function p = readInput(input)
         p = inputParser;
         addParameter(p, 'RefBodyPart', 'right_d3_knuckle_r', @isstr);
         addParameter(p, 'WindowStartKinematicVariable', 'aniposeData_fixed_relative', @isstr);
-        addParameter(p, 'WindowStartLimitValue', 3, @isfloat);
+        addParameter(p, 'WindowStartLimitValue', 10, @isfloat);
         addParameter(p, 'WindowSearchKinematicVariable', 'aniposeData_fixed_relative_jerk', @isstr);
         addParameter(p, 'WindowSelectorVariable', 'aniposeData_fixed_relative_velocity', @isstr);
-        addParameter(p, 'WindowSelectorLimitValue',5,@isfloat); 
         addParameter(p, 'MinPeakDistance', nan, @isfloat);
         addParameter(p, 'MinPeakHeight', nan, @isfloat);
+        addParameter(p, 'WindowSelectorLimitValue',4,@isfloat); 
         parse(p, input{:});
     end
 

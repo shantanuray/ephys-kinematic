@@ -73,10 +73,11 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                 fprintf('No peaks found for reach start in trial number %d\n', trialIdx)
                 fprintf('Using start of reach = %d\n', 1)
                 disp(repmat('-', 1,80))
-                reachStartBestCandidate.startPos = 1;
+                %max position is chosen because that represents the velocity minima in the submovement (since velocity is relative to spout @ 000)
+                reachStartBestCandidate.maxPos = 1;
             end
             [VelocityMinimafirst_sc_endpoint_idx, VelocityMinimagripAperture_endpoint_idx, first_sc_idx, gripAperture_max_idx] = getReachEnd(trialSilver);
-            reach_start_idx = reachStartBestCandidate.startPos;
+            reach_start_idx = reachStartBestCandidate.maxPos;
             reach_end_idx = VelocityMinimagripAperture_endpoint_idx;
             [grasp_start_idx, grasp_end_idx] = getGrasp(trialSilver, VelocityMinimagripAperture_endpoint_idx);
             trialGold.('reach_start_idx') = reach_start_idx;
@@ -116,12 +117,12 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
         p = inputParser;
         addParameter(p, 'RefBodyPart', 'right_d3_knuckle_r', @isstr);
         addParameter(p, 'WindowStartKinematicVariable', 'aniposeData_fixed_relative', @isstr);
-        addParameter(p, 'WindowStartLimitValue', 3, @isfloat);
+        addParameter(p, 'WindowStartLimitValue',10, @isfloat);
         addParameter(p, 'WindowSearchKinematicVariable', 'aniposeData_fixed_relative_jerk', @isstr);
         addParameter(p, 'WindowSelectorVariable', 'aniposeData_fixed_relative_velocity', @isstr);
-        addParameter(p, 'WindowSelectorLimitValue',5,@isfloat);
         addParameter(p, 'MinPeakDistance', nan, @isfloat);
         addParameter(p, 'MinPeakHeight', nan, @isfloat);
+        addParameter(p, 'WindowSelectorLimitValue',4,@isfloat); 
         addParameter(p, 'GripApertureDigit1', 'right_d5_knuckle', @isstr);
         addParameter(p, 'GripApertureDigit2', 'right_d2_knuckle', @isstr);
         parse(p, input{:});
