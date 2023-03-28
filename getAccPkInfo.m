@@ -1,4 +1,4 @@
-function [accPk_count, accPk_meanAmp, accPk_maxAmp, accPk_meanProm, accPk_maxProm, accPk_meanWidth, accPk_maxWidth,accPk_freq,acc_period]=getAccPkInfo(trial,processlabel,minPkheigth)
+function [accPk_count, accPk_meanAmp, accPk_maxAmp, accPk_meanProm, accPk_maxProm, accPk_meanWidth, accPk_maxWidth,accPk_freq,acc_period]=getAccPkInfo(trial,processlabel,pose_ID,minPkheigth)
 %get acceleration peak data 
 % #
 % mean amplitude, 
@@ -7,14 +7,17 @@ function [accPk_count, accPk_meanAmp, accPk_maxAmp, accPk_meanProm, accPk_maxPro
 % max prominance, 
 % mean width,
 % maxwidth, 
-if nargin < 3
+if nargin < 4
         minPkheigth=1000;
 end
 minPkheigth=1000;
-if nargin < 2
-        processlabel = 'aniposeData_fixed_relative_acceleration';
+if nargin < 3
+        processlabel = 'aniposeData_reach_relative_acceleration';
 end
-pose_ID='right_wrist_r';
+if nargin < 2
+        pose_ID='right_wrist_r';
+end
+
 
 trial_acc=abs([trial.(processlabel).([pose_ID])]);
 [pk,loc,pkWidth,pkProm]=findpeaks(trial_acc);

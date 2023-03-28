@@ -12,7 +12,7 @@ gripAperture= getGripAperture(trial);
 %calculates the first cpout contact index
 first_sc_idx=trial.end_idx_first-trial.start_idx;
 %identifies the max grip aperture within a 50ms window around the spout contact;
-first_sc_window=((trial.end_idx_first-200*100/1000)-trial.start_idx:(trial.end_idx_first+200*100/1000)-trial.start_idx);
+first_sc_window=((trial.end_idx_first-200*50/1000)-trial.start_idx:(trial.end_idx_first+200*100/1000)-trial.start_idx);
 %identifies max GA within the spout contact window
 gripAperture_max=max(gripAperture(first_sc_window));
 %GA idx

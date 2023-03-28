@@ -2,7 +2,7 @@
 %calling function that gets trial start and end, plots and saves  the data 
 
 trialList=trialList_tone_on;
-trialNum=23;
+trialNum=65;
 trial=trialList(trialNum);
 pose_ID='right_wrist_r';
 
@@ -31,10 +31,7 @@ trial_jerk=[trial.aniposeData_fixed_relative_jerk.([pose_ID])];
 [jerkpks,jerkloc]=findpeaks(trial_jerk,'MinPeakDistance',5);
 %'MinPeakHeight', 3
 
-windowCandidate = findReachStart(trial,'RefBodyPart', 'right_d3_knuckle_r','WindowStartKinematicVariable', 'aniposeData_fixed_relative','WindowStartLimitValue',3,'WindowSearchKinematicVariable','aniposeData_fixed_relative_jerk','WindowSelectorVariable','aniposeData_fixed_relative_velocity','WindowSelectorLimitValue', -10,'MinPeakDistance', 10,'MinPeakHeight', 3);
+windowCandidate = findReachStart(trial,'RefBodyPart', 'right_d3_knuckle_r','WindowStartKinematicVariable', 'aniposeData_fixed_relative','WindowStartLimitValue',5,'WindowSearchKinematicVariable','aniposeData_fixed_relative_jerk','WindowSelectorVariable','aniposeData_fixed_relative_velocity','WindowSelectorLimitValue', 5);
 
-startPos=windowCandidate.startPos;
-
-
-
+startPos=windowCandidate.maxPos;
 
