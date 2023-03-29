@@ -10,7 +10,6 @@ function [accPk_count, accPk_meanAmp, accPk_maxAmp, accPk_meanProm, accPk_maxPro
 if nargin < 4
         minPkheigth=1000;
 end
-minPkheigth=1000;
 if nargin < 3
         processlabel = 'aniposeData_reach_relative_acceleration';
 end
@@ -23,6 +22,7 @@ trial_acc=abs([trial.(processlabel).([pose_ID])]);
 [pk,loc,pkWidth,pkProm]=findpeaks(trial_acc);
 minPkheigth=1000;
 [pk,loc,pkWidth,pkProm]=findpeaks(trial_acc,'MinPeakHeight',minPkheigth);
+if ~isempty(pk)
 accPk_count=length(pk);
 accPk_meanAmp=mean(pk);
 accPk_maxAmp=max(pk);
@@ -32,5 +32,16 @@ accPk_meanWidth=mean(pkWidth);
 accPk_maxWidth=max(pkWidth);
 accPk_freq= length(pk)/(((length(trial_acc))/200)+0.02);
 acc_period=1/accPk_freq;
+else
+accPk_count=nan;
+accPk_meanAmp=nan;
+accPk_maxAmp=nan;
+accPk_meanProm=nan;
+accPk_maxProm=nan;
+accPk_meanWidth=nan;
+accPk_maxWidth=nan;
+accPk_freq= nan;
+acc_period=nan;
+end
 
 

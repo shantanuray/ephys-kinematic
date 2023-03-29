@@ -22,6 +22,7 @@ function windowCandidatesStartEnd = findWindow(trialData, windowSearchStartTS, w
     % Check windowSearchStartTS and windowSearchEndTS values
     if (windowSearchStartTS|windowSearchEndTS) > length(trialData)
         error('findWindow: windowSearch[Start|end]TS > length(trialData). Check windowSearch[Start|end]TS and try again');
+        %skip trial
     end
     if (windowSearchStartTS|windowSearchEndTS) <= 0
         error('findWindow: windowSearch[Start|end]TS <= 0. Check (windowSearchStartTS|windowSearchEndTS) and try again');

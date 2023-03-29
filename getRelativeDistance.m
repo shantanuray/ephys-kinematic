@@ -36,12 +36,14 @@ for trial_idx = 1:length(trial_list)
         dataTable = trial_list(trial_idx).(processLabels{label_idx});
         if ~isempty(dataTable)
             xyzLocation = findColPos(dataTable, {'_x', '_y', '_z'});
+            %check
+            xLocation = findColPos(dataTable, {'_x'});
             refLocation = findColPos(dataTable, refLabel);
             refLocation = refLocation(1:3);  % x,y,z only , change to average of all datapoints
             data = table2array(dataTable);
             refValue = mean(data(:, refLocation), 1);
             dataref = repmat(refValue, size(dataTable, 1), 1); % Replicate for all time instances
-            dataref = repmat(dataref, 1, 1, length(xLocation));            % Replicate for all body parts (#samples x 3 x bodyparts)
+            dataref = repmat(dataref, 1, 1, length(xLocation));            % Replicate for all body parts (#samples x 3 x bodyparts)xyz location? previous is xlocation
             dataxyz = data(:, xyzLocation);                                % Get XYZ of all body parts
             dataxyz = reshape(dataxyz, size(dataxyz,1), 3, length(xLocation));  % Reshape to #samples x 3 x bodyparts
             xyzRel = dataxyz-dataref;
@@ -55,6 +57,7 @@ for trial_idx = 1:length(trial_list)
             num_labels = size(dataRel,2);
             dataRelFlat = reshape(dataRel, size(dataRel,1), size(dataRel,2)*size(dataRel,3)); % Flatten it back
             for bodyPart_idx = 1:length(xLocation)
+                colNames = trial_list(trial_idx).(processLabels{label_idx}).Properties.VariableNames;
                 base_label = colNames{xLocation(bodyPart_idx)}(1:strfind(colNames{xLocation(bodyPart_idx)}, '_x')-1);
                 dataRel_labels{(bodyPart_idx-1)*num_labels+1} = strcat(base_label, '_x');
                 dataRel_labels{(bodyPart_idx-1)*num_labels+2} = strcat(base_label, '_y');

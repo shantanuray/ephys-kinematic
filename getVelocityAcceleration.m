@@ -23,8 +23,8 @@ if nargin<4
 end
 if nargin<3
 	processLabels = {'aniposeData_fixed_relative',...
-					 'aniposeData_first_sc_relative',...
-					 'aniposeData_last_sc_relative'};
+					 'aniposeData_reach_relative',...
+					 'aniposeData_grasp_relative'};
 end
 
 % Parameters for derivative

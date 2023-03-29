@@ -3,39 +3,6 @@ to run trial seg autoDiscover; choose folder for use and save folder
 getSummaryBatchScr, change rootdir and summary file , for summary data if i wanted to get it from fixed/ last SC change line #25 
 definition velocity --> forward and backward
 
-add check to end point for no spout contact
-getSummaryInfo, currently gives
-label 
-trialIndex 
-hitormiss 
-lightTrig = lightTrig(trialIndex)';
-xDist 
-yDist  
-zDist
-totalDist 
-firstSCDist 
-xSpeed  
-ySpeed 
-zSpeed 
-averageSpeed 
-maxSpeed 
-distRelMaxSpeed = [];
-xyzSpeedPeakCount = []; 
-jerkPeakCount = [];
-totalTimeTrialOut = [];
-
-getSummaryInfo:start to endpoint
-
-use right_d3_knuckle_r, 
-trialIndex 
-hitormiss 
-lightTrig_idx
-lightTrig 
-
-% endpoint error 
-wrist endpoint relative
-d3 knuckle endpoint relative
-
 % speed 
 xSpeed 
 ySpeed 
@@ -51,7 +18,6 @@ yDist
 zDist 
 totalDist 
 distRelMaxSpeed 
-
 tortuosity
 acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth ,acceleration frequency, acceleration period 
 
@@ -61,6 +27,7 @@ d3 knuckle endpoint relative
 
 %directional deviation 
 angular deviation vs smoothness(acceleration peaks)
+
 azi/ elevation from start to end 
 azi/elev start to max speed
 
@@ -77,17 +44,17 @@ max grip aperture
 %right_d3_knuckle
 acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth, acceleration frequency, acceleration period 
 
-%getSummaryInfo:start to position at max velocity
+%getSummaryInfo:Aceeleration phase:start to position at max velocity
 %right_d3_knuckle
 acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth, acceleration frequency, acceleration period 
 
-%getSummaryInfo:position at max velocity to end 
+%getSummaryInfo:Deceleration phase:position at max velocity to end 
 %right_d3_knuckle
 acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth, acceleration frequency, acceleration period  
 azi/elev start to max speed
 
 %getSummaryInfo: start to end point
-% left_d3_knucle
+% left_d3_knuckle
 pathlength
 average speed
 acceleration peaks #, mean amplitude, max amplitude, mean prominance, max prominance , mean width, maxwidth, acceleration frequency, acceleration period  
