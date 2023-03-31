@@ -85,6 +85,8 @@ function windowCandidate = findReachStart(trial, varargin)
         if length(trialData_startMaxPos) >=1
             % If trial length > required reach limit (eg. 3 mm), then it is a valid trial
             trialData_startMaxPos = trialData_startMaxPos(1);
+        else
+            trialData_startMaxPos = nan;
         end
     end
     % 2. Use peaks of windowSearchKinematicVariable to identify windows where the reach could have started
