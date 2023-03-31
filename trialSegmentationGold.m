@@ -78,9 +78,7 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
             end
             [VelocityMinimafirst_sc_endpoint_idx, VelocityMinimagripAperture_endpoint_idx, first_sc_idx, gripAperture_max_idx] = getReachEnd(trialSilver);
             VelocityMinimagripAperture_endpoint_idx=VelocityMinimagripAperture_endpoint_idx(1);  
-            [grasp_start_idx, grasp_end_idx] = getGrasp(trialSilver, VelocityMinimagripAperture_endpoint_idx);
-
-            if ~isstruct(reachStartBestCandidate) | isnan(VelocityMinimagripAperture_endpoint_idx)
+            if (~isstruct(reachStartBestCandidate)) | (isnan(VelocityMinimagripAperture_endpoint_idx))
             % TODO: Should check for isnan but isnan errors on struct
                 fprintf('Reach did not cross required limit in fixed reach interval %d\n', trialIdx)
                 fprintf('Skipping trial\n')
@@ -108,24 +106,24 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
             else
                 reach_start_idx = reachStartBestCandidate.maxPos;
                 reach_end_idx = VelocityMinimagripAperture_endpoint_idx;
-                grasp_start_idx = grasp_start_idx;
-                grasp_end_idx =grasp_end_idx;
+               [grasp_start_idx, grasp_end_idx] = getGrasp(trialSilver, VelocityMinimagripAperture_endpoint_idx);
+
                 %% takes all the EMG data between each start and end index
                 %% start_ts is in terms of videoFrames_timestamps
                 %% start_idx is the index into videoFrames_timestamps
                 %% reach/grasp_start/end_idx is wrt start_idx
-                ephys_reach_start_ts = videoFrames_timestamps(trialSilver.start_idx+reach_start_idx-1)-trialSilver.start_ts+1;
-                ephys_reach_end_ts = videoFrames_timestamps(trialSilver.start_idx+reach_end_idx-1)-trialSilver.start_ts+1;
-                ephys_grasp_start_ts = videoFrames_timestamps(trialSilver.start_idx+grasp_start_idx-1)-trialSilver.start_ts+1;
-                ephys_grasp_end_ts = videoFrames_timestamps(trialSilver.start_idx+grasp_end_idx-1)-trialSilver.start_ts+1;
+                reach_start_ts = videoFrames_timestamps(trialSilver.start_idx+reach_start_idx-1)-trialSilver.start_ts+1;
+                reach_end_ts = videoFrames_timestamps(trialSilver.start_idx+reach_end_idx-1)-trialSilver.start_ts+1;
+                grasp_start_ts = videoFrames_timestamps(trialSilver.start_idx+grasp_start_idx-1)-trialSilver.start_ts+1;
+                grasp_end_ts = videoFrames_timestamps(trialSilver.start_idx+grasp_end_idx-1)-trialSilver.start_ts+1;
                 trialGold.('reach_start_idx') = reach_start_idx;
-                trialGold.('reach_start_ts') = ephys_reach_start_ts;
+                trialGold.('reach_start_ts') = reach_start_ts;
                 trialGold.('reach_end_idx') = reach_end_idx;
-                trialGold.('reach_end_ts') = ephys_reach_end_ts;
+                trialGold.('reach_end_ts') = reach_end_ts;
                 trialGold.('grasp_start_idx') = grasp_start_idx;
-                trialGold.('grasp_start_ts') = ephys_grasp_start_ts;
+                trialGold.('grasp_start_ts') = grasp_start_ts;
                 trialGold.('grasp_end_idx') = grasp_end_idx;
-                trialGold.('grasp_end_ts') = ephys_grasp_end_ts;
+                trialGold.('grasp_end_ts') = grasp_end_ts;
                 trialGold.('aniposeData_reach') = trialSilver.('aniposeData_fixed')(reach_start_idx:reach_end_idx, :);
                 trialGold.('aniposeData_grasp') = trialSilver.('aniposeData_fixed')(grasp_start_idx:grasp_end_idx, :);
                 trialGold.('aniposeData_reach_relative') = trialSilver.('aniposeData_fixed_relative')(reach_start_idx:reach_end_idx, :);
@@ -135,8 +133,8 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                 emgCols = emgCols(emgColPos);
                 for emgColIdx = 1:length(emgCols)
                     emgCol = emgCols{emgColIdx};
-                    trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_reach')) = trialGold.(emgCol)(ephys_reach_start_ts:ephys_reach_end_ts);
-                    trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_grasp')) = trialGold.(emgCol)(ephys_grasp_start_ts:ephys_grasp_end_ts);
+                    trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_reach')) = trialGold.(emgCol)(reach_start_ts:reach_end_ts);
+                    trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_grasp')) = trialGold.(emgCol)(grasp_start_ts:grasp_end_ts);
                 end
             end
         else

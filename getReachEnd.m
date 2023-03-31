@@ -13,8 +13,8 @@ gripAperture= getGripAperture(trial);
 first_sc_idx=trial.end_idx_first-trial.start_idx;
 %identifies the max grip aperture within a 50ms window around the spout contact;
 first_sc_window=((trial.end_idx_first-200*50/1000)-trial.start_idx:(trial.end_idx_first+200*100/1000)-trial.start_idx);
-%if 
-if first_sc_idx > length(trial.aniposeData_fixed_relative.([pose_ID]))
+%if the first SC event occurs too close to the end of the fixed reach interval i.e within 20 points of the end that trial ca'nt be used  
+if first_sc_idx > length(trial.aniposeData_fixed_relative.([pose_ID]))-21
 %identifies max GA within the spout contact window
     gripAperture_max=nan;
 else
