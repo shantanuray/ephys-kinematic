@@ -77,6 +77,7 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                 reachStartBestCandidate.maxPos = 1;
             end
             [VelocityMinimafirst_sc_endpoint_idx, VelocityMinimagripAperture_endpoint_idx, first_sc_idx, gripAperture_max_idx] = getReachEnd(trialSilver);
+            VelocityMinimagripAperture_endpoint_idx=VelocityMinimagripAperture_endpoint_idx(1);  
             [grasp_start_idx, grasp_end_idx] = getGrasp(trialSilver, VelocityMinimagripAperture_endpoint_idx);
 
             if ~isstruct(reachStartBestCandidate) | isnan(VelocityMinimagripAperture_endpoint_idx)
@@ -107,7 +108,7 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
             else
                 reach_start_idx = reachStartBestCandidate.maxPos;
                 reach_end_idx = VelocityMinimagripAperture_endpoint_idx;
-                grasp_start_idx = grasp_Start_idx;
+                grasp_start_idx = grasp_start_idx;
                 grasp_end_idx =grasp_end_idx;
                 %% takes all the EMG data between each start and end index
                 %% start_ts is in terms of videoFrames_timestamps
@@ -129,8 +130,6 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                 trialGold.('aniposeData_grasp') = trialSilver.('aniposeData_fixed')(grasp_start_idx:grasp_end_idx, :);
                 trialGold.('aniposeData_reach_relative') = trialSilver.('aniposeData_fixed_relative')(reach_start_idx:reach_end_idx, :);
                 trialGold.('aniposeData_grasp_relative') = trialSilver.('aniposeData_fixed_relative')(grasp_start_idx:grasp_end_idx, :);
-                
-                
                 emgColPos = findColPos(trialGold, 'EMG_');
                 emgCols = fieldnames(trialGold);
                 emgCols = emgCols(emgColPos);
