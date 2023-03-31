@@ -66,12 +66,13 @@ function windowCandidate = findReachStart(trial, varargin)
     %    Example: 3mm of trial trajectory from the start (tone_on)
     % Init trialData to be used for start of window analysis
     trialData_windowStart = trial.(windowStartKinematicVariable).(refBodyPart);
+    % Init trialData to be used for window candidate analysis
+    trialData_windowCandidates = trial.(windowSearchKinematicVariable).(refBodyPart);
     % Init limit of reach start
-    trialData_startMaxPos = 0;
+    trialData_startMaxPos = nan;
     if  strcmpi(windowStartKinematicVariable, 'none')
-        trialData_startMaxPos = [];
-    elseif strcmpi(windowStartKinematicVariable, 'fixed')
-        trialData_startMaxPos = windowStartLimitValue;
+        % If none, use entire available data
+       trialData_startMaxPos = height(trialData_windowCandidates);
     else
         % Assumptions:
         % - windowStartKinematicVariable is a relative measurement wrt to a fixed point such as spout
@@ -82,25 +83,25 @@ function windowCandidate = findReachStart(trial, varargin)
         trialData_startMaxPos = find(trialData_startmax>=windowStartLimitValue);
         % Please note that if windowStartLimitValue is not reached then trialData_startMaxPos = []
         if length(trialData_startMaxPos) >=1
+            % If trial length > required reach limit (eg. 3 mm), then it is a valid trial
             trialData_startMaxPos = trialData_startMaxPos(1);
         end
     end
     % 2. Use peaks of windowSearchKinematicVariable to identify windows where the reach could have started
-    % Init trialData to be used for window candidate analysis
-    trialData_windowCandidates = trial.(windowSearchKinematicVariable).(refBodyPart);
-    % Use findWindow to get windowCandidates. See `help findWindow`
-    if (isempty(trialData_startMaxPos)) | (trialData_startMaxPos > length(trialData_windowCandidates))
-        trialData_startMaxPos = height(trialData_windowCandidates);
-    end
-    
-    %% Expected MinPeakDistance to be a scalar with value < 0.965.
-    % windowCandidates = findWindow(trialData_windowCandidates, 1, trialData_startMaxPos,...
-    %                              'MinPeakDistance', minPeakDistance, 'MinPeakHeight', minPeakHeight);
     % TODO: Find findpeaks optimal params
+    if isnan(trialData_startMaxPos)
+        % reach did not cross the required reach limit (eg. 3 mm), then it is not a valid trial
+        % return nan for window candidate
+        fprintf('findReachStart: Reach did not cross reach limit of %0.2f\nReturning windowCandidate=nan\n', windowStartLimitValue)
+        windowCandidate = nan;
+        return;
+    end
     windowCandidates = findWindow(trialData_windowCandidates, 1, trialData_startMaxPos,...
                                   findPeaksArgins{:});
     if isempty(windowCandidates)
-        fprintf('findReachStart: Unable to find window candidates for %s; start pos = %d\n', windowSearchKinematicVariable, trialData_startMaxPos)
+        % If reach crossed the required reach limit (eg. 3 mm), but we were unable to find jerk peak
+        % return empty for window candidate
+        fprintf('findReachStart: Unable to find window candidates for %s; start pos = %d\nReturning windowCandidate=[]\n', windowSearchKinematicVariable, trialData_startMaxPos)
         windowCandidate = [];
         return;
     end
