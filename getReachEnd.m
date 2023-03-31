@@ -13,10 +13,20 @@ gripAperture= getGripAperture(trial);
 first_sc_idx=trial.end_idx_first-trial.start_idx;
 %identifies the max grip aperture within a 50ms window around the spout contact;
 first_sc_window=((trial.end_idx_first-200*50/1000)-trial.start_idx:(trial.end_idx_first+200*100/1000)-trial.start_idx);
+%if 
+if first_sc_idx > length(trial.aniposeData_fixed_relative.([pose_ID]))
 %identifies max GA within the spout contact window
-gripAperture_max=max(gripAperture(first_sc_window));
+    gripAperture_max=nan;
+else
+    gripAperture_max=max(gripAperture(first_sc_window));
+end  
+
 %GA idx
+if ~isnan (gripAperture_max)
 gripAperture_max_idx=find(gripAperture==gripAperture_max);
+else
+	gripAperture_max_idx=nan;
+end
 
 % get trial relative speed
 trial_velocity=-[trial.aniposeData_fixed_relative_velocity.([pose_ID])];
@@ -30,6 +40,7 @@ velocityMinima_idx_first_sc_window= find(velocityMinima_idx>first_sc_window(1) &
 velocityMinima_idx_sc=velocityMinima_idx(velocityMinima_idx_first_sc_window);
 
 %to identify the closest velocity minima to the GA subtract the indices
+if ~isnan(gripAperture_max_idx)
 relativeVelocityMinimatogripAperture_idx=velocityMinima_idx_sc-gripAperture_max_idx;
 %find the least distance away from GA
 VelocityMinimagripAperture_endpoint=min(abs(relativeVelocityMinimatogripAperture_idx));
@@ -37,6 +48,9 @@ VelocityMinimagripAperture_endpoint=min(abs(relativeVelocityMinimatogripAperture
 VelocityMinimagripAperture_endpoint_idx=find(abs(relativeVelocityMinimatogripAperture_idx)==VelocityMinimagripAperture_endpoint);
 %finds the indx of the velocity minima that is least distance away from GA and is wiithin the first sc window
 VelocityMinimagripAperture_endpoint_idx=velocityMinima_idx_sc(VelocityMinimagripAperture_endpoint_idx);	
+else
+	VelocityMinimagripAperture_endpoint_idx=nan;
+end
 
 % calculates the distance (samples)between first sc and each velocity minima
 relativeVelocityMinimatofirst_sc_idx=velocityMinima_idx-first_sc_idx;

@@ -17,12 +17,16 @@ if nargin<2
 end 
 
 for i=1:length(trialList)
-    trial_pose=trialList(i).(processlabel).(poseID);
-    displacement=abs(trial_pose(1)-trial_pose(end));
-    if displacement>=displacementRef
-        trialList(i).displacementThreshold = true;
-    else
+   if istable(trialList(i).(processlabel))
+      trial_pose=trialList(i).(processlabel).(poseID);
+      displacement=abs(trial_pose(1)-trial_pose(end));
+      if displacement>=displacementRef
+         trialList(i).displacementThreshold = true;
+      else
         trialList(i).displacementThreshold = false;
-    end
+      end
+   else
+   trialList(i).displacementThreshold=nan;
+ end
 end
 

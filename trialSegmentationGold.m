@@ -76,8 +76,12 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                 %max position is chosen because that represents the velocity minima in the submovement (since velocity is relative to spout @ 000)
                 reachStartBestCandidate.maxPos = 1;
             end
-            if ~isstruct(reachStartBestCandidate) % TODO: Should check for isnan but isnan errors on struct
-                fprintf('Reach did not cross required limit in trial number %d\n', trialIdx)
+            [VelocityMinimafirst_sc_endpoint_idx, VelocityMinimagripAperture_endpoint_idx, first_sc_idx, gripAperture_max_idx] = getReachEnd(trialSilver);
+            [grasp_start_idx, grasp_end_idx] = getGrasp(trialSilver, VelocityMinimagripAperture_endpoint_idx);
+
+            if ~isstruct(reachStartBestCandidate) | isnan(VelocityMinimagripAperture_endpoint_idx)
+            % TODO: Should check for isnan but isnan errors on struct
+                fprintf('Reach did not cross required limit in fixed reach interval %d\n', trialIdx)
                 fprintf('Skipping trial\n')
                 trialGold.('reach_start_idx') = nan;
                 trialGold.('reach_start_ts') = nan;
@@ -101,10 +105,10 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                 end
                 disp(repmat('-', 1,80))
             else
-                [VelocityMinimafirst_sc_endpoint_idx, VelocityMinimagripAperture_endpoint_idx, first_sc_idx, gripAperture_max_idx] = getReachEnd(trialSilver);
                 reach_start_idx = reachStartBestCandidate.maxPos;
                 reach_end_idx = VelocityMinimagripAperture_endpoint_idx;
-                [grasp_start_idx, grasp_end_idx] = getGrasp(trialSilver, VelocityMinimagripAperture_endpoint_idx);
+                grasp_start_idx = grasp_Start_idx;
+                grasp_end_idx =grasp_end_idx;
                 %% takes all the EMG data between each start and end index
                 %% start_ts is in terms of videoFrames_timestamps
                 %% start_idx is the index into videoFrames_timestamps
