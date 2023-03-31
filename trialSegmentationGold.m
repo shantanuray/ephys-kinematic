@@ -76,9 +76,29 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                 %max position is chosen because that represents the velocity minima in the submovement (since velocity is relative to spout @ 000)
                 reachStartBestCandidate.maxPos = 1;
             end
-            if isnan(reachStartBestCandidate)
+            if ~isstruct(reachStartBestCandidate) % TODO: Should check for isnan but isnan errors on struct
                 fprintf('Reach did not cross required limit in trial number %d\n', trialIdx)
                 fprintf('Skipping trial\n')
+                trialGold.('reach_start_idx') = nan;
+                trialGold.('reach_start_ts') = nan;
+                trialGold.('reach_end_idx') = nan;
+                trialGold.('reach_end_ts') = nan;
+                trialGold.('grasp_start_idx') = nan;
+                trialGold.('grasp_start_ts') = nan;
+                trialGold.('grasp_end_idx') = nan;
+                trialGold.('grasp_end_ts') = nan;
+                trialGold.('aniposeData_reach') = nan;
+                trialGold.('aniposeData_grasp') = nan;
+                trialGold.('aniposeData_reach_relative') = nan;
+                trialGold.('aniposeData_grasp_relative') = nan;
+                emgColPos = findColPos(trialGold, 'EMG_');
+                emgCols = fieldnames(trialGold);
+                emgCols = emgCols(emgColPos);
+                for emgColIdx = 1:length(emgCols)
+                    emgCol = emgCols{emgColIdx};
+                    trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_reach')) = nan;
+                    trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_grasp')) = nan;
+                end
                 disp(repmat('-', 1,80))
             else
                 [VelocityMinimafirst_sc_endpoint_idx, VelocityMinimagripAperture_endpoint_idx, first_sc_idx, gripAperture_max_idx] = getReachEnd(trialSilver);
