@@ -2,7 +2,7 @@
 %calling function that gets trial start and end from aniposeData_fixed_relative, plots and saves  the data 
 
 trialList=trialList_tone_on;
-trialNum=65;
+trialNum=64;
 trial=trialList(trialNum);
 pose_ID='right_wrist_r';
 

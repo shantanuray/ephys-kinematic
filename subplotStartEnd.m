@@ -3,7 +3,7 @@
 % this code must follow the calling function for start end etc  
 save_loc='/Users/ayesha/Dropbox/Ayesha_post doc_local storage/Cerebellar_nuclei/INTRSECT/behavior/hfwr/A34-2/figs/km_Subplots/start_endpoint';
 
-plotColour='b';% k for light OFF, b for light ON 
+plotColour='k';% k for light OFF, b for light ON 
 tdistP = 0:1/200:(size(trial.aniposeData_fixed_relative.(164))/200);
 tdistV = 0:1/200:(size(trial.aniposeData_fixed_relative_velocity.(164))/200);
 tdistJ = 0:1/200:(size(trial.aniposeData_fixed_relative_jerk.(164))/200);

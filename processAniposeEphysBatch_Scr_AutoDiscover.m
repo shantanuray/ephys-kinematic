@@ -9,12 +9,12 @@
 % root_dir/ (eg. /mnle/data/AYESHA_THANAWALLA/Cerebellar_nuclei/INTRSECT/Behavior/headfixedwaterreach/A11-3
 % disp('Choose the root directory with all of the anipose and ephys data'), this is typically the animal folder 
 % root_dir = uigetdir('.', 'Choose root directory with all of the anipose and ephys data');% animal directory
-root_dir = "/Volumes/dcn_emg_behavior/Ayesha/A11-1/temp/";
+root_dir = "/Users/ayesha/Dropbox/Ayesha_post doc_local storage/Cerebellar_nuclei/INTRSECT/behavior/hfwr/A11-1";
 
 % Get save directory
 % disp('Choose common location to save trials')
 % save_dir = uigetdir('.', 'Choose common location to save trials');% common folder for all mat files 
-save_dir = "/Volumes/dcn_emg_behavior/Ayesha/A11-1/temp/data";
+save_dir = "/Users/ayesha/Dropbox/Ayesha_post doc_local storage/Cerebellar_nuclei/INTRSECT/behavior/hfwr/A11-1/data/filtered";
 
 % Filter parameters
 scoreThresh = 0.05; % choose based on error 
@@ -22,7 +22,7 @@ fillMissingGapSize = 50;
 filterThresholdFlag = false;
 scoreThresh = 0.05;
 filterFlag= true;
-fixedReachIntervalms = 1500; % ms
+fixedReachIntervalms = 2000; % ms
 %% Time duration for extracting fixed trial data in ms
 %% startEvents
 %%   {'solenoid_on'}

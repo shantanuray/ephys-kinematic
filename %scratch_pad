@@ -15,6 +15,10 @@ cross corelation of each muscle with acceleration
 processAniposeEphysBatch_Scr_AutoDiscover
 getSummaryBatchScr
 
+%trialNum=29;
+trial=trialList_tone_on(trialNum);
+
+
 
 load("A11-1/filtered/A11-1_2022-04-21_11-43-33_tone_on_filtered.mat")
 trialListGold_tone_on = trialSegmentationGold(trialList_tone_on, videoFrames_timestamps,'WindowStartLimitValue',5,'WindowSelectorLimitValue',5);

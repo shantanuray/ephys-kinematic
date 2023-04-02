@@ -61,7 +61,8 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
         removeCols = removeCols(removeColPos);
         trialGold = rmfield(trialSilver, removeCols);
         if (trialSilver.hitormiss == 1)
-            reachStartBestCandidate = findReachStart(trialSilver,...
+            if  size(trialSilver.aniposeData_fixed,1)>1
+                reachStartBestCandidate = findReachStart(trialSilver,...
                 'RefBodyPart', refBodyPart,...
                 'WindowStartKinematicVariable', windowStartKinematicVariable,...
                 'WindowStartLimitValue', windowStartLimitValue,...
@@ -69,17 +70,21 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                 'WindowSelectorVariable', windowSelectorVariable,...
                 'WindowSelectorLimitValue', windowSelectorLimitValue,...
                 findPeaksArgins{:});
-            if isempty(reachStartBestCandidate)
+                if isempty(reachStartBestCandidate)
                 fprintf('No peaks found for reach start in trial number %d\n', trialIdx)
                 fprintf('Using start of reach = %d\n', 1)
                 disp(repmat('-', 1,80))
                 %max position is chosen because that represents the velocity minima in the submovement (since velocity is relative to spout @ 000)
                 reachStartBestCandidate.maxPos = 1;
-            end
-            [VelocityMinimafirst_sc_endpoint_idx, VelocityMinimagripAperture_endpoint_idx, first_sc_idx, gripAperture_max_idx] = getReachEnd(trialSilver);
-            VelocityMinimagripAperture_endpoint_idx=VelocityMinimagripAperture_endpoint_idx(1);  
-            if (~isstruct(reachStartBestCandidate)) | (isnan(VelocityMinimagripAperture_endpoint_idx))
-            % TODO: Should check for isnan but isnan errors on struct
+                end
+                [VelocityMinimafirst_sc_endpoint_idx, VelocityMinimagripAperture_endpoint_idx, first_sc_idx, gripAperture_max_idx] = getReachEnd(trialSilver);
+                if ~isempty(VelocityMinimagripAperture_endpoint_idx)
+                    VelocityMinimagripAperture_endpoint_idx=VelocityMinimagripAperture_endpoint_idx(1); 
+                else
+                    VelocityMinimagripAperture_endpoint_idx =nan;
+                end
+                if (~isstruct(reachStartBestCandidate)) | (isnan(VelocityMinimagripAperture_endpoint_idx))
+                 % TODO: Should check for isnan but isnan errors on struct
                 fprintf('Reach did not cross required limit in fixed reach interval %d\n', trialIdx)
                 fprintf('Skipping trial\n')
                 trialGold.('reach_start_idx') = nan;
@@ -103,7 +108,7 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                     trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_grasp')) = nan;
                 end
                 disp(repmat('-', 1,80))
-            else
+                else
                 reach_start_idx = reachStartBestCandidate.maxPos;
                 reach_end_idx = VelocityMinimagripAperture_endpoint_idx;
                [grasp_start_idx, grasp_end_idx] = getGrasp(trialSilver, VelocityMinimagripAperture_endpoint_idx);
@@ -136,7 +141,33 @@ function trialListGold = trialSegmentationGold(trialListSilver, videoFrames_time
                     trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_reach')) = trialGold.(emgCol)(reach_start_ts:reach_end_ts);
                     trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_grasp')) = trialGold.(emgCol)(grasp_start_ts:grasp_end_ts);
                 end
+                end
+            else
+                fprintf('no fixed data. Trial number %d\n', trialIdx)
+                fprintf('Skipping trial\n')
+                trialGold.('reach_start_idx') = nan;
+                trialGold.('reach_start_ts') = nan;
+                trialGold.('reach_end_idx') = nan;
+                trialGold.('reach_end_ts') = nan;
+                trialGold.('grasp_start_idx') = nan;
+                trialGold.('grasp_start_ts') = nan;
+                trialGold.('grasp_end_idx') = nan;
+                trialGold.('grasp_end_ts') = nan;
+                trialGold.('aniposeData_reach') = nan;
+                trialGold.('aniposeData_grasp') = nan;
+                trialGold.('aniposeData_reach_relative') = nan;
+                trialGold.('aniposeData_grasp_relative') = nan;
+                emgColPos = findColPos(trialGold, 'EMG_');
+                emgCols = fieldnames(trialGold);
+                emgCols = emgCols(emgColPos);
+                for emgColIdx = 1:length(emgCols)
+                    emgCol = emgCols{emgColIdx};
+                    trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_reach')) = nan;
+                    trialGold.(strcat(emgCol(1:strfind(emgCol,'_fixed')-1), '_grasp')) = nan;
+                end
+                disp(repmat('-', 1,80))
             end
+
         else
             fprintf('Miss trial. Trial number %d\n', trialIdx)
             fprintf('Skipping trial\n')

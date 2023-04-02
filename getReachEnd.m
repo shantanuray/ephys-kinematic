@@ -12,7 +12,7 @@ gripAperture= getGripAperture(trial);
 %calculates the first cpout contact index
 first_sc_idx=trial.end_idx_first-trial.start_idx;
 %identifies the max grip aperture within a 50ms window around the spout contact;
-first_sc_window=((trial.end_idx_first-200*50/1000)-trial.start_idx:(trial.end_idx_first+200*100/1000)-trial.start_idx);
+first_sc_window=(max((trial.end_idx_first-200*50/1000)-trial.start_idx, 1):(trial.end_idx_first+200*100/1000)-trial.start_idx);
 %if the first SC event occurs too close to the end of the fixed reach interval i.e within 20 points of the end that trial ca'nt be used  
 if first_sc_idx > length(trial.aniposeData_fixed_relative.([pose_ID]))-21
 %identifies max GA within the spout contact window
@@ -35,7 +35,7 @@ velocityMinima= islocalmin(trial_velocity,'MinProminence',5);
 % index on velocity minima, is local minima is true =1
 velocityMinima_idx=find(velocityMinima==1);
 % identifies velocity minima within the first sc window
-velocityMinima_idx_first_sc_window= find(velocityMinima_idx>first_sc_window(1) & velocityMinima_idx<first_sc_window(end));
+velocityMinima_idx_first_sc_window= find(velocityMinima_idx>=first_sc_window(1) & velocityMinima_idx<=first_sc_window(end));
 % gets the value for the index identified above
 velocityMinima_idx_sc=velocityMinima_idx(velocityMinima_idx_first_sc_window);
 
